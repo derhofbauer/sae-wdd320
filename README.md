@@ -48,6 +48,7 @@ mehr.
 + Command Line Basics: https://levelup.gitconnected.com/console-commands-that-you-should-know-how-to-use-f2b24a455394
 + https://www.gitignore.io/
 + https://questions.wizardzines.com/
++ http://mystery.knightlab.com/
 
 ### Cheatsheets
 
