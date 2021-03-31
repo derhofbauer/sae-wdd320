@@ -57,12 +57,31 @@ if (isset($_POST['email']) && str_contains($_POST['email'], '@') && str_contains
 }
 
 /**
- * @todo: comment
+ * Auch die Telefonnummer soll geprüft werden. Nachdem viele unterschiedliche Formate für Telefonnummern möglich sind,
+ * arbeiten wir hier mit einer Regular Expression.
+ *
+ * Eine sehr rudimentäre Prüfung ohne Regular Expressions könnte folgendermaßen aussehen:
  */
 /*if (isset($_POST['phone']) && !is_numeric($_POST['phone'])) {
     $errors[] = "Telefonnummer darf nur aus Ziffern bestehen.";
 }*/
+
+/**
+ * Regular Expression definieren:
+ * + \+? meint 0 oder 1 +
+ * + [0-9 ]+ meint mindestens eine Ziffer von 0-9 und/oder ein Leerzeichen
+ * + ^ und $ geben Start und Ende des Strings an, der geprüft wird.
+ *
+ * Diese Expression ist alles andere als vollständig und soll nur verdeutlichen, wie Regular Expressions in PHP
+ * funktionieren.
+ */
 $regex = "/^\+?[0-9 ]+$/";
+
+/**
+ * Wenn ein Wert übergeben wurde, dann verwenden wir die preg_match()-Funktion, um den Wert gegen eine Regular Expression
+ * zu prüfen. preg_match() gibt 1 zurück, wenn die Prüfung erfolgreich ist, in allen anderen Fällen war die Prüfung also
+ * nicht erfolgreich oder es ist ein Fehler aufgetreten.
+ */
 if (isset($_POST['phone']) && preg_match($regex, $_POST['phone']) !== 1) {
     $errors[] = "Telefonnummer darf nur aus Ziffern bestehen.";
 }

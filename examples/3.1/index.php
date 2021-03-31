@@ -1,7 +1,8 @@
 <?php
 
 /**
- * @todo: comment
+ * Damit wir überall die $_SESSION Superglobal verwenden können, müssen wir die Session erst starten. Das bietet sich so
+ * gut wie immer relativ weit am Beginn des Programms an.
  */
 session_start();
 
