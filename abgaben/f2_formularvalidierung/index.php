@@ -1,9 +1,12 @@
 <?php
 /**
- * @todo: comment everything!
+ * Alle möglichen Werte für die Anrede definieren.
  */
-
 $validSalutations = ['male', 'female', 'lgbtq2s'];
+/**
+ * Alle möglichen Werte für die Länder-Auswahl definieren. Daraus werden wir das Dropdown generieren und auch bei der
+ * Validierung darauf zurückgreifen.
+ */
 $countries = [
     'at' => 'Österreich',
     'de' => 'Deutschland',
@@ -11,6 +14,10 @@ $countries = [
     'fl' => 'Liechtenstein'
 ];
 
+/**
+ * Wenn das name-Feld vorhanden ist, ist anzunehmen, dass das Formular abgeschickt wurde. In diesem Fall laden wir das
+ * File zur Validierung der Daten.
+ */
 if (isset($_POST['name'])) {
     require_once 'validate.php';
 }
@@ -37,7 +44,17 @@ if (isset($_POST['name'])) {
 
     <form method="POST" novalidate autocomplete="off">
 
-        <?php foreach ($errors as $field => $error): ?>
+        <?php
+        /**
+         * Alle Fehler ausgeben. $errors kommt aus dem validate.php-File und ist hier durch das require_once-Statement
+         * verfügbar. Ist $errors ein leerer Array, weil keine Fehler aufgetreten sind, so werden auch keine Fehler
+         * ausgegeben. Wir prüfen auch, ob $errors gesetzt ist, weil es im validate.php-File definiert wird. Dieses File
+         * wird aber nicht immer eingebunden.
+         */
+        if (!isset($errors)) {
+            $errors = [];
+        }
+        foreach ($errors as $field => $error): ?>
             <div class="alert alert-danger"><?php echo "$field: $error";?></div>
         <?php endforeach; ?>
         <div class="row">
@@ -100,7 +117,11 @@ if (isset($_POST['name'])) {
                 <label for="country">Land</label>
                 <select name="country" id="country" class="form-control" required>
                     <option value="_default" selected hidden>Bitte auswählen ...</option>
-                    <?php foreach ($countries as $key => $country): ?>
+                    <?php
+                    /**
+                     * Hier generieren wir aus dem Array von oben ein Dropdown.
+                     */
+                    foreach ($countries as $key => $country): ?>
                         <option value="<?php echo $key; ?>"><?php echo $country; ?></option>
                     <?php endforeach; ?>
                 </select>
