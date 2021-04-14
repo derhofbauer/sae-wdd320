@@ -1,15 +1,17 @@
 <?php
 /*
- * TODO:
  *  "dbconnect.php" einbinden
  */
 require_once '../dbconnect.php';
 
 /*
- * TODO:
  * Query schreiben mit dem der Newsletter-Empfänger sowie die zugehörige ID ausgelesen wird ("Select aus 2 Tabellen")
  *
- * @todo: comment
+ * Hier ist es nötig Daten aus zwei verschiedenen Tabellen zu selektieren, wir benötigen also einen JOIN-Query. Dabei
+ * wird im SELECT schon angegeben, dass wir aus mehreren Tabellen Daten abfragen wollen. Das FROM Statement kann als
+ * Einheit zweiter Tabellen betrachtet werden (recipients JOIN newsletter_categories). Das ON Statement gibt schließlich
+ * noch an, wie die Zeilen beider Tabellen zusammengeführt werden sollen. Hier wird also definiert, welche Spalten in
+ * beiden Tabellen den selben Wert haben müssen, damit die beiden Zeilen im JOIN zusammengeführt werden.
  */
 $sql = '
     SELECT recipients.fullname, recipients.email, recipients.created_at, newsletter_categories.title
@@ -18,12 +20,12 @@ $sql = '
             ON recipients.newsletter_category_id = newsletter_categories.id
 ';
 /**
- * @todo: comment
+ * Hier wird der Query abgeschickt ODER, sofern ein Fehler auftritt wird mit der die()-Funktion die weitere Ausführung
+ * des Skripts abgebrochen und der Fehler ausgegeben.
  */
 $result = mysqli_query($link, $sql) or die(mysqli_error($link));
 
 /*
- * TODO:
  * Ergebnis des Queries auf Variable legen (MYSQLI_ASSOC)
  */
 $recipients = mysqli_fetch_all($result, MYSQLI_ASSOC);
@@ -64,14 +66,12 @@ $recipients = mysqli_fetch_all($result, MYSQLI_ASSOC);
         <?php
 
         /*
-         * TODO:
          * Newsletter Empfänger mittels Schleife durchlaufen und Tabelle befüllen
          */
 
         //Schleife-Beginn
         foreach ($recipients as $recipient) {
             /*
-             * TODO:
              * Variablen mit Inhalt aus DB befüllen
              */
 

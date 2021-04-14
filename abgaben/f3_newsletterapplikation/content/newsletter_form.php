@@ -14,7 +14,6 @@
         <?php
 
         /*
-         * TODO:
          * Newsletter-Themen mittels Schleife durchlaufen
          * Für jede Kategorie ein <option> Element erzeugen (value = ID, Inhalt = Titel)
          */
@@ -24,7 +23,6 @@
         //Schleife-Beginn
         foreach ($categories as $category) {
             /*
-             * TODO
              * Variablen mit Inhalt aus DB befüllen
              */
 

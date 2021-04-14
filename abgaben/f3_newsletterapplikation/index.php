@@ -1,7 +1,6 @@
 <?php
 
 /*
- * TODO:
  *  Session starten
  *  "dbconnect.php" einbinden
  *  "logic.php" einbinden
@@ -50,10 +49,11 @@ require_once 'logic.php';
             <?php
 
             /*
-             * TODO:
              * Newsletter-Themen mittels Schleife durchlaufen und Titel + Beschreibung anzeigen
              *
-             * @todo: comment
+             * Es ist möglich das Ergebnis einer Datenbankabfrage mit einer while-Schleife und mysqli_fetch_assoc()
+             * Zeile für Zeile durchzugehen, oder aber auch alles auf einmal in ein Array umzuwandeln mit
+             * mysqli_fetch_all().
              */
             $query = 'SELECT title, description FROM newsletter_categories';
             $result = mysqli_query($link, $query);
@@ -62,7 +62,12 @@ require_once 'logic.php';
                 $categories[] = $row;
             }*/
 
-            // ODER
+            /**
+             * ODER:
+             *
+             * Die Konstante MYSQLI_ASSOC ist Teil von PHP. Wird diese nicht gesetzt, wird das Ergebnis in ein Array mit
+             * numerischen Indizes umgewandelt.
+             */
             $categories = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
             //Schleife-Beginn
@@ -82,7 +87,6 @@ require_once 'logic.php';
             <?php
 
             /*
-             * TODO:
              * Überprüfen ob Benutzer sich bereits eingetragen hat (Session-Variable die beim Eintragen gesetzt wird)
              *  wenn ja "content/thank_you.php" anzeigen
              *  wenn nein "content/newsletter_form.php" anzeigen

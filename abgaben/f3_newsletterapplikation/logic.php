@@ -1,14 +1,12 @@
 <?php
 
 /*
- * TODO:
  * SQL-Query um Newsletter-Themen auszulesen (query schreiben & ausführen)
  */
 $query = "SELECT * FROM newsletter_categories";
 $result = mysqli_query($link, $query);
 
 /*
- * TODO:
  * Resultat in Variable legen (MYSQLI_ASSOC)
  */
 $newsletter_categories = mysqli_fetch_all($result, MYSQLI_ASSOC);
@@ -21,7 +19,6 @@ $newsletter_categories = mysqli_fetch_all($result, MYSQLI_ASSOC);
 if(isset($_POST['email'])) {
 
     /*
-     * TODO:
      * Inhalte von Formular sowie den aktuellen Timestamp auf Variablen legen
      */
     $fullname = $_POST['fullname'];
@@ -31,7 +28,6 @@ if(isset($_POST['email'])) {
 
 
     /*
-     * TODO
      * SQL Query schreiben um eingegebene Daten in die DB zu schreiben
      */
     $sql = "INSERT INTO recipients SET email = '$email', fullname = '$fullname', newsletter_category_id = '$newsletter_category', created_at = '$created_at'";
@@ -41,9 +37,7 @@ if(isset($_POST['email'])) {
 
 
     /*
-     * TODO:
      * Session-Variable setzen und Benutzer als "eingetragen" markieren
-     * @todo: comment
      */
     $_SESSION['has_abo'] = true;
 }
