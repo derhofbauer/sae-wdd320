@@ -9,7 +9,7 @@ CMS mit User Login, Image Upload, Kategorien, Kommentare, Sterne-Ratings, Blog P
     + username* VARCHAR(255) UK
     + email* VARCHAR(255) UK
     + password* (Hash) VARCHAR(255)
-    + is_admin BOOL NULL default:NULL
+    + is_admin BOOL NULL default:0
     + avatar (file_id) INT NULL FK:files.id
     + crdate* (Creation Date) TIMESTAMP
     + tstamp* (Zeitpunkt des letzten Updates) TIMESTAMP ou_CT
@@ -31,7 +31,7 @@ CMS mit User Login, Image Upload, Kategorien, Kommentare, Sterne-Ratings, Blog P
     + id* INT A_I PK
     + post_id* INT FK:posts.id
     + file_id* INT FK:files.id
-    + sort INT
+    + sort INT NULL
 + Category - categories
     + id* INT A_I PK
     + title* VARCHAR(255)
@@ -54,8 +54,12 @@ CMS mit User Login, Image Upload, Kategorien, Kommentare, Sterne-Ratings, Blog P
     + id* INT A_I PK
     + path* TEXT
     + name* TEXT
-    + title VARCHAR NULL - Bildname (nicht Dateiname)
+    + title VARCHAR(255) NULL - Bildname (nicht Dateiname)
     + alttext TEXT NULL
     + caption TEXT NULL - Bildunterschrift
     + is_avatar BOOL NULL default:NULL
+    + author* (user_id) INT FK:users.id
+    + crdate* TIMESTAMP
+    + tstamp* (Zeitpunkt des letzten Updates) TIMESTAMP ou_CT
+    + deleted_at TIMESTAMP NULL
 + ...
