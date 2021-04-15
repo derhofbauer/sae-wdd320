@@ -1,4 +1,4 @@
-# MVC
+# MVC - Blog System
 
 CMS mit User Login, Image Upload, Kategorien, Kommentare, Sterne-Ratings, Blog Posts, Medien Bibliothek, ...
 
@@ -63,3 +63,54 @@ CMS mit User Login, Image Upload, Kategorien, Kommentare, Sterne-Ratings, Blog P
     + tstamp* (Zeitpunkt des letzten Updates) TIMESTAMP ou_CT
     + deleted_at TIMESTAMP NULL
 + ...
+
+## Controllers
+
+C Create
+R Read/List
+U Update
+D Delete
+
++ UserController: CRUD
++ FileController: CRUD
++ PostController: CRUD
++ CategoryController: CRUD
++ CommentController: CR_D
+
+## Core
+
++ Bootstrap
++ Router
++ Database
++ View
++ Config
++ Session
++ Validator
++ AbstractModel
++ AbstractUser
++ AbstractFile
++ SoftDelete Trait
++ ...
+
+## Views / Seiten
+
++ Post Liste (Startseite)
++ Post Detail (Single Post)
++ Category Liste
+  + Category Post Liste
++ Login
++ Sign-Up
++ Admin: Startseite
++ Admin: Category Liste
++ Admin: Category Edit
++ Admin: Category Create
++ Admin: User Liste
++ Admin: User Edit
++ Admin: User Create
++ Admin: Post Liste
++ Admin: Post Edit
++ Admin: Post Create
++ Admin: Files Liste (Medienbibliothek)
++ Admin: Files Edit
++ Admin: Files Upload
++ Admin: Comments Liste
