@@ -2,6 +2,19 @@
 
 CMS mit User Login, Image Upload, Kategorien, Kommentare, Sterne-Ratings, Blog Posts, Medien Bibliothek, ...
 
+## Ordner
+
+Die Ordnerstruktur ist zwar nicht Teil des MVC, wird aber vom MVC vorgegeben.
+
++ `/app` wird alle Dateien beinhalten, die die Logik der Anwendung beinhalten. Diese Dateien werden die Files in `/core` verwenden.
++ `/config` wird alle Konfigurations-Dateien beinhalten. Diese sollten wirklich nur die Werte beinhalten und keinerlei Logik.
++ `/core` beinhaltet die Funktionalitäten, die im MVC enthalten sind und für vermutlich in den meisten Anwendung benötigt werden. Die Dateien in `/app` machen sich diese zunutze und bauen eine Anwendung daraus. Ein MVC Framework ist dazu gedacht, dass Logik, die in sehr vielen Anwendungen benötigt wird (bspw. Login Funktionalitäten, Datenbankverbindung, Session Management, etc.) einmal implementiert werden und dann in einer Anwendung, die auf das MVC aufsetzt, verwendet werden können.
++ `/public` stellt den Webroot der mit dem MVC gebauten Anwendung dar. Hier findet sich eine einzige `index.php` Datei, die die Anwendung und das MVC startet. Außerdem müssen hier alle Dateien sich befinden, die über den Browser abgerufen werden sollen (bspw. Bilder, CSS und JS Dateien). Daher ist auch der `/storage` Ordner hier herein verlinkt, weil Uploads in den Storage Ordner kommen werden, diese werden aber häufig über den Browser erreichbar sein müssen (bspw. macht es keinen Sinn ein Avatar Bild hochzuladen, dass über den Browser nicht geladen werden kann.).
++ `/resources` beinhaltet die rohen JS Dateien (bspw. Vue, React, ...), CSS Files, die erst transpiliert werden müssen (bspw. Sass, Less, Scss, ...) und die Views.
++ `/resources/views` beinhaltet das HTML, das zur Anzeige der in den Controllern berechneten Daten benötigt wird. Hier wird also die Programmlogik (Controller) komplett von der Anzeige (Views) getrennt. PHP und HTML werden nur in den Views gemischt - und hier auch nur sehr sparsam.
++ `/routes` beinhaltet das Mapping von in die Adresszeile des Browsers eingegebenen URLs auf Controller und Actions. Actions sind hierbei die Methoden der Controller. Wir unterscheiden zwischen Web-Routen und API-Routen. Zweitere können verwendet werden, wenn eine API (bswp. JSON), implementiert werden soll.
++ `/storage` beinhaltet alle Arbeitsdateien. Also beispielsweise Uploads, generierte Dateien, Cache, Logs, etc. - das ist also der Ordner, in den das MVC Dateien speichern kann, die dann irgendwann anders verwendet werden.
+
 ## Models / Datenbanktabellen
 
 + User - users

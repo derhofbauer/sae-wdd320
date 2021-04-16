@@ -1,9 +1,4 @@
 <?php
-
-/**
- * @todo: add folder descriptions to mvc/README.md
- */
-
 /**
  * Diese Datei ist der Startpunkt der gesamten Anwendung. Sie startet das Routing und ermöglicht dadurch das Laden von
  * Controllern.
