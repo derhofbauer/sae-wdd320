@@ -26,6 +26,11 @@ spl_autoload_register(function ($namespaceAndClassname) {
 });
 
 /**
+ * Error Reporting einschalten.
+ */
+\Core\Bootstrap::setErrorDisplay();
+
+/**
  * MVC "anstarten"
  */
 $app = new \Core\Bootstrap();
