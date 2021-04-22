@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: db
--- Erstellungszeit: 15. Apr 2021 um 13:47
+-- Erstellungszeit: 22. Apr 2021 um 14:34
 -- Server-Version: 10.5.9-MariaDB-1:10.5.9+maria~focal
 -- PHP-Version: 7.4.3
 
@@ -28,16 +28,14 @@ SET time_zone = "+00:00";
 -- Tabellenstruktur für Tabelle `categories`
 --
 
-CREATE TABLE IF NOT EXISTS `categories` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `categories` (
+  `id` int(11) NOT NULL,
   `title` varchar(255) NOT NULL,
   `slug` varchar(255) NOT NULL,
   `description` text DEFAULT NULL,
   `crdate` timestamp NOT NULL DEFAULT current_timestamp(),
   `tstamp` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `deleted_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `slug` (`slug`)
+  `deleted_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -46,8 +44,8 @@ CREATE TABLE IF NOT EXISTS `categories` (
 -- Tabellenstruktur für Tabelle `comments`
 --
 
-CREATE TABLE IF NOT EXISTS `comments` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `comments` (
+  `id` int(11) NOT NULL,
   `author` int(11) NOT NULL,
   `content` text DEFAULT NULL,
   `post_id` int(11) NOT NULL,
@@ -55,11 +53,7 @@ CREATE TABLE IF NOT EXISTS `comments` (
   `parent` int(11) NOT NULL,
   `crdate` timestamp NOT NULL DEFAULT current_timestamp(),
   `tstamp` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `deleted_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `post_id` (`post_id`),
-  KEY `parent` (`parent`),
-  KEY `comments_ibfk_3` (`author`)
+  `deleted_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -68,8 +62,8 @@ CREATE TABLE IF NOT EXISTS `comments` (
 -- Tabellenstruktur für Tabelle `files`
 --
 
-CREATE TABLE IF NOT EXISTS `files` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `files` (
+  `id` int(11) NOT NULL,
   `path` text NOT NULL,
   `name` text NOT NULL,
   `title` varchar(255) DEFAULT NULL,
@@ -79,9 +73,7 @@ CREATE TABLE IF NOT EXISTS `files` (
   `author` int(11) NOT NULL,
   `crdate` timestamp NOT NULL DEFAULT current_timestamp(),
   `tstamp` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `deleted_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `author` (`author`)
+  `deleted_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -90,19 +82,23 @@ CREATE TABLE IF NOT EXISTS `files` (
 -- Tabellenstruktur für Tabelle `posts`
 --
 
-CREATE TABLE IF NOT EXISTS `posts` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `posts` (
+  `id` int(11) NOT NULL,
   `title` varchar(255) NOT NULL,
   `slug` varchar(255) NOT NULL,
   `content` text DEFAULT NULL,
   `author` int(11) NOT NULL,
   `crdate` timestamp NOT NULL DEFAULT current_timestamp(),
   `tstamp` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `deleted_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `slug` (`slug`),
-  KEY `author` (`author`)
+  `deleted_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Daten für Tabelle `posts`
+--
+
+INSERT INTO `posts` (`id`, `title`, `slug`, `content`, `author`, `crdate`, `tstamp`, `deleted_at`) VALUES
+(1, 'Blog Post #1', 'blog-post-1', 'Blog Post #1 Content', 1, '2021-04-22 13:28:09', '2021-04-22 13:28:09', NULL);
 
 -- --------------------------------------------------------
 
@@ -110,13 +106,10 @@ CREATE TABLE IF NOT EXISTS `posts` (
 -- Tabellenstruktur für Tabelle `posts_categories_mm`
 --
 
-CREATE TABLE IF NOT EXISTS `posts_categories_mm` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `posts_categories_mm` (
+  `id` int(11) NOT NULL,
   `post_id` int(11) NOT NULL,
-  `category_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `category_id` (`category_id`),
-  KEY `post_id` (`post_id`)
+  `category_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -125,14 +118,11 @@ CREATE TABLE IF NOT EXISTS `posts_categories_mm` (
 -- Tabellenstruktur für Tabelle `posts_files_mm`
 --
 
-CREATE TABLE IF NOT EXISTS `posts_files_mm` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `posts_files_mm` (
+  `id` int(11) NOT NULL,
   `post_id` int(11) NOT NULL,
   `file_id` int(11) NOT NULL,
-  `sort` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `file_id` (`file_id`),
-  KEY `post_id` (`post_id`)
+  `sort` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -141,8 +131,8 @@ CREATE TABLE IF NOT EXISTS `posts_files_mm` (
 -- Tabellenstruktur für Tabelle `users`
 --
 
-CREATE TABLE IF NOT EXISTS `users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL,
   `email` varchar(255) NOT NULL,
   `username` varchar(255) DEFAULT NULL,
   `password` varchar(255) NOT NULL,
@@ -150,12 +140,121 @@ CREATE TABLE IF NOT EXISTS `users` (
   `is_admin` tinyint(1) NOT NULL DEFAULT 0,
   `crdate` timestamp NOT NULL DEFAULT current_timestamp(),
   `tstamp` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `deleted_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `email` (`email`),
-  UNIQUE KEY `username` (`username`),
-  KEY `avatar` (`avatar`)
+  `deleted_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Daten für Tabelle `users`
+--
+
+INSERT INTO `users` (`id`, `email`, `username`, `password`, `avatar`, `is_admin`, `crdate`, `tstamp`, `deleted_at`) VALUES
+(1, 'arthur.dent@galaxy.com', 'adent', 'dummy-password', NULL, 1, '2021-04-22 13:27:28', '2021-04-22 13:27:28', NULL);
+
+--
+-- Indizes der exportierten Tabellen
+--
+
+--
+-- Indizes für die Tabelle `categories`
+--
+ALTER TABLE `categories`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `slug` (`slug`);
+
+--
+-- Indizes für die Tabelle `comments`
+--
+ALTER TABLE `comments`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `post_id` (`post_id`),
+  ADD KEY `parent` (`parent`),
+  ADD KEY `comments_ibfk_3` (`author`);
+
+--
+-- Indizes für die Tabelle `files`
+--
+ALTER TABLE `files`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `author` (`author`);
+
+--
+-- Indizes für die Tabelle `posts`
+--
+ALTER TABLE `posts`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `slug` (`slug`),
+  ADD KEY `author` (`author`);
+
+--
+-- Indizes für die Tabelle `posts_categories_mm`
+--
+ALTER TABLE `posts_categories_mm`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `category_id` (`category_id`),
+  ADD KEY `post_id` (`post_id`);
+
+--
+-- Indizes für die Tabelle `posts_files_mm`
+--
+ALTER TABLE `posts_files_mm`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `file_id` (`file_id`),
+  ADD KEY `post_id` (`post_id`);
+
+--
+-- Indizes für die Tabelle `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `email` (`email`),
+  ADD UNIQUE KEY `username` (`username`),
+  ADD KEY `avatar` (`avatar`);
+
+--
+-- AUTO_INCREMENT für exportierte Tabellen
+--
+
+--
+-- AUTO_INCREMENT für Tabelle `categories`
+--
+ALTER TABLE `categories`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT für Tabelle `comments`
+--
+ALTER TABLE `comments`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT für Tabelle `files`
+--
+ALTER TABLE `files`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT für Tabelle `posts`
+--
+ALTER TABLE `posts`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT für Tabelle `posts_categories_mm`
+--
+ALTER TABLE `posts_categories_mm`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT für Tabelle `posts_files_mm`
+--
+ALTER TABLE `posts_files_mm`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT für Tabelle `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Constraints der exportierten Tabellen
