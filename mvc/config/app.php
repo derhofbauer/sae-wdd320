@@ -9,4 +9,9 @@ return [
      * ausschalten.
      */
     'environment' => 'dev',
+
+    /**
+     * @todo: comment
+     */
+    'default-layout' => 'default'
 ];

@@ -11,6 +11,29 @@ class View
 {
 
     /**
+     * @param string      $template
+     * @param array       $params
+     * @param string|null $layout
+     *
+     * @todo: comment
+     */
+    public static function render (string $template, array $params = [], string $layout = null)
+    {
+        if ($layout === null) {
+            $layout = Config::get('app.default-layout', 'default');
+        }
+
+        $viewBasePath = __DIR__ . '/../resources/views';
+        $renderTemplate = "{$viewBasePath}/templates/{$template}.php";
+
+        if (!empty($params)) {
+            extract($params);
+        }
+
+        require_once "{$viewBasePath}/layouts/{$layout}.php";
+    }
+
+    /**
      * HTTP Fehler Code an den Browser schicken und dann abbrechen.
      *
      * @param int    $httpCode
@@ -38,5 +61,13 @@ class View
     public static function error404 ()
     {
         self::error(404, 'Page not found.');
+    }
+
+    /**
+     * Das ist eine einfache Hilfsfunktion die den HTTP Status Code 403 an den Browser schickt und danach abbricht.
+     */
+    public static function error403 ()
+    {
+        self::error(403, 'Forbidden.');
     }
 }

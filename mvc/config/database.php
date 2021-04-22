@@ -5,5 +5,6 @@ return [
     'user' => 'root',
     'password' => 'password',
     'dbname' => 'mvc',
-    'port' => 3306
+    'port' => 3306,
+    'socket' => null
 ];
