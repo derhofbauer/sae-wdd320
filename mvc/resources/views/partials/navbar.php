@@ -1,5 +1,7 @@
-<!--@todo: comment-->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <!--
+    Hier verwenden wir den die baseurl und den appname um den Logo-Link in der Navbar zu erstellen.
+    -->
     <a class="navbar-brand" href="<?php echo \Core\Config::get('app.baseurl'); ?>">
         <?php echo \Core\Config::get('app.appname'); ?>
     </a>

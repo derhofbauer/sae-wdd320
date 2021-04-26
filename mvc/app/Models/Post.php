@@ -8,20 +8,36 @@ use Core\Models\AbstractModel;
  * Class Post
  *
  * @package App\Models
- * @todo    : comment
  */
 class Post extends AbstractModel
 {
+    /**
+     * Wir definieren alle Spalten aus der Tabelle mit den richtigen Datentypen.
+     */
     public int $id;
     public string $title;
     public string $slug;
     public string $content;
     public int $author;
+    /**
+     * @var string Nachdem wir hier den ISO-8601 Zeit verwenden in der Datenbank, handelt es sich um einen String.
+     */
     public string $crdate;
+    /**
+     * @var string Nachdem wir hier den ISO-8601 Zeit verwenden in der Datenbank, handelt es sich um einen String.
+     */
     public string $tstamp;
+    /**
+     * @var string Nachdem wir hier den ISO-8601 Zeit verwenden in der Datenbank, handelt es sich um einen String.
+     */
     public mixed $deleted_at;
 
-
+    /**
+     * Diese Methode ermöglicht es uns, die Daten aus einem Datenbankergebnis in nur einer Zeile direkt in ein Objekt
+     * zu füllen. Bei der Instanziierung kann über den Konstruktor auch diese Methode verwendet werden.
+     *
+     * @param array $data
+     */
     public function fill (array $data)
     {
         $this->id = $data['id'];

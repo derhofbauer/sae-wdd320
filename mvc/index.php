@@ -5,7 +5,3 @@
  * ist, definieren wir hier eine Hilfsdatei, die einfach nur das eigentlich index.php File aus dem /public Ordner lädt.
  */
 require_once 'public/index.php';
-
-/**
- * @todo: View Unterordner Erklärung in Readme hinzufügen
- */

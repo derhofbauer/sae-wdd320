@@ -9,7 +9,6 @@ use mysqli_result;
  * Class Database
  *
  * @package Core
- * @todo    : comment
  */
 class Database
 {
@@ -18,54 +17,97 @@ class Database
     private mixed $lastResult;
     private array $data;
 
+    /**
+     * Database constructor.
+     */
     public function __construct ()
     {
+        /**
+         * Datenbankverbindung aufbauen
+         */
         $this->link = new mysqli(
             Config::get('database.host'),
             Config::get('database.user'),
             Config::get('database.password'),
             Config::get('database.dbname'),
-            Config::get('database.port'),
+            Config::get('database.port', 3306),
             Config::get('database.socket'),
         );
+
+        /**
+         * Charset für die Daten setzen. Umlaute und sprachspezifische Sonderzeichen werden so relativ problemlos
+         * gespeichert und übertragen.
+         */
+        $this->link->set_charset('utf8');
     }
 
     /**
+     * Wir möchten die MÖglichkeit bieten, Prepared Statements zu verwenden, ohne mühsam jedes Mal die Paramater binden
+     * zu müssen.
+     *
+     * Anwendung:
+     *  + $database->query('SELECT * FROM users WHERE id = ?', ['i:id' => $id]);
+     *  + $database->query('SELECT * FROM users WHERE id = ? AND email = ?', ['i:id' => $id, 's:email' => $email]);
+     *
      * @param string $query
      * @param array  $params
      *
      * @return mixed
-     * @todo: comment
      */
     public function query (string $query, array $params = []): mixed
     {
+        /**
+         * Wenn keine Parameter in $params übergeben wurden an diese Funktion, dann schicken wir den Query einfach so ab,
+         * weil wir ihn nicht preparen müssen.
+         */
         if (empty($params)) {
             $this->lastResult = $this->executeQuery($query);
         } else {
+            /**
+             * Query als Prepared Statement schicken
+             */
             $this->lastResult = $this->prepareStatementAndExecute($query, $params);
         }
 
+        /**
+         * Ist das Ergebnis false, was bei allen Queries außer SELECT-Queries der Fall ist, ...
+         */
         if ($this->lastResult === false) {
+            /**
+             * ... so prüfen wir ob ein Fehler aufgetreten ist oder nicht. Ist die Fehlernummer (errno) gleich 0,
+             * ist kein Fehler aufgetreten und wir geben den positiven Wert true zurück, andernfalls false.
+             */
             if ($this->stmt->errno === 0) {
                 $this->lastResult = true;
             } else
                 $this->lastResult = false;
         }
 
+        /**
+         * Das Ergebnis ist idR. nur dann ein bool'scher Wert, wenn ein Fehler auftritt oder ein Query ohne Ergebnis
+         * ausgeführt wird (z.B. DELETE).
+         */
         if (is_bool($this->lastResult)) {
             return $this->lastResult;
         }
 
+        /**
+         * Tritt kein Fehler auf, erstellen wir ein assoziatives Array aus dem Datenbankergebnis ...
+         */
         $this->data = $this->lastResult->fetch_all(MYSQLI_ASSOC);
 
+        /**
+         * ... und geben es zurück.
+         */
         return $this->data;
     }
 
     /**
+     * Datenbankquery nicht als Prepared Statement ausführen.
+     *
      * @param string $query
      *
      * @return mysqli_result|bool
-     * @todo: comment
      */
     private function executeQuery (string $query): mysqli_result|bool
     {
@@ -73,50 +115,87 @@ class Database
     }
 
     /**
-     * @param string $queryWithPlaceholders
-     * @param array  $params
+     * Datenbankquery als Prepared Statement ausführen.
      *
      * $database->query('SELECT * FROM users WHERE id = ? AND email = ?', ['i:id' => $id, 's:email' => $email]);
      *
+     * @param string $queryWithPlaceholders
+     * @param array  $params
+     *
      * @return bool|mysqli_result
-     * @todo: comment
      */
     private function prepareStatementAndExecute (string $queryWithPlaceholders, array $params): bool|mysqli_result
     {
+        /**
+         * Prepared Statement initialisieren
+         */
         $this->stmt = $this->link->prepare($queryWithPlaceholders);
 
+        /**
+         * Variablen vorbereiten
+         */
         $paramTypes = [];
         $paramValues = [];
 
+        /**
+         * Funktionsparameter $params durchgehen und die obenstehenden Variablen befüllen.
+         */
         foreach ($params as $typeAndName => $value) {
             $paramTypes[] = explode(':', $typeAndName)[0];
 
+            /**
+             * $stmt->bind_param() erwartet eine Referenz als Werte und nicht eine normale Variable, daher müssen wir in
+             * unseren $paramValues Array Referenzen pushen. Das ist eine seltsame aber begründete Eigenheit
+             * von bind_param().
+             */
             $_value = $value;
             $paramValues[] = &$_value;
             unset($_value);
+            /**
+             * $paramTypes:  ['i', 's']
+             * $paramValues: [&$id, &$email]
+             */
         }
 
+        /**
+         * $stmt->bind_param() verlangt als ersten Parameter einen String mit den Typen aller folgenden Parameter. Wir
+         * müssen also aus dem Array $paramTypes einen String erstellen.
+         */
         $paramString = implode('', $paramTypes);
 
+        /**
+         * Query fertig "preparen": $stmt->bind_param() mit den entsprechenden Werten ausführen; aber nur, wenn es sich
+         * um einen MySQL Query mit Parametern handelt (s. if-Statement). Hier können wir den Spread-Operator verwenden.
+         */
         $this->stmt->bind_param($paramString, ...$paramValues);
 
+        /**
+         * Query an den MySQL Server schicken.
+         */
         $this->stmt->execute();
 
+        /**
+         * Ergebnis aus dem Query holen und zurückgeben,
+         */
         return $this->stmt->get_result();
     }
 
     /**
-     * @return object
-     * @todo: comment
+     * $this->link ist private, damit nur die Database Klasse selbst diese Property verändern kann. Es kann aber
+     * passieren, dass wir Funktionalitäten des \mysqli Objekts außerhalb der Database Klasse brauchen, daher bieten
+     * wir für unsere Framework Anwender*innen hier die Möglichkeit sich das \mysqli Objekt aus der Database Klasse
+     * abzurufen. Eine Veränderung des Rückgabewerts von $this->getLink() verändert aber nicht $this->link, wodurch
+     * $this->link weiterhin nur von der Database Klasse selbst veränderbar ist.
+     *
+     * @return mysqli
      */
-    public function getLink (): object
+    public function getLink (): mysqli
     {
         return $this->link;
     }
 
     /**
      * @return array|bool
-     * @todo: comment
      */
     public function getLastResult (): array|bool
     {
@@ -125,7 +204,6 @@ class Database
 
     /**
      * @return array
-     * @todo: comment
      */
     public function getData (): array
     {
@@ -133,8 +211,11 @@ class Database
     }
 
     /**
+     * Wird bei einem INSERT-Query ein auto_increment Feld befüllt, so wird der Wert des zuletzt ausgeführten Queries
+     * in $link->insert_id gespeichert. Das hat den Sinn, dass die neu generierte ID direkt für weitere Queries
+     * verwendet werden kann, ohne die neu eingetragene Zeile wieder extra abfragen zu müssen.
+     *
      * @return int|string
-     * @todo: comment
      */
     public function getInsertId (): int|string
     {
@@ -142,7 +223,8 @@ class Database
     }
 
     /**
-     * @todo: comment
+     * Der Destruktor wird aufgerufen, wenn das aktuelle Dataase Objekt gelöscht wird. In diesem Fall wird auch die
+     * Datenbankverbindung wieder getrennt.
      */
     public function __destruct ()
     {
