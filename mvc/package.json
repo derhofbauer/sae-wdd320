@@ -3,7 +3,9 @@
     "sass": "^1.32.11"
   },
   "scripts": {
-    "sass": "npx sass resources/scss/styles.scss public/css/styles.css",
-    "sass:watch": "npx sass --watch resources/scss/styles.scss public/css/styles.css"
+    "sass:npx": "npx sass resources/scss/styles.scss public/css/styles.css",
+    "sass:npx:watch": "npx sass --watch resources/scss/styles.scss public/css/styles.css",
+    "sass": "sass resources/scss/styles.scss public/css/styles.css",
+    "sass:watch": "sass --watch resources/scss/styles.scss public/css/styles.css"
   }
 }
