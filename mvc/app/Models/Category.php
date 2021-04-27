@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Core\Database;
 use Core\Models\AbstractModel;
 use Core\Traits\HasSlug;
 
@@ -10,8 +11,13 @@ use Core\Traits\HasSlug;
  *
  * @package App\Models
  */
-class Post extends AbstractModel
+class Category extends AbstractModel
 {
+    /**
+     * @todo: comment
+     */
+    const TABLENAME = 'categories';
+
     /**
      * @todo: comment
      */
@@ -23,8 +29,7 @@ class Post extends AbstractModel
     public int $id;
     public string $title;
     public string $slug;
-    public string $content;
-    public int $author;
+    public string $description;
     /**
      * @var string Nachdem wir hier den ISO-8601 Zeit verwenden in der Datenbank, handelt es sich um einen String.
      */
@@ -49,35 +54,42 @@ class Post extends AbstractModel
         $this->id = $data['id'];
         $this->title = $data['title'];
         $this->slug = $data['slug'];
-        $this->content = $data['content'];
-        $this->author = $data['author'];
+        $this->description = (string)$data['description'];
         $this->crdate = $data['crdate'];
         $this->tstamp = $data['tstamp'];
         $this->deleted_at = $data['deleted_at'];
     }
 
     /**
-     * @todo: comment
-     */
-    public function teaser ($length = 240): string
-    {
-        return substr($this->content, 0, $length);
-    }
-
-    /**
-     * @param int $length
+     * @param int $postId
      *
-     * @return string
+     * @return array
      * @todo: comment
      */
-    public function teaserSentence ($length = 240): string
+    public static function findByPost (int $postId): array
     {
-        $indexOfNextPeriod = strpos($this->content, '.', $length);
-        return substr($this->content, 0, $indexOfNextPeriod + 1);
-    }
+        /**
+         * Datenbankverbindung herstellen.
+         */
+        $database = new Database();
 
-    public function categories (): array
-    {
-        return Category::findByPost($this->id);
+        /**
+         * Tabellennamen berechnen.
+         */
+        $tablename = self::getTablenameFromClassname();
+
+        /**
+         * Query ausführen.
+         */
+        $results = $database->query("SELECT {$tablename}.* FROM {$tablename} JOIN posts_categories_mm ON posts_categories_mm.category_id = categories.id WHERE posts_categories_mm.post_id = ?", [
+            'i:post_id' => $postId
+        ]);
+
+        /**
+         * @todo: comment
+         */
+        $result = self::handleResult($results);
+
+        return $result;
     }
 }

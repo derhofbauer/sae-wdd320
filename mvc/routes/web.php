@@ -1,6 +1,6 @@
 <?php
 
-use App\Controllers\HomeController;
+use App\Controllers\BlogController;
 
 /**
  * Die Dateien im /routes Ordner beinhalten ein Mapping von einer URL auf eine eindeutige Controller & Action
@@ -15,10 +15,10 @@ return [
     /**
      * Home Routes
      */
-    '/' => [HomeController::class, 'index'],
+    '/' => [BlogController::class, 'index'],
 
-    // '/blog' => [BlogController, 'index'], // Posts auflisten
-    // '/blog/{slug}' => ['BlogController', 'show'], // einzelnen Post anzeigen
+    '/blog' => [BlogController::class, 'index'], // Posts auflisten
+    '/blog/{slug}' => [BlogController::class, 'show'], // einzelnen Post anzeigen
     // ...
 
     // '/login' => [AuthController, 'showLogin'], // Login Formular anzeigen

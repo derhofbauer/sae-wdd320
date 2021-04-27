@@ -3,20 +3,23 @@
 namespace Core\Models;
 
 use Core\Database;
+use Core\View;
 
 /**
  * Class AbstractModel
  *
  * @package Core\Models
  */
-abstract class AbstractModel {
+abstract class AbstractModel
+{
 
     /**
      * Der Konstruktor befüllt das Objekt, sofern Daten übergeben worden sind.
      *
      * @param array $data
      */
-    public function __construct (array $data) {
+    public function __construct (array $data)
+    {
         /**
          * Die Methode wird in AbstractModel nur abstrakt definiert, implementiert wird sie dann von jedem Model, das
          * diese Klasse erweitert.
@@ -68,6 +71,41 @@ abstract class AbstractModel {
         }
 
         /**
+         * @todo: comment
+         */
+        return self::handleResult($results);
+    }
+
+    /**
+     * @todo: comment
+     */
+    public static function find (int $id) {}
+
+    /**
+     * @todo: comment
+     */
+    public static function findOrFail (int $id) {}
+
+    /**
+     * @todo: comment
+     */
+    public static function returnOrFail (mixed $result) {
+        if (empty($result)) {
+            View::error404();
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param array $results
+     *
+     * @return array
+     * @todo: comment
+     */
+    public static function handleResult (array $results): array
+    {
+        /**
          * Ergebnis-Array vorbereiten.
          */
         $objects = [];
@@ -88,6 +126,20 @@ abstract class AbstractModel {
          * Ergebnisse zurückgeben.
          */
         return $objects;
+    }
+
+    /**
+     * @todo: comment
+     */
+    public static function handleUniqueResult (array $results): object|null
+    {
+        $objects = self::handleResult($results);
+
+        if (empty($objects)) {
+            return null;
+        }
+
+        return $objects[0];
     }
 
     /**

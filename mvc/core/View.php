@@ -73,7 +73,10 @@ class View
          * Das werden wir vielleicht noch anpassen und eine hübsche Fehlermeldung bauen, die wir an dieser Stelle dann
          * ausgeben.
          */
-        echo "$httpCode: $message";
+        self::render('error', [
+            'httpCode' => $httpCode,
+            'message' => $message
+        ]);
     }
 
     /**
