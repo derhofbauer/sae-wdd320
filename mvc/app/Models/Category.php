@@ -14,12 +14,14 @@ use Core\Traits\HasSlug;
 class Category extends AbstractModel
 {
     /**
-     * @todo: comment
+     * Nachdem aus "Category" über unsere normale getTablenameFromClassname() Methode "categorys" würde und nicht
+     * "categories", wie die Tabelle wirklich heißt, können wir hier die TABLENAME Klassenkonstante nutzen, die wir in
+     * in der genannten Funktion abfragen um die Berechnung zu überschreiben.
      */
     const TABLENAME = 'categories';
 
     /**
-     * @todo: comment
+     * s. Post.php
      */
     use HasSlug;
 
@@ -61,10 +63,13 @@ class Category extends AbstractModel
     }
 
     /**
+     * Alle Categories zu einem bestimmten Post abfragen.
+     *
+     * Das ist sehr ähnlich wie die AbstractModel::all() Methode, nur ist der Query ein bisschen anders.
+     *
      * @param int $postId
      *
      * @return array
-     * @todo: comment
      */
     public static function findByPost (int $postId): array
     {
@@ -80,16 +85,28 @@ class Category extends AbstractModel
 
         /**
          * Query ausführen.
+         *
+         * Hier führen wir einen JOIN Query aus, weil wir Daten aus zwei Tabellen zusammenführen möchten.
          */
-        $results = $database->query("SELECT {$tablename}.* FROM {$tablename} JOIN posts_categories_mm ON posts_categories_mm.category_id = categories.id WHERE posts_categories_mm.post_id = ?", [
+        $results = $database->query("
+            SELECT {$tablename}.* FROM {$tablename}
+                JOIN `posts_categories_mm`
+                    ON `posts_categories_mm`.`category_id` = `categories`.`id`
+            WHERE `posts_categories_mm`.`post_id` = ?
+        ", [
             'i:post_id' => $postId
         ]);
 
         /**
-         * @todo: comment
+         * im AbstractModel haben wir diese Funktionalität aus der all()-Methode herausgezogen und in eine eigene
+         * Methode verpackt, damit wir in allen anderen Methoden, die zukünftig irgendwelche Daten aus der Datenbank
+         * abfragen, den selben Code verwenden können und nicht Code duplizieren müssen.
          */
         $result = self::handleResult($results);
 
+        /**
+         * Ergebnis zurückgeben.
+         */
         return $result;
     }
 }

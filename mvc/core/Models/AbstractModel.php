@@ -71,25 +71,38 @@ abstract class AbstractModel
         }
 
         /**
-         * @todo: comment
+         * Datenbankergebnis verarbeiten und zurückgeben.
          */
         return self::handleResult($results);
     }
 
     /**
-     * @todo: comment
+     * Diese Funktion ist aktuell nur ein Platzhalter, weil wir sie noch implementieren müssen.
      */
-    public static function find (int $id) {}
+    public static function find (int $id): mixed
+    {
+    }
 
     /**
-     * @todo: comment
+     * Diese Funktion ist aktuell nur ein Platzhalter, weil wir sie noch implementieren müssen.
      */
-    public static function findOrFail (int $id) {}
+    public static function findOrFail (int $id): mixed
+    {
+    }
 
     /**
-     * @todo: comment
+     * Wert zurückgeben oder Fehler 404 werfen, wenn der Wert leer ist.
+     *
+     * Das macht dann Sinn, wenn in einer Action innerhalb eines Controllers die Funktionalität auf der Existenz eines
+     * einzelnen Objekts aufbaut. Beispielsweise wenn ein einzelner Post angezeigt werden soll, dann macht es Sinn einen
+     * Fehler auszugeben, wenn der angefragt Post nicht existiert.
+     *
+     * @param mixed $result
+     *
+     * @return mixed
      */
-    public static function returnOrFail (mixed $result) {
+    public static function returnOrFail (mixed $result): mixed
+    {
         if (empty($result)) {
             View::error404();
         }
@@ -98,10 +111,15 @@ abstract class AbstractModel
     }
 
     /**
+     * Resultat aus der Datenbank verarbeiten.
+     *
+     * Wir haben das aus der self::all()-Methode ausgelagert, weil die all()-Methode nicht die einzige Methode sein wird,
+     * in der wir Datenbankergebnisse verarbeiten werden müssen. Damit wir den Code nicht immer kopieren müssen, was als
+     * Bad Practice gilt, haben wir eine eigene Methode gebaut.
+     *
      * @param array $results
      *
      * @return array
-     * @todo: comment
      */
     public static function handleResult (array $results): array
     {
@@ -129,16 +147,34 @@ abstract class AbstractModel
     }
 
     /**
-     * @todo: comment
+     * Hier erweitern wir die self::handleResult()-Methode für den Fall, dass wir von einem Query kein oder maximal ein
+     * Ergebnis erwarten. Bei einem Query mit einer WHERE-Abfrage auf eine UNIQUE-Spalte, würden wir maximal ein Ergebnis
+     * zurück bekommen.
+     * Diese Funktion ist also mehr eine Convenience Funktion, weil sie entweder null zurück gibt, wenn kein Ergebnis
+     * zurückgekommen ist (statt eines leeren Arrays in self::handleResult()) oder ein einzelnes Objekt (statt eines
+     * Arrays mit einem einzigen Objekt darin).
+     *
+     * @param array $results
+     *
+     * @return object|null
      */
     public static function handleUniqueResult (array $results): object|null
     {
+        /**
+         * Datenbankergebnis ganz normal verarbeiten.
+         */
         $objects = self::handleResult($results);
 
+        /**
+         * ist das Ergebnis aus der Datenbank leer, geben wir null zurück.
+         */
         if (empty($objects)) {
             return null;
         }
 
+        /**
+         * Andernfalls geben wir das Objekt an Stelle 0 zurück, das in diesem Fall das einzige Objekt sein sollte.
+         */
         return $objects[0];
     }
 

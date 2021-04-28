@@ -13,7 +13,12 @@ use Core\Traits\HasSlug;
 class Post extends AbstractModel
 {
     /**
-     * @todo: comment
+     * Wir innerhalb einer Klasse das use-Keyword verwendet, so wird damit ein Trait importiert. Das kann man sich
+     * vorstellen wie einen Import mittels require, weil die Methoden, die im Trait definiert sind, einfach in die
+     * Klasse, die den Trait verwendet, eingefügt werden, als ob sie in der Klasse selbst definiert worden wären.
+     * Das hat den Vorteil, dass Methoden, die in mehreren Klassen vorkommen, zentral definiert und verwaltet werden
+     * können in einem Trait, und dennoch überall dort eingebunden werden, wo sie gebraucht werden, ohne Probleme mit
+     * komplexen und sehr verschachtelten Vererbungen zu kommen.
      */
     use HasSlug;
 
@@ -57,7 +62,11 @@ class Post extends AbstractModel
     }
 
     /**
-     * @todo: comment
+     * "computed property" teaser
+     *
+     * @param int $length
+     *
+     * @return string
      */
     public function teaser ($length = 240): string
     {
@@ -65,19 +74,39 @@ class Post extends AbstractModel
     }
 
     /**
+     * "computed property" teaserSentence
+     *
+     * Hier wird eine $length angegeben, aber der Teaser wird bis zum nächsten Punkt zurückgegeben.
+     *
      * @param int $length
      *
      * @return string
-     * @todo: comment
      */
     public function teaserSentence ($length = 240): string
     {
+        /**
+         * Index des ersten Punktes NACH $length suchen.
+         */
         $indexOfNextPeriod = strpos($this->content, '.', $length);
+
+        /**
+         * String bis zu diesem gefundenen Punkt zurückgeben.
+         *
+         * +1 müssen wir rechnen, weil die strpos()-Funktion bei 0 anfängt und substr() bei 1.
+         */
         return substr($this->content, 0, $indexOfNextPeriod + 1);
     }
 
+    /**
+     * Relation zu Categories
+     *
+     * @return array
+     */
     public function categories (): array
     {
+        /**
+         * Über das Category Model alle zugehörigen Categories abrufen.
+         */
         return Category::findByPost($this->id);
     }
 }
