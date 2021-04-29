@@ -2,7 +2,7 @@
     <!--
     Hier verwenden wir den die baseurl und den appname um den Logo-Link in der Navbar zu erstellen.
     -->
-    <a class="navbar-brand" href="<?php echo \Core\Config::get('app.baseurl'); ?>">
+    <a class="navbar-brand" href="<?php echo BASE_URL ?>">
         <?php echo \Core\Config::get('app.appname'); ?>
     </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -11,16 +11,10 @@
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
             <li class="nav-item active">
-                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="<?php echo BASE_URL; ?>">Blog</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Features</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Pricing</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                <a class="nav-link" href="<?php echo BASE_URL; ?>categories">Categories</a>
             </li>
         </ul>
     </div>

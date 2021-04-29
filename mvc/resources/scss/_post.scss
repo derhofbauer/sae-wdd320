@@ -1,0 +1,19 @@
+.post {
+  margin-bottom: $grid-gap;
+  padding-bottom: $grid-gap;
+  border-bottom: 1px solid $color-grey-light;
+
+  .meta {
+    font-size: $font-size-smaller;
+    color: $color-grey-darker;
+
+    a {
+      color: inherit;
+    }
+  }
+
+  .more {
+    display: inline-block;
+    margin-top: $grid-step;
+  }
+}

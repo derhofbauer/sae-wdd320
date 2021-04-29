@@ -91,7 +91,7 @@ class Category extends AbstractModel
         $results = $database->query("
             SELECT {$tablename}.* FROM {$tablename}
                 JOIN `posts_categories_mm`
-                    ON `posts_categories_mm`.`category_id` = `categories`.`id`
+                    ON `posts_categories_mm`.`category_id` = {$tablename}.`id`
             WHERE `posts_categories_mm`.`post_id` = ?
         ", [
             'i:post_id' => $postId
@@ -108,5 +108,14 @@ class Category extends AbstractModel
          * Ergebnis zurückgeben.
          */
         return $result;
+    }
+
+    /**
+     * @return array
+     * @todo: comment
+     */
+    public function posts (): array
+    {
+        return Post::findByCategory($this->id);
     }
 }

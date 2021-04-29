@@ -1,4 +1,4 @@
-<div class="blog">
+<div class="categories">
     <article>
         <h2><?php echo $post->title; ?></h2>
         <?php require __DIR__ . '/../../partials/post/meta.php'; ?>

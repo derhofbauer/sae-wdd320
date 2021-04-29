@@ -1,5 +1,29 @@
 .content {
-  padding-top: 30px;
+  padding-top: 1.875rem;
+}
+
+.post {
+  margin-bottom: 0.9375rem;
+  padding-bottom: 0.9375rem;
+  border-bottom: 1px solid lightgray;
+}
+.post .meta {
+  font-size: 0.8rem;
+  color: #888;
+}
+.post .meta a {
+  color: inherit;
+}
+.post .more {
+  display: inline-block;
+  margin-top: 0.3125rem;
+}
+
+.category {
+  margin-bottom: 1.875rem;
+  background-color: lightgray;
+  border-radius: 0.9375rem;
+  padding: 0.9375rem;
 }
 
 /*# sourceMappingURL=styles.css.map */

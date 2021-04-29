@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Core\Database;
 use Core\Models\AbstractModel;
 use Core\Traits\HasSlug;
 
@@ -95,6 +96,56 @@ class Post extends AbstractModel
          * +1 müssen wir rechnen, weil die strpos()-Funktion bei 0 anfängt und substr() bei 1.
          */
         return substr($this->content, 0, $indexOfNextPeriod + 1);
+    }
+
+    /**
+     * Alle Posts zu einer bestimmten Category abfragen.
+     *
+     * Das ist sehr ähnlich wie die AbstractModel::all() Methode, nur ist der Query ein bisschen anders.
+     *
+     * @param int $categoryId
+     *
+     * @return array
+     * @todo: comment
+     */
+    public static function findByCategory (int $categoryId): array
+    {
+        /**
+         * Datenbankverbindung herstellen.
+         */
+        $database = new Database();
+
+        /**
+         * Tabellennamen berechnen.
+         */
+        $tablename = self::getTablenameFromClassname();
+
+        /**
+         * Query ausführen.
+         *
+         * Hier führen wir einen JOIN Query aus, weil wir Daten aus zwei Tabellen zusammenführen möchten.
+         */
+        $results = $database->query("
+            SELECT {$tablename}.* FROM {$tablename}
+                JOIN `posts_categories_mm`
+                    ON `posts_categories_mm`.`post_id` = {$tablename}.`id`
+            WHERE `posts_categories_mm`.`category_id` = ?
+            ORDER BY crdate;
+        ", [
+            'i:category_id' => $categoryId
+        ]);
+
+        /**
+         * im AbstractModel haben wir diese Funktionalität aus der all()-Methode herausgezogen und in eine eigene
+         * Methode verpackt, damit wir in allen anderen Methoden, die zukünftig irgendwelche Daten aus der Datenbank
+         * abfragen, den selben Code verwenden können und nicht Code duplizieren müssen.
+         */
+        $result = self::handleResult($results);
+
+        /**
+         * Ergebnis zurückgeben.
+         */
+        return $result;
     }
 
     /**

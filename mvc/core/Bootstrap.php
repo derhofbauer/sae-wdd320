@@ -13,8 +13,8 @@ class Bootstrap
 {
 
     /**
-     * [ ] Session starten
-     * [ ] Routing laden
+     * [x] Session starten
+     * [x] Routing laden
      */
     public function __construct ()
     {
