@@ -106,7 +106,6 @@ class Post extends AbstractModel
      * @param int $categoryId
      *
      * @return array
-     * @todo: comment
      */
     public static function findByCategory (int $categoryId): array
     {

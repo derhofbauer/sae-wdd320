@@ -1,8 +1,14 @@
+/**
+ * SASS und SCSS bieten uns die Möglichkeit andere SASS/SCSS Files zu importieren. Daher findet man in den allermeisten
+ * Fällen im Hauptfile nur Imports auf andere Stylesheets, die dann die eigentlich Definitionen enthalten.
+ */
+
 //variables
 @import 'variables';
-// mixins
 
-// @todo: comment
+// mixins
+// @import 'some-mixin';
+
 @import "content";
 @import "post";
 @import "category";

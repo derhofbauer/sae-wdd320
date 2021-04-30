@@ -10,7 +10,7 @@ class BlogController
 {
 
     /**
-     * Alle Posts listen
+     * Alle Posts listen.
      */
     public function index ()
     {

@@ -111,11 +111,15 @@ class Category extends AbstractModel
     }
 
     /**
+     * Relation zu Posts
+     *
      * @return array
-     * @todo: comment
      */
     public function posts (): array
     {
+        /**
+         * Über das Post Model alle zugehörigen Posts abrufen.
+         */
         return Post::findByCategory($this->id);
     }
 }
