@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.0.1
+-- version 5.1.0
 -- https://www.phpmyadmin.net/
 --
 -- Host: db
--- Erstellungszeit: 27. Apr 2021 um 15:35
+-- Erstellungszeit: 04. Mai 2021 um 15:36
 -- Server-Version: 10.5.9-MariaDB-1:10.5.9+maria~focal
--- PHP-Version: 7.2.22
+-- PHP-Version: 7.4.16
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -43,7 +42,8 @@ CREATE TABLE `categories` (
 --
 
 INSERT INTO `categories` (`id`, `title`, `slug`, `description`, `crdate`, `tstamp`, `deleted_at`) VALUES
-(1, 'Category #1', 'category-1', NULL, '2021-04-27 15:18:53', '2021-04-27 15:18:53', NULL);
+(1, 'Category #1', 'category-1', 'Category #1 Description', '2021-04-27 15:18:53', '2021-04-29 14:05:51', NULL),
+(2, 'Category #2', 'category-2', 'Category #2 Description', '2021-04-27 15:18:53', '2021-04-29 14:05:51', NULL);
 
 -- --------------------------------------------------------
 
@@ -128,7 +128,9 @@ CREATE TABLE `posts_categories_mm` (
 
 INSERT INTO `posts_categories_mm` (`id`, `post_id`, `category_id`) VALUES
 (1, 1, 1),
-(2, 3, 1);
+(2, 3, 1),
+(3, 2, 2),
+(4, 2, 1);
 
 -- --------------------------------------------------------
 
@@ -166,7 +168,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `email`, `username`, `password`, `avatar`, `is_admin`, `crdate`, `tstamp`, `deleted_at`) VALUES
-(1, 'arthur.dent@galaxy.com', 'adent', 'dummy-password', NULL, 1, '2021-04-22 13:27:28', '2021-04-22 13:27:28', NULL);
+(1, 'arthur.dent@galaxy.com', 'adent', '$2y$12$CIC/1HJPFDgW0LrlYc0OLeChDLAUNRHa1XEKNOCknzs8oCbCrl4fW', NULL, 1, '2021-04-22 13:27:28', '2021-05-04 13:54:28', NULL);
 
 --
 -- Indizes der exportierten Tabellen
@@ -236,7 +238,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT für Tabelle `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT für Tabelle `comments`
@@ -260,7 +262,7 @@ ALTER TABLE `posts`
 -- AUTO_INCREMENT für Tabelle `posts_categories_mm`
 --
 ALTER TABLE `posts_categories_mm`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT für Tabelle `posts_files_mm`
