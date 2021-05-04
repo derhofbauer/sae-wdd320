@@ -55,10 +55,6 @@ class CategoryController
         $posts = Post::findByCategory($category->id);
 
         /**
-         * @todo: sortieren!
-         */
-
-        /**
          * View laden und Daten übergeben.
          */
         View::render('categories/show', [

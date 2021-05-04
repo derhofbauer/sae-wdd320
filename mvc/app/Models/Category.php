@@ -98,7 +98,7 @@ class Category extends AbstractModel
         ]);
 
         /**
-         * im AbstractModel haben wir diese Funktionalität aus der all()-Methode herausgezogen und in eine eigene
+         * Im AbstractModel haben wir diese Funktionalität aus der all()-Methode herausgezogen und in eine eigene
          * Methode verpackt, damit wir in allen anderen Methoden, die zukünftig irgendwelche Daten aus der Datenbank
          * abfragen, den selben Code verwenden können und nicht Code duplizieren müssen.
          */
