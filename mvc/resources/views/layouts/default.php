@@ -23,6 +23,15 @@
 <?php require_once __DIR__ . '/../partials/navbar.php'; ?>
 
 <div class="container content">
+
+    <?php
+    /**
+     * @todo: comment
+     */
+    foreach (\Core\Session::getAndForget('errors', []) as $error): ?>
+        <div class="alert alert-danger"><?php echo $error; ?></div>
+    <?php endforeach; ?>
+
     <!--
     In der View-Klasse definieren wir, welches Template geladen werden soll. Der eigentliche Vorgang des Ladens passiert
      hier.

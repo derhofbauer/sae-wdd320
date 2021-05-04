@@ -2,6 +2,7 @@
 
 use App\Controllers\BlogController;
 use App\Controllers\CategoryController;
+use App\Controllers\AuthController;
 
 /**
  * Die Dateien im /routes Ordner beinhalten ein Mapping von einer URL auf eine eindeutige Controller & Action
@@ -30,8 +31,11 @@ return [
     '/categories' => [CategoryController::class, 'index'], // Categories auflisten
     '/categories/{slug}' => [CategoryController::class, 'show'], // einzelne Category anzeigen (=> alle Posts einer Category auflisten)
 
-    // '/login' => [AuthController, 'showLogin'], // Login Formular anzeigen
-    // '/login/do' => [AuthController, 'login'], // Login durchführen
+    /**
+     * Login & Sign-up Routes
+     */
+    '/login' => [AuthController::class, 'loginForm'], // Login Formular anzeigen
+    '/login/do' => [AuthController::Class, 'login'], // Login durchführen
     // ...
 
 ];

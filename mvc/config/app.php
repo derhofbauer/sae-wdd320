@@ -12,7 +12,7 @@ return [
      * ausgehen und nicht von der aktuell im Browser aufgerufenen. Das ermöglicht es uns die src-Attribute relativ zu
      * setzen und die Files werden trotzdem absolut geladen.
      */
-    'baseurl' => 'http://localhost:8080/mvc/public/', // bei euch: http://localhost/mvc/ od. sowas wie http://localhost/sae-wdd320/mvc/
+    'baseurl' => 'http://localhost:8080/mvc/public', // bei euch: http://localhost/mvc/ od. sowas wie http://localhost/sae-wdd320/mvc/
 
     /**
      * Um einzelne Funktionalitäten je nach Umgebung leicht umschalten zu können, führen wir eine Einstellung ein, die

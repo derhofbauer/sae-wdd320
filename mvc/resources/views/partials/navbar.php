@@ -14,7 +14,14 @@
                 <a class="nav-link" href="<?php echo BASE_URL; ?>">Blog</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="<?php echo BASE_URL; ?>categories">Categories</a>
+                <a class="nav-link" href="<?php echo BASE_URL; ?>/categories">Categories</a>
+            </li>
+            <li class="nav-item">
+                <?php if (\app\Models\User::isLoggedIn()): ?>
+                    <a class="nav-link" href="<?php echo BASE_URL; ?>/logout/do">Logout</a>
+                <?php else: ?>
+                    <a class="nav-link" href="<?php echo BASE_URL; ?>/login">Login</a>
+                <?php endif; ?>
             </li>
         </ul>
     </div>
