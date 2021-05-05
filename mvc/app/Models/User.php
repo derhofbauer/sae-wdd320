@@ -8,11 +8,16 @@ use Core\Models\AbstractUser;
  * Class User
  *
  * @package app\Models
- * @todo    : comment
  */
 class User extends AbstractUser
 {
+    /**
+     * @todo: Soft Deletes!
+     */
 
+    /**
+     * Wir definieren alle Spalten aus der Tabelle mit den richtigen Datentypen.
+     */
     public int $id;
     public string $email;
     public string $password;
@@ -32,6 +37,9 @@ class User extends AbstractUser
     public mixed $deleted_at;
 
     /**
+     * Diese Methode ermöglicht es uns, die Daten aus einem Datenbankergebnis in nur einer Zeile direkt in ein Objekt
+     * zu füllen. Bei der Instanziierung kann über den Konstruktor auch diese Methode verwendet werden.
+     *
      * @param array $data
      */
     public function fill (array $data)
