@@ -8,7 +8,8 @@ return [
     'appname' => 'SAE WDD320',
 
     /**
-     * @todo: comment
+     * Hier definieren wir eine Slug Form des Anwendungsnamens. Dieser wird beispielsweise in der Session Klasse
+     * verwendet, um den Namen des Session Cookies zu setze.
      */
     'app-slug' => 'sae-wdd320',
 

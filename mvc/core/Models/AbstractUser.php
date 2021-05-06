@@ -90,15 +90,17 @@ abstract class AbstractUser extends AbstractModel
     }
 
     /**
+     * Neues Passwort hashen und setzen.
+     *
+     * Der Return Type void definiert, dass die Funktion keinen Rückgabewert hat.
+     *
      * @param string $password
      *
-     * @return string|bool
-     * @todo: comment
+     * @return void
      */
-    public function setPassword (string $password): string|false
+    public function setPassword (string $password): void
     {
         $this->password = password_hash($password, PASSWORD_DEFAULT);
-        return $this->password;
     }
 
     /**
@@ -142,13 +144,21 @@ abstract class AbstractUser extends AbstractModel
     }
 
     /**
+     * Logout durchführen.
+     *
      * @param string $redirect
      *
      * @return bool
-     * @todo: comment
      */
     public static function logout (string $redirect = ''): bool
     {
+        /**
+         * Login Status in der Session aktualisieren.
+         *
+         * Hier könnten wir auch einfach die Session löschen, aber wir möchten Werte in der Session, die nichts mit dem
+         * Login Status zu tun haben (bspw. Warenkorb, Dark/Lightmode Einstellungen), nicht löschen und legen daher
+         * quasi nur den Schalter um.
+         */
         Session::set(self::LOGGED_IN_STATUS, false);
         Session::forget(self::LOGGED_IN_ID);
         Session::forget(self::LOGGED_IN_REMEMBER);

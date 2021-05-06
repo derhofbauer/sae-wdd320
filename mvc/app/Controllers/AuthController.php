@@ -119,7 +119,7 @@ class AuthController
     }
 
     /**
-     * @todo: comment
+     * Logout und redirect auf die Home-Seite durchführen.
      */
     public function logout ()
     {
@@ -127,7 +127,7 @@ class AuthController
     }
 
     /**
-     * @todo: comment
+     * Registrierungsformular anzeigen
      */
     public function signupForm ()
     {
@@ -147,7 +147,7 @@ class AuthController
     }
 
     /**
-     * @todo: comment
+     * Daten aus dem Registrierungsformular entgegennehmen und verarbeiten.
      */
     public function signup ()
     {
