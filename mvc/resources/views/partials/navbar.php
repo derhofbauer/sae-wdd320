@@ -16,13 +16,18 @@
             <li class="nav-item">
                 <a class="nav-link" href="<?php echo BASE_URL; ?>/categories">Categories</a>
             </li>
-            <li class="nav-item">
-                <?php if (\app\Models\User::isLoggedIn()): ?>
+            <?php if (\App\Models\User::isLoggedIn()): ?>
+                <li class="nav-item">
                     <a class="nav-link" href="<?php echo BASE_URL; ?>/logout/do">Logout</a>
-                <?php else: ?>
+                </li>
+            <?php else: ?>
+                <li class="nav-item">
                     <a class="nav-link" href="<?php echo BASE_URL; ?>/login">Login</a>
-                <?php endif; ?>
-            </li>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="<?php echo BASE_URL; ?>/sign-up">Sign-up</a>
+                </li>
+            <?php endif; ?>
         </ul>
     </div>
 </nav>

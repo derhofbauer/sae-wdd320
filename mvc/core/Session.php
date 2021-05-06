@@ -20,6 +20,11 @@ class Session
     public static function init ()
     {
         /**
+         * Hier setzen wir den Namen des Session Cookie aus dem app-slug Value aus der app-Config.
+         */
+        session_name(Config::get('app.app-slug'));
+
+        /**
          * Die session_start() Funktion erlaubt es, Config-Werte zu übergeben, unter anderem das Ablaufdatum des Session
          * Cookie. Das brauchen wir unter anderem dafür, wenn wir sowas wie eine RememberMe-Checkbox einbauen möchten
          * im Login.

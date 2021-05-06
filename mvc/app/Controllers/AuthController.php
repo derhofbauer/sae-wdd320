@@ -3,7 +3,9 @@
 namespace App\Controllers;
 
 use app\Models\User;
+use Core\Helpers\Redirector;
 use Core\Session;
+use Core\Validator;
 use Core\View;
 
 /**
@@ -114,6 +116,91 @@ class AuthController
         Session::set('errors', $errors);
         header('Location:' . BASE_URL . '/login');
         exit;
+    }
+
+    /**
+     * @todo: comment
+     */
+    public function logout ()
+    {
+        User::logout(BASE_URL . '/home');
+    }
+
+    /**
+     * @todo: comment
+     */
+    public function signupForm ()
+    {
+        /**
+         * Wenn bereits ein User eingeloggt ist, zeigen wir das Sign-up Formular nicht an, sondern leiten auf die
+         * Startseite weiter.
+         */
+        if (User::isLoggedIn()) {
+            header('Location:' . BASE_URL);
+            exit;
+        }
+
+        /**
+         * Andernfalls laden wir das Sign-up Formular.
+         */
+        View::render('sign-up');
+    }
+
+    /**
+     * @todo: comment
+     */
+    public function signup ()
+    {
+        /**
+         * [x] Daten validieren
+         * [x] erfolgreich: weiter, nicht erfolgreich: Fehler
+         * [x] Gibts E-Mail oder Username schon in der DB?
+         * [x] ja: Fehler, nein: weiter
+         * [ ] User Object aus den Daten erstellen & in DB speichern
+         * [ ] Weiterleiten zum Login
+         */
+
+        $validator = new Validator();
+        $validator->email($_POST['email'], 'E-Mail', true);
+        $validator->textnum($_POST['username'], 'Username', false);
+        $validator->password($_POST['password'], 'Password', true, 8, 255);
+        $validator->compare([
+            $_POST['password'],
+            'Password'
+        ], [
+            $_POST['password_repeat'],
+            'Password wiederholen'
+        ]);
+
+        $errors = [];
+        if ($validator->hasErrors()) {
+            $errors = $validator->getErrors();
+        }
+
+        if (!empty(User::findByEmailOrUsername($_POST['email']))) {
+            $errors[] = 'Diese E-Mail Adresse wird bereits verwendet.';
+        }
+
+        if (!empty($_POST['username']) && !empty(User::findByEmailOrUsername($_POST['username']))) {
+            $errors[] = 'Dieser Username wird bereits verwendet.';
+        }
+
+        if (!empty($errors)) {
+            Session::set('errors', $errors);
+            Redirector::redirect(BASE_URL . '/sign-up');
+        }
+
+        /**
+         * @todo: zuvor eingegeben Werte müssen bei Fehlern wieder im Formular stehen.
+         * @todo: neuen User anlegen
+         */
+
+        $user = new User();
+        $user->email = trim($_POST['email']);
+        $user->username = trim($_POST['username']);
+        $user->setPassword($_POST['password']);
+        var_dump($user);
+        $user->save(); // @todo: gibts noch nicht
     }
 
 }

@@ -18,13 +18,19 @@ abstract class AbstractModel
      *
      * @param array $data
      */
-    public function __construct (array $data)
+    public function __construct (array $data = [])
     {
         /**
-         * Die Methode wird in AbstractModel nur abstrakt definiert, implementiert wird sie dann von jedem Model, das
-         * diese Klasse erweitert.
+         * Die Methode wird in AbstractModel nur abstrakt definiert und kann in jedem Model, dass die Klasse erweitert,
+         * überschrieben werden.
          */
-        $this->fill($data);
+
+        /**
+         * Wenn Daten übergeben wurden, so füllen wir das aktuelle Objekt damit.
+         */
+        if (!empty($data)) {
+            $this->fill($data);
+        }
     }
 
     /**
@@ -113,9 +119,9 @@ abstract class AbstractModel
     /**
      * Resultat aus der Datenbank verarbeiten.
      *
-     * Wir haben das aus der self::all()-Methode ausgelagert, weil die all()-Methode nicht die einzige Methode sein wird,
-     * in der wir Datenbankergebnisse verarbeiten werden müssen. Damit wir den Code nicht immer kopieren müssen, was als
-     * Bad Practice gilt, haben wir eine eigene Methode gebaut.
+     * Wir haben das aus der self::all()-Methode ausgelagert, weil die all()-Methode nicht die einzige Methode sein
+     * wird, in der wir Datenbankergebnisse verarbeiten werden müssen. Damit wir den Code nicht immer kopieren müssen,
+     * was als Bad Practice gilt, haben wir eine eigene Methode gebaut.
      *
      * @param array $results
      *
@@ -148,11 +154,10 @@ abstract class AbstractModel
 
     /**
      * Hier erweitern wir die self::handleResult()-Methode für den Fall, dass wir von einem Query kein oder maximal ein
-     * Ergebnis erwarten. Bei einem Query mit einer WHERE-Abfrage auf eine UNIQUE-Spalte, würden wir maximal ein Ergebnis
-     * zurück bekommen.
-     * Diese Funktion ist also mehr eine Convenience Funktion, weil sie entweder null zurück gibt, wenn kein Ergebnis
-     * zurückgekommen ist (statt eines leeren Arrays in self::handleResult()) oder ein einzelnes Objekt (statt eines
-     * Arrays mit einem einzigen Objekt darin).
+     * Ergebnis erwarten. Bei einem Query mit einer WHERE-Abfrage auf eine UNIQUE-Spalte, würden wir maximal ein
+     * Ergebnis zurück bekommen. Diese Funktion ist also mehr eine Convenience Funktion, weil sie entweder null zurück
+     * gibt, wenn kein Ergebnis zurückgekommen ist (statt eines leeren Arrays in self::handleResult()) oder ein
+     * einzelnes Objekt (statt eines Arrays mit einem einzigen Objekt darin).
      *
      * @param array $results
      *

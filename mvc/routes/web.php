@@ -35,7 +35,9 @@ return [
      * Login & Sign-up Routes
      */
     '/login' => [AuthController::class, 'loginForm'], // Login Formular anzeigen
-    '/login/do' => [AuthController::Class, 'login'], // Login durchführen
-    // ...
+    '/login/do' => [AuthController::class, 'login'], // Login durchführen
+    '/logout/do' => [AuthController::class, 'logout'], // Logout durchführen
+    '/sign-up' => [AuthController::class, 'signupForm'], // Sign-up Formular anzeigen
+    '/sign-up/do' => [AuthController::class, 'signup'], // Sign-up Formular anzeigen
 
 ];

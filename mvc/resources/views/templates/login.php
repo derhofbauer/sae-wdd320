@@ -1,5 +1,6 @@
-<div class="row justify-content-center">
+<div class="row justify-content-center mt-3">
     <form action="login/do" method="post" class="col-4">
+        <h2>Login</h2>
 
         <div class="form-group mb-3">
             <label for="email-or-username">Username Or Email</label>

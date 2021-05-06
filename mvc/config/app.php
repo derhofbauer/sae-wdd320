@@ -8,6 +8,11 @@ return [
     'appname' => 'SAE WDD320',
 
     /**
+     * @todo: comment
+     */
+    'app-slug' => 'sae-wdd320',
+
+    /**
      * Die baseurl wird benötigt um den <base>-Tag zu setzen, damit CSS, JS und IMG Imports immer von der selben URL
      * ausgehen und nicht von der aktuell im Browser aufgerufenen. Das ermöglicht es uns die src-Attribute relativ zu
      * setzen und die Files werden trotzdem absolut geladen.

@@ -4,7 +4,7 @@ namespace Core\Models;
 
 use Core\Database;
 use Core\Session;
-use JetBrains\PhpStorm\Pure;
+use Core\Helpers\Redirector;
 
 /**
  * Class AbstractModel
@@ -90,6 +90,18 @@ abstract class AbstractUser extends AbstractModel
     }
 
     /**
+     * @param string $password
+     *
+     * @return string|bool
+     * @todo: comment
+     */
+    public function setPassword (string $password): string|false
+    {
+        $this->password = password_hash($password, PASSWORD_DEFAULT);
+        return $this->password;
+    }
+
+    /**
      * Login durchführen.
      *
      * @param string $redirect
@@ -116,16 +128,39 @@ abstract class AbstractUser extends AbstractModel
         /**
          * Wurde eine Redirect-URL übergeben, leiten wir hier weiter.
          */
-        if (!empty($redirect)) {
-            header("Location: $redirect");
-            exit;
-        }
+
+        /**
+         * Die Funktionalität zum Redirecten haben wir in eine eigene Klasse ausgelagert, damit wir die auch wo anders
+         * noch verwenden können.
+         */
+        Redirector::redirect($redirect);
 
         /**
          * Wurde keine Redirect-URL übergeben, geben wir true zurück.
          */
         return true;
     }
+
+    /**
+     * @param string $redirect
+     *
+     * @return bool
+     * @todo: comment
+     */
+    public static function logout (string $redirect = ''): bool
+    {
+        Session::set(self::LOGGED_IN_STATUS, false);
+        Session::forget(self::LOGGED_IN_ID);
+        Session::forget(self::LOGGED_IN_REMEMBER);
+
+        /**
+         * Wurde eine Redirect-URL übergeben, leiten wir hier weiter.
+         */
+        Redirector::redirect($redirect);
+
+        return true;
+    }
+
 
     /**
      * Prüfen, ob aktuell ein*e User*in eingeloggt ist.
@@ -136,7 +171,7 @@ abstract class AbstractUser extends AbstractModel
      *
      * @return bool
      */
-    #[Pure] public static function isLoggedIn (): bool
+    public static function isLoggedIn (): bool
     {
         /**
          * Ist ein*e User*in eingeloggt, so geben wir true zurück ...
