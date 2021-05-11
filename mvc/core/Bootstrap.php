@@ -22,6 +22,10 @@ class Bootstrap
          * Session starten
          */
         Session::init();
+        /**
+         * @todo: comment
+         */
+        Session::initSuperglobals();
 
         /**
          * Damit wir nicht bei jedem Redirect die baseurl aus der Config laden müssen, erstellen wir hier eine Hilfs-Konstante.

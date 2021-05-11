@@ -159,4 +159,9 @@ class Post extends AbstractModel
          */
         return Category::findByPost($this->id);
     }
+
+    public function save (): bool
+    {
+        // TODO: Implement save() method.
+    }
 }

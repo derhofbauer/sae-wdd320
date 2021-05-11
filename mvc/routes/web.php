@@ -1,8 +1,14 @@
 <?php
 
+use App\Controllers\Admin\AdminController;
 use App\Controllers\BlogController;
 use App\Controllers\CategoryController;
 use App\Controllers\AuthController;
+
+/**
+ * @todo: comment
+ */
+use App\Controllers\Admin\CategoryController as AdminCategoryController;
 
 /**
  * Die Dateien im /routes Ordner beinhalten ein Mapping von einer URL auf eine eindeutige Controller & Action
@@ -39,5 +45,17 @@ return [
     '/logout/do' => [AuthController::class, 'logout'], // Logout durchführen
     '/sign-up' => [AuthController::class, 'signupForm'], // Sign-up Formular anzeigen
     '/sign-up/do' => [AuthController::class, 'signup'], // Sign-up Formular anzeigen
+
+    /**
+     * Admin Routes
+     */
+    '/admin' => [AdminController::class, 'dashboard'], // Admin Dashboard anzeigen
+
+    /**
+     * Admin Category Routes
+     */
+    '/admin/categories' => [AdminCategoryController::class, 'index'], // Alle Kategorien listen
+    '/admin/categories/{id}/edit' => [AdminCategoryController::class, 'edit'], // Bearbeitungsformular anzeigen
+    '/admin/categories/{id}/update' => [AdminCategoryController::class, 'update'], // Bearbeitete Category speichern
 
 ];

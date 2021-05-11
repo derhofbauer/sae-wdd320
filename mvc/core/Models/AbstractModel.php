@@ -41,6 +41,12 @@ abstract class AbstractModel
     abstract public function fill (array $data);
 
     /**
+     * @return bool
+     * @todo: comment
+     */
+    abstract public function save (): bool;
+
+    /**
      * Alle Datensätze aus der Datenbank abfragen.
      *
      * Die beiden Funktionsparameter bieten die Möglichkeit die Daten, die abgerufen werden, nach einer einzelnen Spalte
@@ -84,9 +90,31 @@ abstract class AbstractModel
 
     /**
      * Diese Funktion ist aktuell nur ein Platzhalter, weil wir sie noch implementieren müssen.
+     * @todo: comment
      */
     public static function find (int $id): mixed
     {
+        /**
+         * Datenbankverbindung herstellen.
+         */
+        $database = new Database();
+
+        /**
+         * Tabellennamen berechnen.
+         */
+        $tablename = self::getTablenameFromClassname();
+
+        /**
+         * Query ausführen.
+         */
+        $results = $database->query("SELECT * FROM {$tablename} WHERE id = ?", [
+            'i:id' => $id
+        ]);
+
+        /**
+         * Datenbankergebnis verarbeiten und zurückgeben.
+         */
+        return self::handleUniqueResult($results);
     }
 
     /**
@@ -181,6 +209,19 @@ abstract class AbstractModel
          * Andernfalls geben wir das Objekt an Stelle 0 zurück, das in diesem Fall das einzige Objekt sein sollte.
          */
         return $objects[0];
+    }
+
+    /**
+     * @param Database $database
+     * @todo: comment
+     */
+    public function handleInsertResult (Database $database)
+    {
+        $newId = $database->getInsertId();
+
+        if (is_int($newId)) {
+            $this->id = $newId;
+        }
     }
 
     /**

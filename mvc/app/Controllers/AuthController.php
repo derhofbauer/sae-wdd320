@@ -156,8 +156,8 @@ class AuthController
          * [x] erfolgreich: weiter, nicht erfolgreich: Fehler
          * [x] Gibts E-Mail oder Username schon in der DB?
          * [x] ja: Fehler, nein: weiter
-         * [ ] User Object aus den Daten erstellen & in DB speichern
-         * [ ] Weiterleiten zum Login
+         * [x] User Object aus den Daten erstellen & in DB speichern
+         * [x] Weiterleiten zum Login
          */
 
         $validator = new Validator();
@@ -190,17 +190,23 @@ class AuthController
             Redirector::redirect(BASE_URL . '/sign-up');
         }
 
-        /**
-         * @todo: zuvor eingegeben Werte müssen bei Fehlern wieder im Formular stehen.
-         * @todo: neuen User anlegen
-         */
-
         $user = new User();
         $user->email = trim($_POST['email']);
         $user->username = trim($_POST['username']);
         $user->setPassword($_POST['password']);
-        var_dump($user);
-        $user->save(); // @todo: gibts noch nicht
+
+        /**
+         * @todo: comment
+         */
+        if ($user->save()) {
+            $success = ['Herzlich wilkommen!'];
+            Session::set('success', $success);
+            Redirector::redirect(BASE_URL . '/login');
+        } else {
+            $errors[] = 'Die Registrierung konnte nicht durchgeführt werden. :(';
+            Session::set('errors', $errors);
+            Redirector::redirect(BASE_URL . '/sign-up');
+        }
     }
 
 }

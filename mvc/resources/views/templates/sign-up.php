@@ -4,12 +4,12 @@
 
         <div class="form-group mb-3">
             <label for="email">Email</label>
-            <input type="email" placeholder="Email" class="form-control" id="email" name="email">
+            <input type="email" placeholder="Email" class="form-control" id="email" name="email" value="<?php echo \Core\Session::old('email'); ?>">
         </div>
 
         <div class="form-group mb-3">
             <label for="username">Username</label>
-            <input type="text" placeholder="Username" class="form-control" id="username" name="username">
+            <input type="text" placeholder="Username" class="form-control" id="username" name="username" value="<?php echo \Core\Session::old('username'); ?>">
         </div>
 
         <div class="form-group mb-3">

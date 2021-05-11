@@ -92,4 +92,37 @@ class Session
         self::forget($key);
         return $value;
     }
+
+    /**
+     * @param string     $key
+     * @param mixed|null $default
+     *
+     * @return mixed
+     * @todo: comment
+     */
+    public static function old (string $key, mixed $default = null): mixed
+    {
+        if (isset($_SESSION['$_post'][$key])) {
+            return $_SESSION['$_post'][$key];
+        }
+
+        if (isset($_SESSION['$_get'][$key])) {
+            return $_SESSION['$_get'][$key];
+        }
+
+        return $default;
+    }
+
+    /**
+     * @todo: comment
+     */
+    public static function initSuperglobals ()
+    {
+        if (!empty($_POST)) {
+            Session::set('$_post', $_POST);
+        }
+        if (!empty($_GET)) {
+            Session::set('$_get', $_GET);
+        }
+    }
 }

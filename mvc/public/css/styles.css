@@ -1,5 +1,11 @@
-.content {
-  padding-top: 1.875rem;
+@charset "UTF-8";
+/**
+ * SASS und SCSS bieten uns die Möglichkeit andere SASS/SCSS Files zu importieren. Daher findet man in den allermeisten
+ * Fällen im Hauptfile nur Imports auf andere Stylesheets, die dann die eigentlich Definitionen enthalten.
+ */
+.navbar-flex {
+  display: flex;
+  justify-content: space-between;
 }
 
 .post {

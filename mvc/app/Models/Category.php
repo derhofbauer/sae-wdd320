@@ -122,4 +122,43 @@ class Category extends AbstractModel
          */
         return Post::findByCategory($this->id);
     }
+
+    /**
+     * @return bool
+     * @todo: comment
+     */
+    public function save (): bool
+    {
+        /**
+         * Datenbankverbindung herstellen.
+         */
+        $database = new Database();
+
+        /**
+         * Tabellennamen berechnen.
+         */
+        $tablename = self::getTablenameFromClassname();
+
+        if (!empty($this->id)) {
+            // Objekt existiert in der DB bereits
+            return $database->query("UPDATE $tablename SET title = ?, slug = ?, description = ? WHERE id = ?", [
+                's:title' => $this->title,
+                's:slug' => $this->slug,
+                's:description' => $this->description,
+                'i:id' => $this->id
+            ]);
+        } else {
+            // Objekt existiert in der DB noch nicht
+            $result = $database->query("INSERT INTO $tablename SET title = ?, slug = ?, description = ?", [
+                's:title' => $this->title,
+                's:slug' => $this->slug,
+                's:description' => $this->description
+            ]);
+
+            $this->handleInsertResult($database);
+
+            return $result;
+        }
+    }
+
 }
