@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: db
--- Erstellungszeit: 04. Mai 2021 um 15:36
+-- Erstellungszeit: 11. Mai 2021 um 15:35
 -- Server-Version: 10.5.9-MariaDB-1:10.5.9+maria~focal
 -- PHP-Version: 7.4.16
 
@@ -42,7 +42,7 @@ CREATE TABLE `categories` (
 --
 
 INSERT INTO `categories` (`id`, `title`, `slug`, `description`, `crdate`, `tstamp`, `deleted_at`) VALUES
-(1, 'Category #1', 'category-1', 'Category #1 Description', '2021-04-27 15:18:53', '2021-04-29 14:05:51', NULL),
+(1, 'Category #1', 'category-1', 'Category #1 Description', '2021-04-27 15:18:53', '2021-05-11 15:28:40', NULL),
 (2, 'Category #2', 'category-2', 'Category #2 Description', '2021-04-27 15:18:53', '2021-04-29 14:05:51', NULL);
 
 -- --------------------------------------------------------
@@ -168,7 +168,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `email`, `username`, `password`, `avatar`, `is_admin`, `crdate`, `tstamp`, `deleted_at`) VALUES
-(1, 'arthur.dent@galaxy.com', 'adent', '$2y$12$CIC/1HJPFDgW0LrlYc0OLeChDLAUNRHa1XEKNOCknzs8oCbCrl4fW', NULL, 1, '2021-04-22 13:27:28', '2021-05-04 13:54:28', NULL);
+(1, 'arthur.dent@galaxy.com', 'adent', '$2y$12$CIC/1HJPFDgW0LrlYc0OLeChDLAUNRHa1XEKNOCknzs8oCbCrl4fW', NULL, 1, '2021-04-22 13:27:28', '2021-05-04 13:54:28', NULL),
+(2, 'ford.prefect@galaxy.com', 'fprefect', '$2y$10$iCQYwYKrwBbidBWTHEDZ0eo9ti7Aw.43Wxqg6nfgwb7XcKVZ64q/i', NULL, 0, '2021-05-11 13:36:58', '2021-05-11 13:39:54', NULL);
 
 --
 -- Indizes der exportierten Tabellen
@@ -274,7 +275,7 @@ ALTER TABLE `posts_files_mm`
 -- AUTO_INCREMENT für Tabelle `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Constraints der exportierten Tabellen
