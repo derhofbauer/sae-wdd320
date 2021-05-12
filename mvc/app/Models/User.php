@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Core\Database;
 use Core\Models\AbstractUser;
+use Core\Traits\SoftDelete;
 
 /**
  * Class User
@@ -13,8 +14,9 @@ use Core\Models\AbstractUser;
 class User extends AbstractUser
 {
     /**
-     * @todo: Soft Deletes!
+     * @todo: comment
      */
+    use SoftDelete;
 
     /**
      * Wir definieren alle Spalten aus der Tabelle mit den richtigen Datentypen und für einige Properties auch schon

@@ -89,6 +89,55 @@ abstract class AbstractModel
     }
 
     /**
+     * Alle Datensätze aus der Datenbank abfragen.
+     *
+     * Die beiden Funktionsparameter bieten die Möglichkeit die Daten, die abgerufen werden, nach einer einzelnen Spalte
+     * aufsteigend oder absteigend direkt über MySQL zu sortieren. Sortierungen sollten, sofern möglich, über die
+     * Datenbank durchgeführt werden, weil das wesentlich performanter ist als über PHP.
+     *
+     * @param string $field
+     * @param mixed  $value
+     * @param string $orderBy
+     * @param string $direction
+     *
+     * @return array
+     * @todo: comment
+     */
+    public static function findWhere (string $field, mixed $value, string $orderBy = '', string $direction = 'ASC'): array
+    {
+        /**
+         * Datenbankverbindung herstellen.
+         */
+        $database = new Database();
+
+        /**
+         * Tabellennamen berechnen.
+         */
+        $tablename = self::getTablenameFromClassname();
+
+        /**
+         * Query ausführen.
+         *
+         * Wurde in den Funktionsparametern eine Sortierung definiert, so wenden wir sie hier an, andernfalls rufen wir
+         * alles ohne sortierung ab.
+         */
+        if (empty($orderBy)) {
+            $results = $database->query("SELECT * FROM {$tablename} WHERE {$field} = ?", [
+                's:value' => $value
+            ]);
+        } else {
+            $results = $database->query("SELECT * FROM {$tablename} WHERE {$field} = ? ORDER BY $orderBy $direction", [
+                's:value' => $value
+            ]);
+        }
+
+        /**
+         * Datenbankergebnis verarbeiten und zurückgeben.
+         */
+        return self::handleResult($results);
+    }
+
+    /**
      * Diese Funktion ist aktuell nur ein Platzhalter, weil wir sie noch implementieren müssen.
      * @todo: comment
      */
@@ -118,10 +167,40 @@ abstract class AbstractModel
     }
 
     /**
-     * Diese Funktion ist aktuell nur ein Platzhalter, weil wir sie noch implementieren müssen.
+     * @todo: comment
      */
     public static function findOrFail (int $id): mixed
     {
+        $result = self::find($id);
+        return self::returnOrFail($result);
+    }
+
+    /**
+     * @return object|null
+     * @todo: comment
+     */
+    public function delete () {
+        /**
+         * Datenbankverbindung herstellen.
+         */
+        $database = new Database();
+
+        /**
+         * Tabellennamen berechnen.
+         */
+        $tablename = self::getTablenameFromClassname();
+
+        /**
+         * Query ausführen.
+         */
+        $results = $database->query("DELETE FROM {$tablename} WHERE id = ?", [
+            'i:id' => $this->id
+        ]);
+
+        /**
+         * Datenbankergebnis verarbeiten und zurückgeben.
+         */
+        return self::handleUniqueResult($results);
     }
 
     /**

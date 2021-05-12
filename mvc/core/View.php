@@ -77,6 +77,7 @@ class View
             'httpCode' => $httpCode,
             'message' => $message
         ]);
+        exit;
     }
 
     /**

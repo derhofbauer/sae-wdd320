@@ -5,6 +5,7 @@ namespace App\Models;
 use Core\Database;
 use Core\Models\AbstractModel;
 use Core\Traits\HasSlug;
+use Core\Traits\SoftDelete;
 
 /**
  * Class Post
@@ -23,7 +24,7 @@ class Category extends AbstractModel
     /**
      * s. Post.php
      */
-    use HasSlug;
+    use HasSlug, SoftDelete;
 
     /**
      * Wir definieren alle Spalten aus der Tabelle mit den richtigen Datentypen.
@@ -93,6 +94,7 @@ class Category extends AbstractModel
                 JOIN `posts_categories_mm`
                     ON `posts_categories_mm`.`category_id` = {$tablename}.`id`
             WHERE `posts_categories_mm`.`post_id` = ?
+                AND `categories`.`deleted_at` IS NULL
         ", [
             'i:post_id' => $postId
         ]);

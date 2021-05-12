@@ -2,6 +2,7 @@
 
 namespace App\Controllers\Admin;
 
+use Core\Middlewares\AuthMiddleware;
 use Core\View;
 
 /**
@@ -21,6 +22,11 @@ class AdminController
      */
     public function dashboard ()
     {
+        /**
+         * @todo:comment
+         */
+        AuthMiddleware::isAdminOrFail();
+
         View::render('admin/dashboard', layout: 'sidebar');
     }
 

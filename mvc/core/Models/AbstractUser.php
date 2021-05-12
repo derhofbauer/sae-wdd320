@@ -4,8 +4,8 @@ namespace Core\Models;
 
 use App\Models\User;
 use Core\Database;
-use Core\Session;
 use Core\Helpers\Redirector;
+use Core\Session;
 
 /**
  * Class AbstractModel
@@ -201,10 +201,10 @@ abstract class AbstractUser extends AbstractModel
     }
 
     /**
-     * @return User|false
-     * @todo: comment
+     * @return User|null
+     * @todo: comment (incl. nullsafe operator)
      */
-    public static function getLoggedIn (): User|false
+    public static function getLoggedIn (): ?User
     {
         if (self::isLoggedIn()) {
             $userId = Session::get(self::LOGGED_IN_ID, null);
@@ -213,7 +213,7 @@ abstract class AbstractUser extends AbstractModel
                 return User::find($userId);
             }
         }
-        return false;
+        return null;
     }
 
 }

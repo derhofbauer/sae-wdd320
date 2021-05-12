@@ -5,6 +5,7 @@ namespace App\Models;
 use Core\Database;
 use Core\Models\AbstractModel;
 use Core\Traits\HasSlug;
+use Core\Traits\SoftDelete;
 
 /**
  * Class Post
@@ -21,7 +22,7 @@ class Post extends AbstractModel
      * können in einem Trait, und dennoch überall dort eingebunden werden, wo sie gebraucht werden, ohne Probleme mit
      * komplexen und sehr verschachtelten Vererbungen zu kommen.
      */
-    use HasSlug;
+    use HasSlug, SoftDelete;
 
     /**
      * Wir definieren alle Spalten aus der Tabelle mit den richtigen Datentypen.
@@ -69,8 +70,15 @@ class Post extends AbstractModel
      *
      * @return string
      */
-    public function teaser ($length = 240): string
+    public function teaser (int $length = 240): string
     {
+        /**
+         * @todo: comment
+         */
+        if ($length > strlen($this->content)) {
+            return $this->content;
+        }
+
         return substr($this->content, 0, $length);
     }
 
@@ -83,19 +91,30 @@ class Post extends AbstractModel
      *
      * @return string
      */
-    public function teaserSentence ($length = 240): string
+    public function teaserSentence (int $length = 240): string
     {
+        /**
+         * @todo: comment
+         */
+        if ($length > strlen($this->content)) {
+            return $this->content;
+        }
+
         /**
          * Index des ersten Punktes NACH $length suchen.
          */
         $indexOfNextPeriod = strpos($this->content, '.', $length);
 
-        /**
-         * String bis zu diesem gefundenen Punkt zurückgeben.
-         *
-         * +1 müssen wir rechnen, weil die strpos()-Funktion bei 0 anfängt und substr() bei 1.
-         */
-        return substr($this->content, 0, $indexOfNextPeriod + 1);
+        if ($indexOfNextPeriod !== false) {
+            /**
+             * String bis zu diesem gefundenen Punkt zurückgeben.
+             *
+             * +1 müssen wir rechnen, weil die strpos()-Funktion bei 0 anfängt und substr() bei 1.
+             */
+            return substr($this->content, 0, $indexOfNextPeriod + 1);
+        } else {
+            return self::teaser($length);
+        }
     }
 
     /**
@@ -129,6 +148,7 @@ class Post extends AbstractModel
                 JOIN `posts_categories_mm`
                     ON `posts_categories_mm`.`post_id` = {$tablename}.`id`
             WHERE `posts_categories_mm`.`category_id` = ?
+                AND `posts`.`deleted_at` IS NULL
             ORDER BY crdate;
         ", [
             'i:category_id' => $categoryId
@@ -160,8 +180,53 @@ class Post extends AbstractModel
         return Category::findByPost($this->id);
     }
 
+    /**
+     * Relation zu Users
+     *
+     * @return User
+     * @todo: comment
+     */
+    public function author (): User
+    {
+        return User::find($this->author);
+    }
+
+    /**
+     * @todo: comment
+     */
     public function save (): bool
     {
-        // TODO: Implement save() method.
+        /**
+         * Datenbankverbindung herstellen.
+         */
+        $database = new Database();
+
+        /**
+         * Tabellennamen berechnen.
+         */
+        $tablename = self::getTablenameFromClassname();
+
+        if (!empty($this->id)) {
+            // Objekt existiert in der DB bereits
+            return $database->query("UPDATE $tablename SET title = ?, slug = ?, content = ?, author = ? WHERE id = ?", [
+                's:title' => $this->title,
+                's:slug' => $this->slug,
+                's:content' => $this->content,
+                'i:author' => $this->author,
+                'i:id' => $this->id
+            ]);
+        } else {
+            // Objekt existiert in der DB noch nicht
+            $result = $database->query("INSERT INTO $tablename SET title = ?, slug = ?, content = ?, author = ?", [
+                's:title' => $this->title,
+                's:slug' => $this->slug,
+                's:content' => $this->content,
+                'i:author' => $this->author
+            ]);
+
+            $this->handleInsertResult($database);
+
+            return $result;
+        }
     }
 }

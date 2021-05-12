@@ -8,7 +8,9 @@ use App\Controllers\AuthController;
 /**
  * @todo: comment
  */
+
 use App\Controllers\Admin\CategoryController as AdminCategoryController;
+use App\Controllers\Admin\PostController as AdminPostController;
 
 /**
  * Die Dateien im /routes Ordner beinhalten ein Mapping von einer URL auf eine eindeutige Controller & Action
@@ -57,5 +59,15 @@ return [
     '/admin/categories' => [AdminCategoryController::class, 'index'], // Alle Kategorien listen
     '/admin/categories/{id}/edit' => [AdminCategoryController::class, 'edit'], // Bearbeitungsformular anzeigen
     '/admin/categories/{id}/update' => [AdminCategoryController::class, 'update'], // Bearbeitete Category speichern
+    '/admin/categories/{id}/delete' => [AdminCategoryController::class, 'deleteConfirm'], // Löschen bestätigen
+    '/admin/categories/{id}/delete/confirm' => [AdminCategoryController::class, 'delete'], // Category löschen
 
+    /**
+     * Admin Post Routes
+     */
+    '/admin/posts' => [AdminPostController::class, 'index'], // Alle Posts listen
+    '/admin/posts/{id}/edit' => [AdminPostController::class, 'edit'], // Bearbeitungsformular anzeigen
+    '/admin/posts/{id}/update' => [AdminPostController::class, 'update'], // Bearbeiteten Post speichern
+    '/admin/posts/{id}/delete' => [AdminPostController::class, 'deleteConfirm'], // Löschen bestätigen
+    '/admin/posts/{id}/delete/confirm' => [AdminPostController::class, 'delete'], // Post löschen
 ];
