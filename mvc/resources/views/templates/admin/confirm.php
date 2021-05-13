@@ -1,6 +1,8 @@
 <?php
 /**
- * @todo: comment
+ * Dieser View wird immer dann verwendet, wenn ein Objekt gelöscht und davor eine Bestätigung dieser
+ * Löschung erfragt werden soll. Daher ist der View sehr allgemein gehalten und benötigt daher aus dem Controller neben
+ * $type und $title auch zwei URLs für die beiden Buttons.
  */
 ?>
 <div class="card">

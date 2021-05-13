@@ -13,7 +13,6 @@ use Core\View;
  * Class CategoryController
  *
  * @package App\Controllers\Admin
- * @todo    : comment
  */
 class CategoryController
 {
@@ -24,7 +23,9 @@ class CategoryController
     public function index ()
     {
         /**
-         * @todo:comment
+         * Prüfen ob ein*e User*in eingeloggt ist und ob diese*r eingeloggte User*in Admin ist. Wenn nicht, geben wir
+         * einen Fehler 403 Forbidden zurück. Dazu haben wir eine Art Middleware geschrieben, damit wir nicht immer das
+         * selbe if-Statement kopieren müssen, sondern einfach diese Funktion aufrufen können.
          */
         AuthMiddleware::isAdminOrFail();
 
@@ -42,12 +43,14 @@ class CategoryController
     }
 
     /**
-     * @todo: comment
+     * Bearbeitungsformular anzeigen.
      */
     public function edit (int $id)
     {
         /**
-         * @todo:comment
+         * Prüfen ob ein*e User*in eingeloggt ist und ob diese*r eingeloggte User*in Admin ist. Wenn nicht, geben wir
+         * einen Fehler 403 Forbidden zurück. Dazu haben wir eine Art Middleware geschrieben, damit wir nicht immer das
+         * selbe if-Statement kopieren müssen, sondern einfach diese Funktion aufrufen können.
          */
         AuthMiddleware::isAdminOrFail();
 
@@ -65,9 +68,9 @@ class CategoryController
     }
 
     /**
-     * @todo: comment
+     * Formulardaten aus dem Bearbeitungsformular entgegennehmen und verarbeiten.
      *
-     * [x] Prüfen ob der User ein Admin ist
+     * [x] Prüfen ob der/die User*in ein Admin ist
      * [x] zu ändernde Category aus DB laden
      * [x] Category aktualisieren
      * [x] Category speichern
@@ -77,19 +80,25 @@ class CategoryController
     public function update (int $id)
     {
         /**
-         * @todo:comment
+         * Prüfen ob ein*e User*in eingeloggt ist und ob diese*r eingeloggte User*in Admin ist. Wenn nicht, geben wir
+         * einen Fehler 403 Forbidden zurück. Dazu haben wir eine Art Middleware geschrieben, damit wir nicht immer das
+         * selbe if-Statement kopieren müssen, sondern einfach diese Funktion aufrufen können.
          */
         AuthMiddleware::isAdminOrFail();
 
         /**
          * Daten aus dem Formular validieren.
          *
-         * @todo: comment (named params)
+         * Auch hier verwenden wir wieder die PHP 8 "named params", damit wir für "title" eine Maximum definieren
+         * können, ohne ein Minimum definieren zu müssen.
          */
         $validator = new Validator();
         $validator->textnum($_POST['title'], 'Title', true, max: 255);
         $validator->slug($_POST['slug'], 'Slug', true, 1, 255);
         $validator->textnum($_POST['description'], 'Beschreibung');
+        /**
+         * Fehler aus dem Validator holen.
+         */
         $errors = $validator->getErrors();
 
         /**
@@ -97,30 +106,50 @@ class CategoryController
          */
         $category = Category::findOrFail($id);
 
+        /**
+         * Sind Validierungsfehler aufgetreten ...
+         */
         if (!empty($errors)) {
+            /**
+             * ... dann speichern wir sie in die Session um sie in den Views dann ausgeben zu können.
+             */
             Session::set('errors', $errors);
         } else {
+            /**
+             * Sind keine Fehler aufgetreten legen aktualisieren wir die Werte des vorher geladenen Objekts ...
+             */
             $category->title = trim($_POST['title']);
             $category->slug = trim($_POST['slug']);
             $category->description = trim($_POST['description']);
 
+            /**
+             * ... und speichern das aktualisierte Objekt in die Datenbank zurück.
+             */
             $category->save();
 
+            /**
+             * Nun speichern wir eine Erfolgsmeldung in die Session ...
+             */
             Session::set('success', ['Erfolgreich gespeichert.']);
         }
 
+        /**
+         * ... und leiten in jedem Fall zurück zum Bearbeitungsformular - entweder mit Fehlern oder mit Erfolgsmeldung.
+         */
         Redirector::redirect(BASE_URL . "/admin/categories/{$category->id}/edit");
     }
 
     /**
-     * @param int $id
+     * Abfrage, ob das Objekt wirklich gelöscht werden soll.
      *
-     * @todo: comment
+     * @param int $id
      */
     public function deleteConfirm (int $id)
     {
         /**
-         * @todo:comment
+         * Prüfen ob ein*e User*in eingeloggt ist und ob diese*r eingeloggte User*in Admin ist. Wenn nicht, geben wir
+         * einen Fehler 403 Forbidden zurück. Dazu haben wir eine Art Middleware geschrieben, damit wir nicht immer das
+         * selbe if-Statement kopieren müssen, sondern einfach diese Funktion aufrufen können.
          */
         AuthMiddleware::isAdminOrFail();
 
@@ -130,7 +159,11 @@ class CategoryController
         $category = Category::findOrFail($id);
 
         /**
-         * View laden
+         * View laden und relativ viele Daten übergeben. Die große Anzahl an Daten entsteht dadurch, dass der
+         * admin/confirm-View so dynamisch wie möglich sein soll, damit wir ihn für jede Delete Confirmation Seite
+         * verwenden können, unabhängig vom Objekt, das gelöscht werden soll. Wir übergeben daher einen Typ und einen
+         * Titel, die für den Text der Confirmation verwendet werden, und zwei URLs, eine für den Bestätigungsbutton und
+         * eine für den Abbrechen-Button.
          */
         View::render('admin/confirm', [
             'type' => 'Category',
@@ -141,14 +174,16 @@ class CategoryController
     }
 
     /**
-     * @param int $id
+     * Objekt wirklich löschen.
      *
-     * @todo: comment
+     * @param int $id
      */
     public function delete (int $id)
     {
         /**
-         * @todo:comment
+         * Prüfen ob ein*e User*in eingeloggt ist und ob diese*r eingeloggte User*in Admin ist. Wenn nicht, geben wir
+         * einen Fehler 403 Forbidden zurück. Dazu haben wir eine Art Middleware geschrieben, damit wir nicht immer das
+         * selbe if-Statement kopieren müssen, sondern einfach diese Funktion aufrufen können.
          */
         AuthMiddleware::isAdminOrFail();
 
@@ -156,8 +191,16 @@ class CategoryController
          * Gewünschte Category über das Category-Model aus der Datenbank laden.
          */
         $category = Category::findOrFail($id);
+
+        /**
+         * Category löschen. Je nachdem ob das Objekt, das gelöscht wird, den SoftDelete-Trait verwendet oder nicht,
+         * wird das Objekt wirklich komplett aus der Datenbank gelöscht oder eben nur auf deleted gesetzt.
+         */
         $category->delete();
 
+        /**
+         * Zur Kategorie-Liste zurück leiten.
+         */
         Redirector::redirect(BASE_URL . '/admin/categories');
     }
 

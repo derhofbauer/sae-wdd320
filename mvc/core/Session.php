@@ -94,33 +94,58 @@ class Session
     }
 
     /**
-     * @param string     $key
-     * @param mixed|null $default
+     * Diese Methode ermöglicht es uns auf die Werte, die in dem jeweils vorhergehenden Request in ein Formular
+     * eingegeben wurden, zuzugreifen. Dadurch können wir Formularfelder mit Werten befüllen, wenn ein Fehler in der
+     * Validierung auftritt, der/die User*in muss dann die Werte nicht nochmal eingeben, sondern lediglich korrigieren.
+     *
+     * @param string $key
+     * @param null   $default
      *
      * @return mixed
-     * @todo: comment
      */
     public static function old (string $key, mixed $default = null): mixed
     {
+        /**
+         * Damit sowohl POST als auch GET Formular funktionieren, suchen wir in beiden Datenbeständen und geben den
+         * Wert zurück, wenn der $key gefunden wurde.
+         */
         if (isset($_SESSION['$_post'][$key])) {
             return $_SESSION['$_post'][$key];
         }
 
+        /**
+         * Damit sowohl POST als auch GET Formular funktionieren, suchen wir in beiden Datenbeständen und geben den
+         * Wert zurück, wenn der $key gefunden wurde.
+         */
         if (isset($_SESSION['$_get'][$key])) {
             return $_SESSION['$_get'][$key];
         }
 
+        /**
+         * Andernfalls geben wir wie immer den $default zurück.
+         */
         return $default;
     }
 
     /**
-     * @todo: comment
+     * Hier setzen wir die Werte aus den $_GET und $_POST Superglobals in die Session, damit wir sie in der
+     * old()-Methode wieder abrufen können. Das ganze dient dazu, dass Werte aus einem Formular, die nicht korrekt
+     * Validiert werden konnten, nicht wieder komplett neu eingegeben werden, nachdem die Validierungsfehler angezeigt
+     * wurden. Mit dieser Mechanik können Werte, die über ein Formular abgeschickt wurden, wieder in dem Formular
+     * angezeigt werden, damit die fehlerhaften Eingaben korrigiert werden können.
      */
     public static function initSuperglobals ()
     {
+        /**
+         * Wurden POST Daten übergeben, speichern wir sie in die Session.
+         */
         if (!empty($_POST)) {
             Session::set('$_post', $_POST);
         }
+
+        /**
+         * Wurden GET Daten übergeben, speichern wir sie in die Session.
+         */
         if (!empty($_GET)) {
             Session::set('$_get', $_GET);
         }

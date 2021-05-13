@@ -20,7 +20,10 @@
                    <option value="_default" hidden>Bitte auswählen ...</option>
                    <?php
                    /**
-                    * @todo: comment
+                    * Damit wir ein Dropdown dynamisch generieren können, müssen wir mit einer Schleife arbeiten.
+                    *
+                    * Hier ist der Ternäre Operator zu beachten, den wir verwenden um anzugeben, ob eine <option>
+                    * vorausgewählt sein soll oder nicht.
                     */
                    foreach ($admins as $user): ?>
                        <option value="<?php echo $user->id; ?>"<?php echo ($user->id == $post->author) ? ' selected' : ''; ?>><?php echo $user->username?></option>
@@ -34,7 +37,10 @@
                <span class="label">Category</span>
                <?php
                /**
-                * @todo: comment
+                * Damit wir eine Liste an Checkboxes dynamisch generieren können, müssen wir mit einer Schleife arbeiten.
+                *
+                * Hier ist der Ternäre Operator zu beachten, den wir verwenden um anzugeben, ob eine Checkbox ausgewählt
+                * sein soll oder nicht.
                 */
                foreach ($categories as $category): ?>
                    <div class="form-check">

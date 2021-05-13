@@ -41,8 +41,9 @@ abstract class AbstractModel
     abstract public function fill (array $data);
 
     /**
+     * Hier definieren wir, dass jede Class, die das AbstractModel erweitert, auch eine save()-Methode definieren muss.
+     *
      * @return bool
-     * @todo: comment
      */
     abstract public function save (): bool;
 
@@ -91,9 +92,11 @@ abstract class AbstractModel
     /**
      * Alle Datensätze aus der Datenbank abfragen.
      *
-     * Die beiden Funktionsparameter bieten die Möglichkeit die Daten, die abgerufen werden, nach einer einzelnen Spalte
-     * aufsteigend oder absteigend direkt über MySQL zu sortieren. Sortierungen sollten, sofern möglich, über die
-     * Datenbank durchgeführt werden, weil das wesentlich performanter ist als über PHP.
+     * Die ersten beiden Funktionsparameter bieten die Möglichkeit eine ganz einfache WHERE-Abfrage zu machen.
+     *
+     * Die beiden letzten Funktionsparameter bieten die Möglichkeit die Daten, die abgerufen werden, nach einer
+     * einzelnen Spalte aufsteigend oder absteigend direkt über MySQL zu sortieren. Sortierungen sollten, sofern
+     * möglich, über die Datenbank durchgeführt werden, weil das wesentlich performanter ist als über PHP.
      *
      * @param string $field
      * @param mixed  $value
@@ -101,7 +104,6 @@ abstract class AbstractModel
      * @param string $direction
      *
      * @return array
-     * @todo: comment
      */
     public static function findWhere (string $field, mixed $value, string $orderBy = '', string $direction = 'ASC'): array
     {
@@ -117,6 +119,9 @@ abstract class AbstractModel
 
         /**
          * Query ausführen.
+         *
+         * Hier ist es wichtig zu bedenken, dass der $field-Parameter niemals die Benutzer*inneneingabe beinhalten darf,
+         * weil sonst der Query für MySQL Injection anfällig ist.
          *
          * Wurde in den Funktionsparametern eine Sortierung definiert, so wenden wir sie hier an, andernfalls rufen wir
          * alles ohne sortierung ab.
@@ -138,8 +143,11 @@ abstract class AbstractModel
     }
 
     /**
-     * Diese Funktion ist aktuell nur ein Platzhalter, weil wir sie noch implementieren müssen.
-     * @todo: comment
+     * Ein einzelnes Objekt anhand seiner ID finden.
+     *
+     * @param int $id
+     *
+     * @return mixed
      */
     public static function find (int $id): mixed
     {
@@ -167,19 +175,32 @@ abstract class AbstractModel
     }
 
     /**
-     * @todo: comment
+     * find()-Methode aufrufen oder einen Fehler 404 Not Found zurück geben, wenn kein Ergebnis aus der Datenbank zurück
+     * gekommen ist.
+     *
+     * @param int $id
+     *
+     * @return mixed
      */
     public static function findOrFail (int $id): mixed
     {
+        /**
+         * find()-Methode aufrufen.
+         */
         $result = self::find($id);
+        /**
+         * Mittels der bereits existierenden returnOrFail()-Methode das Ergebnis verarbeiten.
+         */
         return self::returnOrFail($result);
     }
 
     /**
+     * Objekt löschen.
+     *
      * @return object|null
-     * @todo: comment
      */
-    public function delete () {
+    public function delete (): ?object
+    {
         /**
          * Datenbankverbindung herstellen.
          */
@@ -268,9 +289,9 @@ abstract class AbstractModel
      *
      * @param array $results
      *
-     * @return object|null
+     * @return ?object
      */
-    public static function handleUniqueResult (array $results): object|null
+    public static function handleUniqueResult (array $results): ?object
     {
         /**
          * Datenbankergebnis ganz normal verarbeiten.
@@ -291,14 +312,25 @@ abstract class AbstractModel
     }
 
     /**
+     * Wird ein INSERT-Query ausgeführt, so wird in den allermeisten Fällen auch eine neue ID generiert. Diese ist über
+     * die Datenbankverbindung abrufbar. Hier holen wir diese ID und aktualisieren das aktuelle Objekt mit der neuen ID.
+     *
      * @param Database $database
-     * @todo: comment
      */
     public function handleInsertResult (Database $database)
     {
+        /**
+         * Neu generierte ID holen.
+         */
         $newId = $database->getInsertId();
 
+        /**
+         * Handelt es sich um einen Integer und wurde somit eine neue ID vergeben ...
+         */
         if (is_int($newId)) {
+            /**
+             * ... aktualisieren wir das aktuelle Objekt mit diesem Wert.
+             */
             $this->id = $newId;
         }
     }

@@ -22,7 +22,7 @@ class AuthController
     public function loginForm ()
     {
         /**
-         * Wenn bereits ein User eingeloggt ist, zeigen wir das Login Formular nicht an, sondern leiten auf die
+         * Wenn bereits ein*e User*in eingeloggt ist, zeigen wir das Login Formular nicht an, sondern leiten auf die
          * Startseite weiter.
          */
         if (User::isLoggedIn()) {
@@ -46,7 +46,7 @@ class AuthController
          * 2) Remember Me Checkbox anhakerln (optional)
          * 3) Formular absenden
          * ---
-         * 4) Gibts den User schon? ja: weiter, nein: Fehlermeldung
+         * 4) Gibts den/die User*in schon? ja: weiter, nein: Fehlermeldung
          * 5) Passwort aus DB abrufen (Salted Hashes)
          * 6) Passwort aus Eingabe und DB ident? ja: weiter, nein: Fehlermeldung
          * 7) "Remember Me" angehakerlt? ja: $exp=7, nein: $exp=0 (für die aktuelle Browser Session, bis der Tab
@@ -132,7 +132,7 @@ class AuthController
     public function signupForm ()
     {
         /**
-         * Wenn bereits ein User eingeloggt ist, zeigen wir das Sign-up Formular nicht an, sondern leiten auf die
+         * Wenn bereits ein*e User*in eingeloggt ist, zeigen wir das Sign-up Formular nicht an, sondern leiten auf die
          * Startseite weiter.
          */
         if (User::isLoggedIn()) {
@@ -148,22 +148,28 @@ class AuthController
 
     /**
      * Daten aus dem Registrierungsformular entgegennehmen und verarbeiten.
+     *
+     * [x] Daten validieren
+     * [x] erfolgreich: weiter, nicht erfolgreich: Fehler
+     * [x] Gibts E-Mail oder Username schon in der DB?
+     * [x] ja: Fehler, nein: weiter
+     * [x] User Object aus den Daten erstellen & in DB speichern
+     * [x] Weiterleiten zum Login
      */
     public function signup ()
     {
         /**
-         * [x] Daten validieren
-         * [x] erfolgreich: weiter, nicht erfolgreich: Fehler
-         * [x] Gibts E-Mail oder Username schon in der DB?
-         * [x] ja: Fehler, nein: weiter
-         * [x] User Object aus den Daten erstellen & in DB speichern
-         * [x] Weiterleiten zum Login
+         * Formulardaten validieren.
          */
-
         $validator = new Validator();
         $validator->email($_POST['email'], 'E-Mail', true);
         $validator->textnum($_POST['username'], 'Username', false);
         $validator->password($_POST['password'], 'Password', true, 8, 255);
+        /**
+         * Das Feld 'password_repeat' braucht nicht validiert werden, weil wenn 'password' ein valides Passwort ist und
+         * alle Kriterien erfüllt, und wir hier nun prüfen, ob 'password' und 'password_repeat' ident sind, dann ergibt
+         * sich daraus, dass auch 'password_repeat' ein valides Passwort ist.
+         */
         $validator->compare([
             $_POST['password'],
             'Password'
@@ -172,39 +178,71 @@ class AuthController
             'Password wiederholen'
         ]);
 
-        $errors = [];
-        if ($validator->hasErrors()) {
-            $errors = $validator->getErrors();
-        }
+        /**
+         * Fehler aus dem Validator auslesen. Validator::getErrors() gibt uns dabei in jedem Fall ein Array zurück,
+         * wenn keine Fehler aufgetreten sind, ist dieses Array allerdings leer.
+         */
+        $errors = $validator->getErrors();
 
+        /**
+         * Gibt es schon einen Account zur eingegebenen Email-Adresse?
+         */
         if (!empty(User::findByEmailOrUsername($_POST['email']))) {
             $errors[] = 'Diese E-Mail Adresse wird bereits verwendet.';
         }
 
+        /**
+         * Gibt es schon einen Account zum eingegebenen Username?
+         */
         if (!empty($_POST['username']) && !empty(User::findByEmailOrUsername($_POST['username']))) {
             $errors[] = 'Dieser Username wird bereits verwendet.';
         }
 
+        /**
+         * Wenn der Fehler-Array nicht leer ist und es somit Fehler gibt ...
+         */
         if (!empty($errors)) {
+            /**
+             * ... dann speichern wir sie in die Session, damit sie im View ausgegeben werden können und leiten dann
+             * zurück zum Formular.
+             */
             Session::set('errors', $errors);
             Redirector::redirect(BASE_URL . '/sign-up');
         }
 
+        /**
+         * Kommen wir an diesen Punkt, können wir sicher sein, dass die E-Mail Adresse und der Username noch nicht
+         * verwendet werden und alle eingegebenen Daten korrekt validiert werden konnten.
+         */
         $user = new User();
         $user->email = trim($_POST['email']);
         $user->username = trim($_POST['username']);
         $user->setPassword($_POST['password']);
 
         /**
-         * @todo: comment
+         * Neue*n User*in in die Datenbank speichern.
+         *
+         * Die User::save() Methode gibt true zurück, wenn die Speicherung in die Datenbank funktioniert hat.
          */
         if ($user->save()) {
+            /**
+             * Hat alles funktioniert und sind keine Fehler aufgetreten, leiten wir zum Loginformular.
+             *
+             * Um eine Erfolgsmeldung ausgeben zu können, verwenden wir die selbe Mechanik wie für die errors.
+             */
             $success = ['Herzlich wilkommen!'];
             Session::set('success', $success);
             Redirector::redirect(BASE_URL . '/login');
         } else {
+            /**
+             * Fehlermeldung erstellen und in die Session speichern.
+             */
             $errors[] = 'Die Registrierung konnte nicht durchgeführt werden. :(';
             Session::set('errors', $errors);
+
+            /**
+             * Redirect zurück zum Registrierungsformular.
+             */
             Redirector::redirect(BASE_URL . '/sign-up');
         }
     }

@@ -7,16 +7,20 @@ use Core\Database;
 /**
  * Trait SoftDelete
  *
+ * Dieser Trait überschreibt einige Methoden des BaseModel, wenn Softdeletes verwendet werden sollen.
+ *
  * @package Core\Traits
- * @todo: comment
  */
-trait SoftDelete {
+trait SoftDelete
+{
 
     /**
-     * @return object|null
-     * @todo: comment
+     * Den zum aktuellen Objekt gehörigen Datensatz in der Datenbank als gelöscht markieren.
+     *
+     * @return bool
      */
-    public function delete () {
+    public function delete (): bool
+    {
         /**
          * Datenbankverbindung herstellen.
          */
@@ -29,6 +33,8 @@ trait SoftDelete {
 
         /**
          * Query ausführen.
+         *
+         * CURRENT_TIMESTAMP() ist eine Funktion von MySQL, die den aktuellen Zeitstempel zurückgibt.
          */
         $results = $database->query("UPDATE {$tablename} SET deleted_at = CURRENT_TIMESTAMP() WHERE id = ?", [
             'i:id' => $this->id
@@ -51,7 +57,6 @@ trait SoftDelete {
      * @param string $direction
      *
      * @return array
-     * @todo: comment
      */
     public static function all (string $orderBy = '', string $direction = 'ASC'): array
     {
@@ -70,6 +75,9 @@ trait SoftDelete {
          *
          * Wurde in den Funktionsparametern eine Sortierung definiert, so wenden wir sie hier an, andernfalls rufen wir
          * alles ohne sortierung ab.
+         *
+         * Hier nehmen wir auch Rücksicht auf die deleted_at Spalte und geben nur Einträge zurück, die nicht als
+         * gelöscht markiert sind.
          */
         if (empty($orderBy)) {
             $results = $database->query("SELECT * FROM {$tablename} WHERE deleted_at IS NULL");

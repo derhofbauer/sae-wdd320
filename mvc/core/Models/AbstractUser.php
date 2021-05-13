@@ -48,10 +48,10 @@ abstract class AbstractUser extends AbstractModel
         /**
          * Query ausführen.
          *
-         * Wir setzen hier LIMIT 1, weil wir nur einen User gleichzeitig einloggen können und daher nur einen USer
-         * zurückbekommen wollen aus der Datenbank. Nachdem sowohl email als auch username UNIQUE sind, gibt es nur dann
-         * die Möglichkeit, dass wir mehr als ein Ergebnis erhalten, wenn jemand eine Fremde E-Mail Adresse als Username
-         * verwendet hat.
+         * Wir setzen hier LIMIT 1, weil wir nur eine*n User*in gleichzeitig einloggen können und daher nur eine*n
+         * User*in zurückbekommen wollen aus der Datenbank. Nachdem sowohl email als auch username UNIQUE sind, gibt es
+         * nur dann die Möglichkeit, dass wir mehr als ein Ergebnis erhalten, wenn jemand eine Fremde E-Mail Adresse als
+         * Username verwendet hat.
          */
         $results = $database->query("SELECT * FROM $tablename WHERE email = ? OR username = ? LIMIT 1", [
             's:email' => $emailOrUsername,
@@ -201,18 +201,32 @@ abstract class AbstractUser extends AbstractModel
     }
 
     /**
-     * @return User|null
-     * @todo: comment (incl. nullsafe operator)
+     * Aktuell eingeloggten User mit Informationen aus der Session aus der Datenbank abfragen.
+     *
+     * @return ?User
      */
     public static function getLoggedIn (): ?User
     {
+        /**
+         * Ist ein*e User*in eingeloggt, ...
+         */
         if (self::isLoggedIn()) {
+            /**
+             *  ... so holen wir uns hier die zugehörige ID mit dem default null.
+             */
             $userId = Session::get(self::LOGGED_IN_ID, null);
 
+            /**
+             * Wurde also eine ID ind er Session gefunden, laden wir den/die User*in aus der Datenbank und geben das
+             * Ergebnis zurück.
+             */
             if ($userId !== null) {
                 return User::find($userId);
             }
         }
+        /**
+         * Andernfalls geben wir null zurück.
+         */
         return null;
     }
 

@@ -6,9 +6,11 @@ use App\Controllers\CategoryController;
 use App\Controllers\AuthController;
 
 /**
- * @todo: comment
+ * Werden mit dem use-Keyword mehrere Klassen mit dem selben Namen importiert, so können diese weiter unten nicht mehr
+ * unterschieden werden, wenn der Namespace nicht angegeben wird. Daher kann man mit dem as-Keyword Aliases definieren.
+ * Funktionell besteht also überhaupt kein Unterschied, aber die Admin\CategoryController Klasse ist weiter unten auch
+ * unter dem Alias AdminCategoryController verfügbar.
  */
-
 use App\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Controllers\Admin\PostController as AdminPostController;
 

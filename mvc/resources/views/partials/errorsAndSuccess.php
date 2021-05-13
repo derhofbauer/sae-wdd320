@@ -10,7 +10,9 @@ foreach (\Core\Session::getAndForget('errors', []) as $error): ?>
 
 <?php
 /**
- * @todo: comment
+ * Hier lesen wir bei jedem Rendering Vorgang einer Seite die Erfolgsmeldungen aus der Session aus. Dabei übergeben wir
+ * als 2. Parameter ($default) ein leeres Array, falls keine Erfolgsmeldungen in der Session stehen. Dann gehen wir die
+ * Meldungen durch und geben sie als Alert aus.
  */
 foreach (\Core\Session::getAndForget('success', []) as $success): ?>
     <div class="alert alert-success"><?php echo $success; ?></div>

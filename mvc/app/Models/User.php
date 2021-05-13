@@ -14,7 +14,9 @@ use Core\Traits\SoftDelete;
 class User extends AbstractUser
 {
     /**
-     * @todo: comment
+     * Hier laden wir den SoftDelete Trait, der die delete()- und find()-Methoden überschreibt, damit Objekte nicht
+     * komplett gelöscht werden, sondern nur auf deleted gesetzt werden und damit die find()-Methode auch nur Objekte
+     * findet, die nicht gelöscht sind.
      */
     use SoftDelete;
 
@@ -61,14 +63,19 @@ class User extends AbstractUser
     }
 
     /**
-     * @return bool
-     * @todo: comment
+     * Objekt speichern.
+     *
+     * Wenn das Objekt bereits existiert hat, so wird es aktualisiert, andernfalls neu angelegt. Dadurch können wir eine
+     * einzige Funktion verwenden und müssen uns nicht darum kümmern ob das Objekt angelegt oder aktualisiert werden
+     * muss.
      *
      * [x] DB Verbindung herstellen & Tablename holen
      * [x] Ist das Objekt schon in der DB vorhanden?
      * [x] wenn ja: UPDATE Query
      * [x] wenn nein: INSERT Query & neue ID abfragen
      * [x] Ergebnis zurückgeben
+     *
+     * @return bool
      */
     public function save (): bool
     {
@@ -82,8 +89,15 @@ class User extends AbstractUser
          */
         $tablename = self::getTablenameFromClassname();
 
+        /**
+         * Hat das Objekt bereits eine ID, so existiert in der Datenbank auch schon ein Eintrag dazu und wir können es
+         * aktualisieren.
+         */
         if (!empty($this->id)) {
-            // Objekt existiert in der DB bereits
+            /**
+             * Query ausführen und Ergebnis direkt zurückgeben. Das kann entweder true oder false sein, je nachdem ob
+             * der Query funktioniert hat oder nicht.
+             */
             return $database->query("UPDATE $tablename SET email = ?, username = ?, password = ?, avatar = ?, is_admin = ? WHERE id = ?", [
                 's:email' => $this->email,
                 's:username' => $this->username,
@@ -93,7 +107,9 @@ class User extends AbstractUser
                 'i:id' => $this->id
             ]);
         } else {
-            // Objekt existiert in der DB noch nicht
+            /**
+             * Hat es keine ID, so müssen wir es neu anlegen.
+             */
             $result = $database->query("INSERT INTO $tablename SET email = ?, username = ?, password = ?, avatar = ?, is_admin = ?", [
                 's:email' => $this->email,
                 's:username' => $this->username,
@@ -102,8 +118,16 @@ class User extends AbstractUser
                 'i:is_admin' => $this->is_admin
             ]);
 
+            /**
+             * Ein INSERT Query generiert eine neue ID, diese müssen wir daher extra abfragen und verwenden daher die
+             * von uns geschrieben handletInsertResult()-Methode, die über das AbstractModel verfügbar ist.
+             */
             $this->handleInsertResult($database);
 
+            /**
+             * Ergebnis zurückgeben. Das kann entweder true oder false sein, je nachdem ob der Query funktioniert hat
+             * oder nicht.
+             */
             return $result;
         }
     }
