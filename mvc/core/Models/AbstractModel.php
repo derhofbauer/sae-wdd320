@@ -197,9 +197,9 @@ abstract class AbstractModel
     /**
      * Objekt löschen.
      *
-     * @return object|null
+     * @return array
      */
-    public function delete (): ?object
+    public function delete (): array
     {
         /**
          * Datenbankverbindung herstellen.
@@ -221,7 +221,7 @@ abstract class AbstractModel
         /**
          * Datenbankergebnis verarbeiten und zurückgeben.
          */
-        return self::handleUniqueResult($results);
+        return $this->handleResult($results);
     }
 
     /**

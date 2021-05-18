@@ -15,6 +15,11 @@ use Core\Traits\SoftDelete;
 class Post extends AbstractModel
 {
     /**
+     * @todo: comment
+     */
+    const TABLENAME_CATEGORIES_MM = 'posts_categories_mm';
+
+    /**
      * Wir innerhalb einer Klasse das use-Keyword verwendet, so wird damit ein Trait importiert. Das kann man sich
      * vorstellen wie einen Import mittels require, weil die Methoden, die im Trait definiert sind, einfach in die
      * Klasse, die den Trait verwendet, eingefügt werden, als ob sie in der Klasse selbst definiert worden wären.
@@ -194,6 +199,103 @@ class Post extends AbstractModel
          * Über das Category Model alle zugehörigen Categories abrufen.
          */
         return Category::findByPost($this->id);
+    }
+
+    /**
+     * @todo: comment
+     * @param array<int> $categoryIds
+     *
+     * @return array
+     */
+    public function setCategories (array $categoryIds): array
+    {
+        $oldCategories = $this->categories();
+        $categoriesToDelete = [];
+        $categoriesToNotBeTouched = [];
+
+        foreach ($oldCategories as $oldCategory) {
+            if (!in_array($oldCategory->id, $categoryIds)) {
+                $categoriesToDelete[] = $oldCategory->id;
+            } else {
+                $categoriesToNotBeTouched[] = $oldCategory->id;
+            }
+        }
+
+        $categoriesToAdd = array_diff($categoryIds, $categoriesToDelete, $categoriesToNotBeTouched);
+
+        foreach ($categoriesToDelete as $categoryToDelete) {
+            $this->detachCategory($categoryToDelete);
+        }
+        foreach ($categoriesToAdd as $categoryToAdd) {
+            $this->attachCategory($categoryToAdd);
+        }
+
+        return $this->categories();
+    }
+
+    /**
+     * @param int $categoryId
+     *
+     * @return bool
+     * @todo: comment
+     */
+    public function detachCategory (int $categoryId): bool
+    {
+        /**
+         * Datenbankverbindung herstellen.
+         */
+        $database = new Database();
+
+        /**
+         * Tabellennamen berechnen.
+         */
+        $tablename = self::TABLENAME_CATEGORIES_MM;
+
+        /**
+         * Query ausführen.
+         */
+        $results = $database->query("DELETE FROM {$tablename} WHERE post_id = ? AND category_id = ?", [
+            'i:post_id' => $this->id,
+            'i:category_id' => $categoryId
+        ]);
+
+        /**
+         * Datenbankergebnis verarbeiten und zurückgeben.
+         */
+        return $results;
+    }
+
+    /**
+     * @param int $categoryId
+     *
+     * @return bool
+     * @todo: comment
+     */
+    public function attachCategory (int $categoryId): bool
+    {
+        /**
+         * Datenbankverbindung herstellen.
+         */
+        $database = new Database();
+
+        /**
+         * Tabellennamen berechnen.
+         */
+        $tablename = self::TABLENAME_CATEGORIES_MM;
+
+        /**
+         * Query ausführen.
+         */
+        $results = $database->query("INSERT INTO {$tablename} SET post_id = ?, category_id = ?", [
+            'i:post_id' => $this->id,
+            'i:category_id' => $categoryId
+        ]);
+
+
+        /**
+         * Datenbankergebnis verarbeiten und zurückgeben.
+         */
+        return $results;
     }
 
     /**

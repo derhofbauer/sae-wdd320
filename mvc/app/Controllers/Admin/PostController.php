@@ -93,10 +93,6 @@ class PostController
         AuthMiddleware::isAdminOrFail();
 
         /**
-         * @todo: handle categories from form
-         */
-
-        /**
          * Daten aus dem Formular validieren.
          *
          * Auch hier verwenden wir wieder die PHP 8 "named params", damit wir für "title" eine Maximum definieren
@@ -107,10 +103,24 @@ class PostController
         $validator->slug($_POST['slug'], 'Slug', true, 1, 255);
         $validator->textnum($_POST['content'], 'Content');
         $validator->int((int)$_POST['author'], 'Autor', true);
+
+        /**
+         * Categories validieren.
+         *
+         * Es kann sein, dass keine Kategorien im Formular angewählt werden und dadurch kein Wert übergeben wird. In
+         * diesem Fall wollen wir auch nicht validieren, weil es nichts gibt, was wir validieren könnten.
+         */
+        if (isset($_POST['categories'])) {
+            foreach ($_POST['categories'] as $categoryId => $on) {
+                $validator->checkbox($on, "Category $categoryId");
+            }
+        }
+
         /**
          * Fehler aus dem Validator holen.
          */
         $errors = $validator->getErrors();
+
         /**
          * Hier suchen wir den User, der als Author übergeben wurde. Wird ein leeres Ergebnis zurückgegeben und der User
          * somit nicht gefunden, schreiben wir einen Fehler.
@@ -142,11 +152,24 @@ class PostController
             $post->slug = trim($_POST['slug']);
             $post->content = trim($_POST['content']);
             $post->author = trim($_POST['author']);
-
             /**
              * ... und speichern das aktualisierte Objekt in die Datenbank zurück.
              */
             $post->save();
+
+            /**
+             * Category Selections speichern.
+             *
+             * Wurden Kategorien im Formular ausgewählt, so holen wir hier die gewählten IDs und überschreiben die
+             * aktuell verknüpften Kategorien. Andernfalls löschen wir alle Kategoriezuweisungen, weil alle Checkboxen
+             * abgewählt wurden.
+             */
+            if (isset($_POST['categories'])) {
+                $idsOfSelectedCategories = array_keys($_POST['categories']);
+                $post->setCategories($idsOfSelectedCategories);
+            } else {
+                $post->setCategories([]);
+            }
 
             /**
              * Nun speichern wir eine Erfolgsmeldung in die Session ...

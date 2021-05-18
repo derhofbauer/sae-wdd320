@@ -31,5 +31,12 @@ return [
      * Hier definieren wir welches Layout standardmäßig verwendet wird. Hier könnte beispielsweise bei Werbeaktionen,
      * bei denen die gesamte Seite von einem Werbekunden gebrandet wird, hilfreich sein.
      */
-    'default-layout' => 'default'
+    'default-layout' => 'default',
+
+    /**
+     * @todo: comment
+     */
+    'upload-limit' => 1024 * 1024 * 5, // 5MB
+    'avatar-max-dimensions' => [1920, 1080],
+    'uploads-folder' => '/storage/uploads',
 ];

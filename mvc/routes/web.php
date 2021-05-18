@@ -13,6 +13,7 @@ use App\Controllers\AuthController;
  */
 use App\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Controllers\Admin\PostController as AdminPostController;
+use App\Controllers\Admin\UserController as AdminUserController;
 
 /**
  * Die Dateien im /routes Ordner beinhalten ein Mapping von einer URL auf eine eindeutige Controller & Action
@@ -72,4 +73,12 @@ return [
     '/admin/posts/{id}/update' => [AdminPostController::class, 'update'], // Bearbeiteten Post speichern
     '/admin/posts/{id}/delete' => [AdminPostController::class, 'deleteConfirm'], // Löschen bestätigen
     '/admin/posts/{id}/delete/confirm' => [AdminPostController::class, 'delete'], // Post löschen
+
+    /**
+     * Admin User Routes
+     */
+    '/admin/users' => [AdminUserController::class, 'index'], // Alle User listen
+    '/admin/users/{id}/edit' => [AdminUserController::class, 'edit'], // Bearbeitungsformular anzeigen
+    '/admin/users/{id}/update' => [AdminUserController::class, 'update'], // Bearbeitete*n User*in speichern
+
 ];
