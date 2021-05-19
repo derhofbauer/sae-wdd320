@@ -7,11 +7,16 @@ use Core\Config;
 /**
  * Class AbstractFile
  *
+ * Damit wir eine Abstraktionsebene über das Dateisystem legen können, bauen wir eine eigene Klasse, die die Arbeit mit
+ * einzelnen Dateien vereinfachen soll.
+ *
  * @package Core\Models
- * @todo    : comment
  */
 abstract class AbstractFile
 {
+    /**
+     * Properties definieren.
+     */
     public string $name;
     public string $type;
     public string $tmp_name;
@@ -53,14 +58,18 @@ abstract class AbstractFile
     }
 
     /**
+     * Hilfsfunktion zur einfachen Prüfung ob ein Upload Fehler aufgetreten ist.
+     *
      * @return bool
      */
-    public function hasError (): bool
+    public function hasUploadError (): bool
     {
         return $this->error !== UPLOAD_ERR_OK;
     }
 
     /**
+     * Hilfsfunktion zur Prüfung ob die Datei alle Größen- und Dimensionsbeschränkungen erfüllt.
+     *
      * @return array
      */
     public function validateImage (): array

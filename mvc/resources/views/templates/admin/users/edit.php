@@ -45,7 +45,10 @@
             <div class="form-check">
                 <?php
                 /**
-                 * @todo: comment
+                 * Damit ein Admin sich nicht selbst die Admin Reche weg nehmen kann und dadurch die Situation vermieden
+                 * wird, dass der letzte Admin sich die Admin Rechte weg nimmt und kein Admin mehr existiert, der wieder
+                 * Admin Rechte vergeben könnte, disablen wir die is_admin Checkbox, wenn ein Admin sich selbst
+                 * bearbeitet.
                  */
                 $disabledParticle = '';
                 if (\App\Models\User::getLoggedIn()->id === $user->id) {

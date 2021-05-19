@@ -15,13 +15,15 @@ use Core\View;
  * Class UserController
  *
  * @package App\Controllers\Admin
- * @todo    : comment
  */
 class UserController
 {
 
     /**
-     * @todo: comment
+     * Wir haben die Möglichkeit die Prüfung, ob ein*e User*in eingeloggt ist und die richtigen Berechtigungen hat, auch
+     * hier im Konstruktor anzugeben. Nachdem der Konstruktur ausgeführt wird, sobald die Klasse instanziiert wird, wird
+     * er auch vor allen anderen Methoden ausgeführt, wodurch wir alle Methoden in dem Controller "schützen" können,
+     * ohne in jeder einzelnen Methode wieder die Middleware aufrufen zu müssen.
      */
     public function __construct ()
     {
@@ -34,41 +36,62 @@ class UserController
     }
 
     /**
-     * @todo: comment
+     * Liste aller User*innen im Backend ausgeben.
      */
     public function index ()
     {
+        /**
+         * Alle User*innen aus der Datenbank laden.
+         */
         $users = User::all();
 
+        /**
+         * View laden und Daten übergeben.
+         */
         View::render('admin/users/index', [
             'users' => $users
         ], 'sidebar');
     }
 
     /**
-     * @param int $id
+     * User*innen Bearbeitungsformular anzeigen.
      *
-     * @todo: comment
+     * @param int $id
      */
     public function edit (int $id)
     {
+        /**
+         * User*in, die/der bearbeitet werden soll, aus der Datenbank abfragen. Wird der Eintrag nicht gefunden, wird
+         * ein Fehler 404 zurückgegeben.
+         */
         $user = User::findOrFail($id);
 
+        /**
+         * View laden und Daten übergeben.
+         */
         View::render('admin/users/edit', [
             'user' => $user
         ], 'sidebar');
     }
 
     /**
-     * @param int $id
+     * User*in mit den Daten aus dem Bearbeitungsformular aktualisieren.
      *
-     * @todo: comment
+     * @param int $id
      */
     public function update (int $id)
     {
+        /**
+         * Formulardaten validieren.
+         */
         $validator = new Validator();
         $validator->email($_POST['email'], 'E-Mail', true);
         $validator->textnum($_POST['username'], 'Username');
+
+        /**
+         * Das Passwort soll nur dann aktualisiert werden, wenn eines in das Formular eingegeben wurde. Wir müssen es
+         * also auch nur dann validieren.
+         */
         if (!empty($_POST['password'])) {
             $validator->password($_POST['password'], 'Passwort');
             /**
@@ -84,6 +107,9 @@ class UserController
                 'Password wiederholen'
             ]);
         }
+        /**
+         * War die is_admin Checkbox nicht disabled oder aktiviert, so validieren wir sie hier auch.
+         */
         if (isset($_POST['is_admin'])) {
             $validator->checkbox($_POST['is_admin'], 'Is Admin?');
         }
@@ -94,12 +120,19 @@ class UserController
         $errors = $validator->getErrors();
 
         /**
-         * @todo: comment
+         * Nun kümmern wir uns um die Dateiuploads des Avatar Bildes. Die Daten zu den hochgeladenen Dateien befinden
+         * sich in der $_FILES Superglobal. Damit wir eine Abstraktionsebene einziehen, bauen wir die ganze Logik für
+         * den Upload und die Prüfung und Speicherung der hochgeladenen Dateien in eine eigene File-Klasse.
          */
         $avatar = new File($_FILES['avatar']);
-        if (!$avatar->hasError()) {
-
+        if (!$avatar->hasUploadError()) {
+            /**
+             * @todo: continue here
+             */
         } else {
+            /**
+             * Ist ein Fehler aufgetreten, schreiben wir einen Error.
+             */
             $errors[] = 'Der Dateiupload für den Avatar hat nicht funktioniert :(';
         }
 

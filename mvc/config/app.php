@@ -34,9 +34,18 @@ return [
     'default-layout' => 'default',
 
     /**
-     * @todo: comment
+     * Upload Limit (Dateigröße) definieren. Dieses kann größer oder kleiner sein als das in PHP definierte Uploadlimit.
+     * Ist es größer als das PHP Limit, so greift das PHP Limit.
      */
     'upload-limit' => 1024 * 1024 * 5, // 5MB
+
+    /**
+     * Maximale Dimensionen für das Avatar Bild. Diese brauchen wir in der Update Funktionalität der User*innen.
+     */
     'avatar-max-dimensions' => [1920, 1080],
+
+    /**
+     * Wo sollen hochgeladene Dateien hingespeichert werden?
+     */
     'uploads-folder' => '/storage/uploads',
 ];

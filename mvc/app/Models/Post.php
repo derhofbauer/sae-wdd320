@@ -15,7 +15,8 @@ use Core\Traits\SoftDelete;
 class Post extends AbstractModel
 {
     /**
-     * @todo: comment
+     * Damit wir zukünftig an zentraler Stelle den Namen für die Mappingtabelle mit den Categories verwalten können,
+     * legen wir eine Klassenkonstante an.
      */
     const TABLENAME_CATEGORIES_MM = 'posts_categories_mm';
 
@@ -202,27 +203,56 @@ class Post extends AbstractModel
     }
 
     /**
-     * @todo: comment
+     * Neue Liste an verknüpften Kategorien zuweisen.
+     *
      * @param array<int> $categoryIds
      *
      * @return array
      */
     public function setCategories (array $categoryIds): array
     {
+        /**
+         * Zunächst holen wir uns die aktuell zugewiesenen Kategorien aus der Datenbank.
+         */
         $oldCategories = $this->categories();
+
+        /**
+         * Dann bereiten wir uns zwei Arrays vor, damit wir die zu löschenden Zuweisungen und jene, die unverändert
+         * bleiben sollen, speichern können. Daraus ergibt sich, dass alle weiteren, die in $categoryIds vorhanden sind,
+         * neu angelegt werden müssen.
+         */
         $categoriesToDelete = [];
         $categoriesToNotBeTouched = [];
 
+        /**
+         * Nun gehen wir alle alten Zuweisungen durch ...
+         */
         foreach ($oldCategories as $oldCategory) {
+            /**
+             * ... und prüfen, ob sie auch in den neuen Kategorien vorkommen sollen.
+             */
             if (!in_array($oldCategory->id, $categoryIds)) {
+                /**
+                 * Wenn nein, soll die Zuweisung gelöscht werden.
+                 */
                 $categoriesToDelete[] = $oldCategory->id;
             } else {
+                /**
+                 * Wenn ja, soll sie weiterhin bestehen bleiben.
+                 */
                 $categoriesToNotBeTouched[] = $oldCategory->id;
             }
         }
 
+        /**
+         * Nun berechnen wir uns die Differenz der drei Arrays, wobei alle Werte aus dem ersten Array das Ergebnis
+         * bilden, die in keinem der weiteren Arrays vorhanden sind. Diese Kategorien müssen neu zugewiesen werden.
+         */
         $categoriesToAdd = array_diff($categoryIds, $categoriesToDelete, $categoriesToNotBeTouched);
 
+        /**
+         * Nun gehen wir alle zu löschenden und neu anzulegenden Kategorieverbindungen durch und führen die Aktion aus.
+         */
         foreach ($categoriesToDelete as $categoryToDelete) {
             $this->detachCategory($categoryToDelete);
         }
@@ -230,14 +260,18 @@ class Post extends AbstractModel
             $this->attachCategory($categoryToAdd);
         }
 
+        /**
+         * Neue Liste aller Kategorien für den Post zurückgeben.
+         */
         return $this->categories();
     }
 
     /**
+     * Verknüpfung zu einer Kategorie aufheben.
+     *
      * @param int $categoryId
      *
      * @return bool
-     * @todo: comment
      */
     public function detachCategory (int $categoryId): bool
     {
@@ -266,10 +300,11 @@ class Post extends AbstractModel
     }
 
     /**
+     * Verknüpfung zu einer Kategorie herstellen.
+     *
      * @param int $categoryId
      *
      * @return bool
-     * @todo: comment
      */
     public function attachCategory (int $categoryId): bool
     {
