@@ -35,6 +35,12 @@
 
     <div class="row mb-3">
         <div class="col">
+            <div class="avatar">
+                <?php echo $user->avatar()?->getImgTag(); ?>
+            </div>
+        </div>
+
+        <div class="col">
             <div class="form-group">
                 <label for="avatar">Avatar</label>
                 <input type="file" class="form-control-file" name="avatar" id="avatar">

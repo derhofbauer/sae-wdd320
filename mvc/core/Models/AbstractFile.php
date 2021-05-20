@@ -2,6 +2,7 @@
 
 namespace Core\Models;
 
+use App\Models\File;
 use Core\Config;
 
 /**
@@ -12,7 +13,7 @@ use Core\Config;
  *
  * @package Core\Models
  */
-abstract class AbstractFile
+abstract class AbstractFile extends AbstractModel
 {
     /**
      * Properties definieren.
@@ -22,6 +23,10 @@ abstract class AbstractFile
     public string $tmp_name;
     public int $error;
     public int $size;
+    /**
+     * Fehler Array vorbereiten.
+     */
+    protected array $errors;
 
     /**
      * Der Konstruktor befüllt das Objekt, sofern Daten übergeben worden sind.
@@ -48,7 +53,7 @@ abstract class AbstractFile
      *
      * @param array $data
      */
-    public function fill (array $data)
+    public function fillUploadedData (array $data)
     {
         $this->name = $data['name'];
         $this->type = $data['type'];
@@ -70,13 +75,94 @@ abstract class AbstractFile
     /**
      * Hilfsfunktion zur Prüfung ob die Datei alle Größen- und Dimensionsbeschränkungen erfüllt.
      *
-     * @return array
+     * @return bool
+     * @todo: comment
      */
-    public function validateImage (): array
+    public function validateImage (): bool
     {
         $uploadLimit = Config::get('app.upload-limit');
-        /**
-         * @todo: Avatar Dimensionen sollten in File.php geprüft werden und über das parent-Keyword diese Methode erweitern.
-         */
+
+        if ($this->size > $uploadLimit) {
+            $uploadLimitNice = $uploadLimit / 1024 / 1024; // Upload Limit in MB
+            $this->errors[] = "Upload Limit überschritten ({$uploadLimitNice}).";
+            return false;
+        }
+
+        if (!str_contains($this->type, 'image/')) {
+            $this->errors[] = 'Die Datei ist kein Bild!';
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param string|null $relativeStoragePath
+     * @param string|null $filename
+     *
+     * @return string|false|File Filepath, an den das File gespeichert wurde
+     *
+     * @throws \Exception
+     * @todo: comment
+     */
+    public function putTo (string $relativeStoragePath = null, string $filename = null): string|false|File
+    {
+        $absoluteStoragePath = self::getStoragePath();
+
+        $destinationPath = $absoluteStoragePath . '/' . $relativeStoragePath; // /uploads
+
+        if (file_exists($destinationPath) && !is_dir($destinationPath)) {
+            throw new \Exception('Uploads folder already exists as file.');
+        }
+
+        if (!file_exists($destinationPath) && !mkdir($destinationPath, recursive: true)) {
+            throw new \Exception('Uploads folder could not be created.');
+        }
+
+        $destinationName = time() . "_$this->name";
+        $destinationPath = $destinationPath . '/' . $destinationName;
+        $destinationPath = str_replace('//', '/', $destinationPath);
+
+        if (move_uploaded_file($this->tmp_name, $destinationPath)) {
+            return $destinationPath;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * @return string
+     * @todo: comment
+     */
+    public static function getStoragePath (): string
+    {
+        $absoluteStoragePath = __DIR__ . '/../../storage';
+        $absoluteStoragePath = realpath($absoluteStoragePath);
+        return $absoluteStoragePath;
+    }
+
+    /**
+     * @param string|null $relativeStoragePath
+     * @param string|null $filename
+     *
+     * @return string
+     * @throws \Exception
+     * @todo: comment
+     */
+    public function put (string $relativeStoragePath = null, string $filename = null): string|File
+    {
+        if ($relativeStoragePath === null) {
+            $relativeStoragePath = Config::get('app.uploads-folder');
+        }
+        return $this->putTo($relativeStoragePath, $filename);
+    }
+
+    /**
+     * @return array
+     * @todo: comment
+     */
+    public function getErrors (): array
+    {
+        return $this->errors;
     }
 }

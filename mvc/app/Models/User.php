@@ -131,4 +131,16 @@ class User extends AbstractUser
             return $result;
         }
     }
+
+    /**
+     * @return File|null
+     * @todo: comment
+     */
+    public function avatar (): File|null
+    {
+        if (!empty($this->avatar)) {
+            return File::find($this->avatar);
+        }
+        return null;
+    }
 }

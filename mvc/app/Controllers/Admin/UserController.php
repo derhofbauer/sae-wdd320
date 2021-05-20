@@ -78,6 +78,8 @@ class UserController
      * User*in mit den Daten aus dem Bearbeitungsformular aktualisieren.
      *
      * @param int $id
+     *
+     * @throws \Exception
      */
     public function update (int $id)
     {
@@ -120,29 +122,31 @@ class UserController
         $errors = $validator->getErrors();
 
         /**
-         * Nun kümmern wir uns um die Dateiuploads des Avatar Bildes. Die Daten zu den hochgeladenen Dateien befinden
-         * sich in der $_FILES Superglobal. Damit wir eine Abstraktionsebene einziehen, bauen wir die ganze Logik für
-         * den Upload und die Prüfung und Speicherung der hochgeladenen Dateien in eine eigene File-Klasse.
-         */
-        $avatar = new File($_FILES['avatar']);
-        if (!$avatar->hasUploadError()) {
-            /**
-             * @todo: continue here
-             */
-        } else {
-            /**
-             * Ist ein Fehler aufgetreten, schreiben wir einen Error.
-             */
-            $errors[] = 'Der Dateiupload für den Avatar hat nicht funktioniert :(';
-        }
-
-
-        /**
          * Gewünschte*n User*in über das User-Model aus der Datenbank laden. Hier verwenden wir die findOrFail()-Methode aus
          * dem AbstractModel, die einen 404 Fehler ausgibt, wenn das Objekt nicht gefunden wird. Dadurch sparen wir uns
          * hier zu prüfen ob ein Eintrag gefunden wurde oder nicht.
          */
         $user = User::findOrFail($id);
+
+        /**
+         * Nun kümmern wir uns um die Dateiuploads des Avatar Bildes. Die Daten zu den hochgeladenen Dateien befinden
+         * sich in der $_FILES Superglobal. Damit wir eine Abstraktionsebene einziehen, bauen wir die ganze Logik für
+         * den Upload und die Prüfung und Speicherung der hochgeladenen Dateien in eine eigene File-Klasse.
+         *
+         * @todo: comment
+         */
+        $avatar = new File();
+        $avatar->fillUploadedData($_FILES['avatar']);
+        if ($avatar->hasUploadError() || !$avatar->validateAvatar()) {
+            /**
+             * Ist ein Fehler aufgetreten, schreiben wir einen Error.
+             */
+            $errors[] = 'Der Dateiupload für den Avatar hat nicht funktioniert :(';
+            $errors = array_merge($errors, $avatar->getErrors());
+        } else {
+            $avatar->putTo('/uploads/avatars');
+            $user->avatar = $avatar->id;
+        }
 
         /**
          * Sind Validierungsfehler aufgetreten ...
