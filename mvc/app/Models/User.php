@@ -133,14 +133,22 @@ class User extends AbstractUser
     }
 
     /**
+     * Relation zu Files, aber nur für das Avatar Bild.
+     *
      * @return File|null
-     * @todo: comment
      */
     public function avatar (): File|null
     {
+        /**
+         * Nachdem man keinen Avatar haben muss, müssen wir auch prüfen, ob einer gesetzt ist, wenn ja, laden wir den
+         * File Eintrag aus der Datenbank und geben ihn zurück.
+         */
         if (!empty($this->avatar)) {
             return File::find($this->avatar);
         }
+        /**
+         * Wurde kein Avatar gesetzt, können wir auch nichts laden.
+         */
         return null;
     }
 }

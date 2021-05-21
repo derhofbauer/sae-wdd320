@@ -3,7 +3,6 @@
 namespace App\Controllers\Admin;
 
 use App\Models\File;
-use App\Models\Post;
 use App\Models\User;
 use Core\Helpers\Redirector;
 use Core\Middlewares\AuthMiddleware;
@@ -132,19 +131,35 @@ class UserController
          * Nun kümmern wir uns um die Dateiuploads des Avatar Bildes. Die Daten zu den hochgeladenen Dateien befinden
          * sich in der $_FILES Superglobal. Damit wir eine Abstraktionsebene einziehen, bauen wir die ganze Logik für
          * den Upload und die Prüfung und Speicherung der hochgeladenen Dateien in eine eigene File-Klasse.
-         *
-         * @todo: comment
          */
         $avatar = new File();
+        /**
+         * Wir befüllen das File Objekt mit den Daten aus der $_FILES Superglobal.
+         */
         $avatar->fillUploadedData($_FILES['avatar']);
+        /**
+         * Ist ein Upload Fehler aufgetreten oder konnte die Datei nicht korrekt validiert werden (Upload Limit,
+         * Bildgröße), so schreiben wir einen Fehler.
+         */
         if ($avatar->hasUploadError() || !$avatar->validateAvatar()) {
             /**
              * Ist ein Fehler aufgetreten, schreiben wir einen Error.
              */
             $errors[] = 'Der Dateiupload für den Avatar hat nicht funktioniert :(';
+            /**
+             * Wir holen die Validierungsfehler aus dem File Objekt und fügen sie in unseren $errors Array ein.
+             */
             $errors = array_merge($errors, $avatar->getErrors());
         } else {
+            /**
+             * Sind keineFehler aufgetreten, speichern wir die Datei an den angegebenen Pfad. Dabei wird auch ein
+             * Eintrag in der Datenbank angelegt, der eine ID erhält.
+             */
             $avatar->putTo('/uploads/avatars');
+            /**
+             * Die soeben erstelle ID aus der Datenbank, fügen wir im $user hinzu und stellen somit die Verknüpfung von
+             * User zu Avatar-File her.
+             */
             $user->avatar = $avatar->id;
         }
 
@@ -161,13 +176,28 @@ class UserController
              * Sind keine Fehler aufgetreten legen aktualisieren wir die Werte des vorher geladenen Objekts ...
              */
             $user->email = trim($_POST['email']);
+            /**
+             * Wurde ein Username über das Formular geschickt, trimmen wir ihn und überschreiben den aktuellen Wert.
+             */
             if (!empty($_POST['username'])) {
                 $user->username = trim($_POST['username']);
             }
+            /**
+             * Wurde ein Passwort geschickt, so setzen wir es neu. Dadurch wird ein Hash erstellt und dieser dann in die
+             * Datenbank gespeichert.
+             */
             if (!empty($_POST['password'])) {
                 $user->setPassword($_POST['password']);
             }
+            /**
+             * Bearbeiten wir uns gerade nicht selber?
+             */
             if (User::getLoggedIn()->id !== $user->id) {
+                /**
+                 * Wenn wir uns nicht selbst bearbeiten, dann prüfen wir, ob die is_admin Checkbox geklickt worden ist,
+                 * und wenn ja, dann vergeben wir Admin Berechtigungen oder entfernen sie, wenn die Checkbox nicht
+                 * ausgewählt war.
+                 */
                 if (isset($_POST['is_admin']) && $_POST['is_admin'] === 'on') {
                     $user->is_admin = true;
                 } else {
