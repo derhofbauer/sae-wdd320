@@ -17,9 +17,9 @@ trait SoftDelete
     /**
      * Den zum aktuellen Objekt gehörigen Datensatz in der Datenbank als gelöscht markieren.
      *
-     * @return array
+     * @return bool
      */
-    public function delete (): array
+    public function delete (): bool
     {
         /**
          * Datenbankverbindung herstellen.
@@ -43,7 +43,7 @@ trait SoftDelete
         /**
          * Datenbankergebnis verarbeiten und zurückgeben.
          */
-        return $this->handleResult($results);
+        return $results;
     }
 
     /**

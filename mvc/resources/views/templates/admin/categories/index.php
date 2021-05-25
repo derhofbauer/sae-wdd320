@@ -1,4 +1,4 @@
-<h2>Categories</h2>
+<h2>Categories <a href="<?php echo BASE_URL; ?>/admin/categories/new" class="btn btn-primary btn-sm">New</a></h2>
 
 <table class="table table-striped">
     <thead>

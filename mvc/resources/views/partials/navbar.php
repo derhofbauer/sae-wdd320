@@ -19,11 +19,14 @@
         </ul>
         <ul class="navbar-nav navbar-right">
             <?php if (\App\Models\User::isLoggedIn()): ?>
-                <?php if(\App\Models\User::getLoggedIn()->is_admin === true): ?>
+                <?php if (\App\Models\User::getLoggedIn()->is_admin === true): ?>
                     <li class="nav-item">
                         <a class="nav-link" href="<?php echo BASE_URL; ?>/admin">Admin</a>
                     </li>
                 <?php endif; ?>
+                <li class="nav-item">
+                    <a class="nav-link" href="<?php echo BASE_URL; ?>/profile">Profil</a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="<?php echo BASE_URL; ?>/logout/do">Logout</a>
                 </li>

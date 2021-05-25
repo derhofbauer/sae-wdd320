@@ -110,7 +110,14 @@ class Session
          * Wert zurück, wenn der $key gefunden wurde.
          */
         if (isset($_SESSION['$_post'][$key])) {
-            return $_SESSION['$_post'][$key];
+            /**
+             * Damit Werte, die einmal schon über die old()-Methode in einem Formular angezeigt wurden, nicht später
+             * wieder in einem Formular angezeigt werden, legen wir hier eine Kopie der Daten an, löschen die Werte aus
+             * der Session und geben dann die Kopie der Daten zurück.
+             */
+            $_value = $_SESSION['$_post'][$key];
+            unset($_SESSION['$_post'][$key]);
+            return $_value;
         }
 
         /**
@@ -118,7 +125,14 @@ class Session
          * Wert zurück, wenn der $key gefunden wurde.
          */
         if (isset($_SESSION['$_get'][$key])) {
-            return $_SESSION['$_get'][$key];
+            /**
+             * Damit Werte, die einmal schon über die old()-Methode in einem Formular angezeigt wurden, nicht später
+             * wieder in einem Formular angezeigt werden, legen wir hier eine Kopie der Daten an, löschen die Werte aus
+             * der Session und geben dann die Kopie der Daten zurück.
+             */
+            $_value = $_SESSION['$_get'][$key];
+            unset($_SESSION['$_get'][$key]);
+            return $_value;
         }
 
         /**

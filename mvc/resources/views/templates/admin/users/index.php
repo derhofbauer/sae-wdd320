@@ -1,4 +1,4 @@
-<h2>Users</h2>
+<h2>Users <a href="<?php echo BASE_URL; ?>/admin/users/new" class="btn btn-primary btn-sm">New</a></h2>
 
 <table class="table table-striped">
     <thead>

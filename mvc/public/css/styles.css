@@ -40,4 +40,16 @@
   height: auto;
 }
 
+.media {
+  display: flex;
+  flex-wrap: wrap;
+}
+.media .image {
+  max-width: 20%;
+}
+.media .image img {
+  max-width: 100%;
+  auto: height;
+}
+
 /*# sourceMappingURL=styles.css.map */

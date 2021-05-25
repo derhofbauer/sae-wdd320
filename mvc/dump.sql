@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: db
--- Erstellungszeit: 12. Mai 2021 um 14:26
+-- Erstellungszeit: 25. Mai 2021 um 15:53
 -- Server-Version: 10.5.9-MariaDB-1:10.5.9+maria~focal
 -- PHP-Version: 7.4.16
 
@@ -82,6 +82,13 @@ CREATE TABLE `files` (
   `tstamp` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `deleted_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Daten für Tabelle `files`
+--
+
+INSERT INTO `files` (`id`, `path`, `name`, `title`, `alttext`, `caption`, `is_avatar`, `author`, `crdate`, `tstamp`, `deleted_at`) VALUES
+(1, 'uploads/avatars', '1621957968_37844315_454803461597516_8815318794768482304_n (1).jpg', NULL, NULL, NULL, 1, 1, '2021-05-25 15:52:48', '2021-05-25 15:52:48', NULL);
 
 -- --------------------------------------------------------
 
@@ -168,7 +175,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `email`, `username`, `password`, `avatar`, `is_admin`, `crdate`, `tstamp`, `deleted_at`) VALUES
-(1, 'arthur.dent@galaxy.com', 'adent', '$2y$12$CIC/1HJPFDgW0LrlYc0OLeChDLAUNRHa1XEKNOCknzs8oCbCrl4fW', NULL, 1, '2021-04-22 13:27:28', '2021-05-04 13:54:28', NULL),
+(1, 'arthur.dent@galaxy.com', 'adent', '$2y$12$CIC/1HJPFDgW0LrlYc0OLeChDLAUNRHa1XEKNOCknzs8oCbCrl4fW', 1, 1, '2021-04-22 13:27:28', '2021-05-25 15:52:48', NULL),
 (2, 'ford.prefect@galaxy.com', 'fprefect', '$2y$10$iCQYwYKrwBbidBWTHEDZ0eo9ti7Aw.43Wxqg6nfgwb7XcKVZ64q/i', NULL, 0, '2021-05-11 13:36:58', '2021-05-11 13:39:54', NULL);
 
 --
@@ -251,7 +258,7 @@ ALTER TABLE `comments`
 -- AUTO_INCREMENT für Tabelle `files`
 --
 ALTER TABLE `files`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT für Tabelle `posts`

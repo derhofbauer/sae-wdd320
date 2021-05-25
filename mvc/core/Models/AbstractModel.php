@@ -199,7 +199,7 @@ abstract class AbstractModel
      *
      * @return array
      */
-    public function delete (): array
+    public function delete (): array|bool
     {
         /**
          * Datenbankverbindung herstellen.
@@ -255,7 +255,7 @@ abstract class AbstractModel
      *
      * @return array
      */
-    public static function handleResult (array $results): array
+    public static function handleResult (array $results): array|bool
     {
         /**
          * Ergebnis-Array vorbereiten.

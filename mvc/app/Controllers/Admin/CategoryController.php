@@ -35,7 +35,7 @@ class CategoryController
         $categories = Category::all();
 
         /**
-         * View laden
+         * View laden.
          */
         View::render('admin/categories/index', [
             'categories' => $categories
@@ -60,7 +60,7 @@ class CategoryController
         $category = Category::findOrFail($id);
 
         /**
-         * View laden
+         * View laden.
          */
         View::render('admin/categories/edit', [
             'category' => $category
@@ -87,19 +87,10 @@ class CategoryController
         AuthMiddleware::isAdminOrFail();
 
         /**
-         * Daten aus dem Formular validieren.
-         *
-         * Auch hier verwenden wir wieder die PHP 8 "named params", damit wir für "title" eine Maximum definieren
-         * können, ohne ein Minimum definieren zu müssen.
+         * Nachdem wir exakt die selben Validierungen durchführen für update und create, können wir sie in eine eigene
+         * Methode auslagern und überall dort verwenden, wo wir sie brauchen.
          */
-        $validator = new Validator();
-        $validator->textnum($_POST['title'], 'Title', true, max: 255);
-        $validator->slug($_POST['slug'], 'Slug', true, 1, 255);
-        $validator->textnum($_POST['description'], 'Beschreibung');
-        /**
-         * Fehler aus dem Validator holen.
-         */
-        $errors = $validator->getErrors();
+        $errors = $this->validateFormData();
 
         /**
          * Gewünschte Category über das Category-Model aus der Datenbank laden.
@@ -116,7 +107,7 @@ class CategoryController
             Session::set('errors', $errors);
         } else {
             /**
-             * Sind keine Fehler aufgetreten legen aktualisieren wir die Werte des vorher geladenen Objekts ...
+             * Sind keine Fehler aufgetreten aktualisieren wir die Werte des vorher geladenen Objekts ...
              */
             $category->title = trim($_POST['title']);
             $category->slug = trim($_POST['slug']);
@@ -202,6 +193,107 @@ class CategoryController
          * Zur Kategorie-Liste zurück leiten.
          */
         Redirector::redirect(BASE_URL . '/admin/categories');
+    }
+
+    /**
+     * Formular für neues Element anzeigen.
+     */
+    public function new ()
+    {
+        /**
+         * Prüfen ob ein*e User*in eingeloggt ist und ob diese*r eingeloggte User*in Admin ist. Wenn nicht, geben wir
+         * einen Fehler 403 Forbidden zurück. Dazu haben wir eine Art Middleware geschrieben, damit wir nicht immer das
+         * selbe if-Statement kopieren müssen, sondern einfach diese Funktion aufrufen können.
+         */
+        AuthMiddleware::isAdminOrFail();
+
+        /**
+         * View laden.
+         */
+        View::render('admin/categories/new', layout: 'sidebar');
+    }
+
+    /**
+     * Daten aus dem Formular für neue Elemente entgegennehmen.
+     */
+    public function create ()
+    {
+        /**
+         * Prüfen ob ein*e User*in eingeloggt ist und ob diese*r eingeloggte User*in Admin ist. Wenn nicht, geben wir
+         * einen Fehler 403 Forbidden zurück. Dazu haben wir eine Art Middleware geschrieben, damit wir nicht immer das
+         * selbe if-Statement kopieren müssen, sondern einfach diese Funktion aufrufen können.
+         */
+        AuthMiddleware::isAdminOrFail();
+
+        /**
+         * Nachdem wir exakt die selben Validierungen durchführen für update und create, können wir sie in eine eigene
+         * Methode auslagern und überall dort verwenden, wo wir sie brauchen.
+         */
+        $errors = $this->validateFormData();
+
+        /**
+         * Sind Validierungsfehler aufgetreten ...
+         */
+        if (!empty($errors)) {
+            /**
+             * ... dann speichern wir sie in die Session um sie in den Views dann ausgeben zu können.
+             */
+            Session::set('errors', $errors);
+
+            /**
+             * Im Fehlerfall leiten wir zurück zum Formular und geben die Fehlermeldungen aus.
+             */
+            Redirector::redirect(BASE_URL . "/admin/categories/new");
+        } else {
+            /**
+             * Sind keine Fehler aufgetreten legen wir ein neues Objekt an ...
+             */
+            $category = new Category();
+            $category->title = trim($_POST['title']);
+            $category->slug = trim($_POST['slug']);
+            $category->description = trim($_POST['description']);
+
+            /**
+             * ... und speichern das aktualisierte Objekt in die Datenbank zurück.
+             */
+            $category->save();
+
+            /**
+             * Nun speichern wir eine Erfolgsmeldung in die Session ...
+             */
+            Session::set('success', ['Erfolgreich gespeichert.']);
+
+            /**
+             * ... und leiten im Erfolgsfall zurück zum Bearbeitungsformular - entweder mit Fehlern oder mit
+             * Erfolgsmeldung.
+             */
+            Redirector::redirect(BASE_URL . "/admin / categories /{
+                $category->id}/edit");
+        }
+    }
+
+    /**
+     * Validierungen kapseln, damit wir sie überall dort, wo wir derartige Objekte validieren müssen, verwenden können.
+     *
+     * @return array
+     */
+    public function validateFormData (): array
+    {
+        /**
+         * Daten aus dem Formular validieren.
+         *
+         * Auch hier verwenden wir wieder die PHP 8 "named params", damit wir für "title" eine Maximum definieren
+         * können, ohne ein Minimum definieren zu müssen.
+         */
+        $validator = new Validator();
+        $validator->textnum($_POST['title'], 'Title', true, max: 255);
+        $validator->slug($_POST['slug'], 'Slug', true, 1, 255);
+        $validator->textnum($_POST['description'], 'Beschreibung');
+
+        /**
+         * Fehler aus dem Validator holen und direkt zurückgeben.
+         */
+        return $validator->getErrors();
     }
 
 }

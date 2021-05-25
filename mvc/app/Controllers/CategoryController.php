@@ -25,7 +25,7 @@ class CategoryController
         $categories = Category::all();
 
         /**
-         * View laden
+         * View laden.
          */
         View::render('categories/index', [
             'categories' => $categories

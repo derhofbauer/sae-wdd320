@@ -1,0 +1,13 @@
+.media {
+  display: flex;
+  flex-wrap: wrap;
+
+  .image {
+    max-width: 20%;
+
+    img {
+      max-width: 100%;
+      auto: height
+    }
+  }
+}

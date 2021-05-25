@@ -4,6 +4,8 @@ use App\Controllers\Admin\AdminController;
 use App\Controllers\BlogController;
 use App\Controllers\CategoryController;
 use App\Controllers\AuthController;
+use App\Controllers\ProfileController;
+use App\Controllers\Admin\MediaController;
 
 /**
  * Werden mit dem use-Keyword mehrere Klassen mit dem selben Namen importiert, so können diese weiter unten nicht mehr
@@ -29,6 +31,12 @@ return [
      * Home Routes
      */
     '/' => [BlogController::class, 'index'],
+
+    /**
+     * Profile Routes
+     */
+    '/profile' => [ProfileController::class, 'edit'], // Formular anzeigen
+    '/profile/update' => [ProfileController::class, 'update'], // Formulardaten verarbeiten
 
     /**
      * Blog Routes
@@ -64,6 +72,8 @@ return [
     '/admin/categories/{id}/update' => [AdminCategoryController::class, 'update'], // Bearbeitete Category speichern
     '/admin/categories/{id}/delete' => [AdminCategoryController::class, 'deleteConfirm'], // Löschen bestätigen
     '/admin/categories/{id}/delete/confirm' => [AdminCategoryController::class, 'delete'], // Category löschen
+    '/admin/categories/new' => [AdminCategoryController::class, 'new'], // Formular für neues Objekt anzeigen
+    '/admin/categories/create' => [AdminCategoryController::class, 'create'], // Neues Objekt in DB speichern
 
     /**
      * Admin Post Routes
@@ -73,6 +83,8 @@ return [
     '/admin/posts/{id}/update' => [AdminPostController::class, 'update'], // Bearbeiteten Post speichern
     '/admin/posts/{id}/delete' => [AdminPostController::class, 'deleteConfirm'], // Löschen bestätigen
     '/admin/posts/{id}/delete/confirm' => [AdminPostController::class, 'delete'], // Post löschen
+    '/admin/posts/new' => [AdminPostController::class, 'new'], // Formular für neues Objekt anzeigen
+    '/admin/posts/create' => [AdminPostController::class, 'create'], // Neues Objekt in DB speichern
 
     /**
      * Admin User Routes
@@ -80,5 +92,15 @@ return [
     '/admin/users' => [AdminUserController::class, 'index'], // Alle User listen
     '/admin/users/{id}/edit' => [AdminUserController::class, 'edit'], // Bearbeitungsformular anzeigen
     '/admin/users/{id}/update' => [AdminUserController::class, 'update'], // Bearbeitete*n User*in speichern
+    '/admin/users/{id}/delete' => [AdminUserController::class, 'deleteConfirm'], // Löschen bestätigen
+    '/admin/users/{id}/delete/confirm' => [AdminUserController::class, 'delete'], // User*in löschen
+    '/admin/users/new' => [AdminUserController::class, 'new'], // Formular für neues Objekt anzeigen
+    '/admin/users/create' => [AdminUserController::class, 'create'], // Neues Objekt in DB speichern
 
+    /**
+     * Admin Media Routes
+     */
+    '/admin/media' => [MediaController::class, 'index'], // Alle Bilder listen
+    '/admin/media/{id}/edit' => [MediaController::class, 'edit'], // Bearbeitungsformular anzeigen
+    '/admin/media/{id}/update' => [MediaController::class, 'update'], // Bearbeitetes Bild speichern
 ];

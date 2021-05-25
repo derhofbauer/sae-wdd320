@@ -26,7 +26,7 @@ abstract class AbstractFile extends AbstractModel
     /**
      * Fehler Array vorbereiten.
      */
-    protected array $errors;
+    protected array $errors = [];
 
     /**
      * Der Konstruktor befüllt das Objekt, sofern Daten übergeben worden sind.
@@ -127,8 +127,6 @@ abstract class AbstractFile extends AbstractModel
      * @return string|false|File Filepath, an den das File gespeichert wurde
      *
      * @throws \Exception
-     * @todo: use $filename param!
-     *
      */
     public function putTo (string $relativeStoragePath = null, string $filename = null): string|false|File
     {
@@ -170,8 +168,15 @@ abstract class AbstractFile extends AbstractModel
          * verwenden und um einen Unix Timestamp erweitern. Das hat den Grund, dass 2 Dateien mit dem selben Namen sich
          * gegenseitig dadurch nicht überschreiben - das würde nur passieren, wenn sie in der selben Sekunde hochgeladen
          * werden, was für unseren Anwendungsfall unwahrscheinlich genug ist.
+         *
+         * Hier prüfen wir, ob ein $filename als Funktionsparameter übergeben wurde. Wenn ja, dann verwenden wir diesen
+         * als $destinationName, wenn nein, generieren wir den $destinationName selbst.
          */
-        $destinationName = time() . "_$this->name";
+        if (!empty($filename)) {
+            $destinationName = $filename;
+        } else {
+            $destinationName = time() . "_$this->name";
+        }
         /**
          * Dann generieren wir aus Pfad und Dateiname den vollständigen Zielpfad.
          */
