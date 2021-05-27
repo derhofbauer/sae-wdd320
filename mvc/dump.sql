@@ -1,13 +1,14 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.0
+-- version 4.9.0.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: db
--- Erstellungszeit: 25. Mai 2021 um 15:53
+-- Erstellungszeit: 27. Mai 2021 um 15:36
 -- Server-Version: 10.5.9-MariaDB-1:10.5.9+maria~focal
--- PHP-Version: 7.4.16
+-- PHP-Version: 7.2.22
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -76,8 +77,9 @@ CREATE TABLE `files` (
   `title` varchar(255) DEFAULT NULL,
   `alttext` text DEFAULT NULL,
   `caption` text DEFAULT NULL,
-  `is_avatar` tinyint(1) DEFAULT NULL,
+  `is_avatar` tinyint(1) DEFAULT 0,
   `author` int(11) NOT NULL,
+  `path_deleted` text DEFAULT NULL COMMENT 'Path of softdeleted file',
   `crdate` timestamp NOT NULL DEFAULT current_timestamp(),
   `tstamp` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `deleted_at` timestamp NULL DEFAULT NULL
@@ -87,8 +89,12 @@ CREATE TABLE `files` (
 -- Daten für Tabelle `files`
 --
 
-INSERT INTO `files` (`id`, `path`, `name`, `title`, `alttext`, `caption`, `is_avatar`, `author`, `crdate`, `tstamp`, `deleted_at`) VALUES
-(1, 'uploads/avatars', '1621957968_37844315_454803461597516_8815318794768482304_n (1).jpg', NULL, NULL, NULL, 1, 1, '2021-05-25 15:52:48', '2021-05-25 15:52:48', NULL);
+INSERT INTO `files` (`id`, `path`, `name`, `title`, `alttext`, `caption`, `is_avatar`, `author`, `path_deleted`, `crdate`, `tstamp`, `deleted_at`) VALUES
+(1, 'uploads/avatars', '1621957968_37844315_454803461597516_8815318794768482304_n (1).jpg', NULL, NULL, NULL, 1, 1, NULL, '2021-05-25 15:52:48', '2021-05-25 15:52:48', NULL),
+(2, 'uploads', 'pimp-rollator.jpg', 'Pimp Rollator', 'Pimp Rollator', 'Fancy Rollator', 0, 1, NULL, '2021-05-27 13:08:57', '2021-05-27 13:11:53', NULL),
+(3, 'uploads', '1622123240_sonika-agarwal-EjPZ18c5Psw-unsplash.jpg', NULL, NULL, NULL, 0, 1, '', '2021-05-27 13:47:20', '2021-05-27 15:36:05', NULL),
+(4, 'uploads', '1622123240_lisanto-Us9M_Ju3_EY-unsplash.jpg', NULL, NULL, NULL, 0, 1, '', '2021-05-27 13:47:20', '2021-05-27 15:36:05', NULL),
+(5, 'uploads', '1622123240_muhammadh-saamy-RR8ibEoYdpk-unsplash.jpg', NULL, NULL, NULL, 0, 1, '', '2021-05-27 13:47:20', '2021-05-27 15:36:05', NULL);
 
 -- --------------------------------------------------------
 
@@ -258,7 +264,7 @@ ALTER TABLE `comments`
 -- AUTO_INCREMENT für Tabelle `files`
 --
 ALTER TABLE `files`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT für Tabelle `posts`
@@ -276,7 +282,7 @@ ALTER TABLE `posts_categories_mm`
 -- AUTO_INCREMENT für Tabelle `posts_files_mm`
 --
 ALTER TABLE `posts_files_mm`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
 --
 -- AUTO_INCREMENT für Tabelle `users`
