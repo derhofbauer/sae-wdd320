@@ -91,4 +91,57 @@ trait SoftDelete
         return self::handleResult($results);
     }
 
+    /**
+     * Alle Datensätze aus der Datenbank abfragen.
+     *
+     * Die ersten beiden Funktionsparameter bieten die Möglichkeit eine ganz einfache WHERE-Abfrage zu machen.
+     *
+     * Die beiden letzten Funktionsparameter bieten die Möglichkeit die Daten, die abgerufen werden, nach einer
+     * einzelnen Spalte aufsteigend oder absteigend direkt über MySQL zu sortieren. Sortierungen sollten, sofern
+     * möglich, über die Datenbank durchgeführt werden, weil das wesentlich performanter ist als über PHP.
+     *
+     * @param string $field
+     * @param mixed  $value
+     * @param string $orderBy
+     * @param string $direction
+     *
+     * @return array
+     */
+    public static function findWhere (string $field, mixed $value, string $orderBy = '', string $direction = 'ASC'): array
+    {
+        /**
+         * Datenbankverbindung herstellen.
+         */
+        $database = new Database();
+
+        /**
+         * Tabellennamen berechnen.
+         */
+        $tablename = self::getTablenameFromClassname();
+
+        /**
+         * Query ausführen.
+         *
+         * Hier ist es wichtig zu bedenken, dass der $field-Parameter niemals die Benutzer*inneneingabe beinhalten darf,
+         * weil sonst der Query für MySQL Injection anfällig ist.
+         *
+         * Wurde in den Funktionsparametern eine Sortierung definiert, so wenden wir sie hier an, andernfalls rufen wir
+         * alles ohne sortierung ab.
+         */
+        if (empty($orderBy)) {
+            $results = $database->query("SELECT * FROM {$tablename} WHERE deleted_at IS NULL AND {$field} = ?", [
+                's:value' => $value
+            ]);
+        } else {
+            $results = $database->query("SELECT * FROM {$tablename} WHERE deleted_at IS NULL AND {$field} = ? ORDER BY $orderBy $direction", [
+                's:value' => $value
+            ]);
+        }
+
+        /**
+         * Datenbankergebnis verarbeiten und zurückgeben.
+         */
+        return self::handleResult($results);
+    }
+
 }

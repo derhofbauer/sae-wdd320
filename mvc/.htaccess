@@ -22,3 +22,7 @@ RewriteRule ^(.*)$ index.php?path=$1 [L,QSA]
 #   aufrufbar sein. Hier konfigurieren wir, dass Urls, die mit app, config, core usw. beginnen, Forbidden sein sollen
 #   und somit nicht direkt über die Url angesteuert werden können. Sie können weiterhin von PHP eingebunden werden.
 RewriteRule ^(app|config|core|resources|routes|storage) - [F]
+
+# @todo: comment
+php_value upload_max_filesize 10M
+php_value post_max_size 10M

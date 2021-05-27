@@ -5,6 +5,7 @@ namespace App\Models;
 use Core\Config;
 use Core\Database;
 use Core\Models\AbstractFile;
+use Core\Traits\SoftDelete;
 
 /**
  * Class File
@@ -18,6 +19,8 @@ use Core\Models\AbstractFile;
  */
 class File extends AbstractFile
 {
+    use SoftDelete;
+
     /**
      * Wir definieren alle Spalten aus der Tabelle mit den richtigen Datentypen. Die AbstractFile Klasse beinhaltet
      * ihrerseits die selben Properties wie die $_FILES Superglobal, wodurch diese auch hier in File verfügbar sind.
@@ -30,6 +33,7 @@ class File extends AbstractFile
     public ?string $caption = null;
     public bool $is_avatar = false;
     public int $author;
+    public string $path_deleted;
     public string $crdate;
     public string $tstamp;
     public mixed $deleted_at;
@@ -50,6 +54,7 @@ class File extends AbstractFile
         $this->caption = $data['caption'];
         $this->is_avatar = $data['is_avatar'];
         $this->author = $data['author'];
+        $this->path_deleted = (string)$data['path_deleted'];
         $this->crdate = $data['crdate'];
         $this->tstamp = $data['tstamp'];
         $this->deleted_at = $data['deleted_at'];
@@ -156,25 +161,10 @@ class File extends AbstractFile
     private function handlePut (string $filepath): File
     {
         /**
-         * StoragePath aus dem AbstractFile holen. Dieser Pfas ist absolut zum Server Root.
+         * @todo: comment
          */
-        $storagePath = AbstractFile::getStoragePath();
-        /**
-         * Jetzt wandeln wir den absoluten $filepath der gespeicherten Datei in einen relativen Pfad um, indem wir den
-         * $storagePath einfach entfernen. Was übrig bleibt, ist der Teil, der über den $storagePath hinausgeht - ein
-         * relativer Pfad.
-         */
-        $relativePath = str_replace($storagePath, '', $filepath);
-        /**
-         * Wir entfernen alle / auf der linken Seite des Pfades.
-         */
-        $relativePath = ltrim($relativePath, '/');
-        /**
-         * Die dirname()-Funktion gibt aus einem Pfad alles zurück, was nicht der Dateiname ist.
-         *
-         * Bsp.: dirname('/some/path/foobar.txt') --> '/some/path/'
-         */
-        $this->path = dirname($relativePath);
+        $this->path = self::convertToRelativePath($filepath);
+
         /**
          * Die basename()-Funktion gibt aus einem Pfad den Dateinamen zurück.
          *
@@ -219,7 +209,7 @@ class File extends AbstractFile
              * Query ausführen und Ergebnis direkt zurückgeben. Das kann entweder true oder false sein, je nachdem ob
              * der Query funktioniert hat oder nicht.
              */
-            return $database->query("UPDATE $tablename SET path = ?, name = ?, title = ?, alttext = ?, caption = ?, is_avatar = ?, author = ? WHERE id = ?", [
+            return $database->query("UPDATE $tablename SET path = ?, name = ?, title = ?, alttext = ?, caption = ?, is_avatar = ?, author = ?, path_deleted = ? WHERE id = ?", [
                 's:path' => $this->path,
                 's:name' => $this->name,
                 's:title' => $this->title,
@@ -227,20 +217,22 @@ class File extends AbstractFile
                 's:caption' => $this->caption,
                 'i:is_avatar' => $this->is_avatar,
                 'i:author' => $this->author,
+                's:path_deleted' => $this->path_deleted,
                 'i:id' => $this->id
             ]);
         } else {
             /**
              * Hat es keine ID, so müssen wir es neu anlegen.
              */
-            $result = $database->query("INSERT INTO $tablename SET path = ?, name = ?, title = ?, alttext = ?, caption = ?, is_avatar = ?, author = ?", [
+            $result = $database->query("INSERT INTO $tablename SET path = ?, name = ?, title = ?, alttext = ?, caption = ?, is_avatar = ?, author = ?, path_deleted = ?", [
                 's:path' => $this->path,
                 's:name' => $this->name,
                 's:title' => $this->title,
                 's:alttext' => $this->alttext,
                 's:caption' => $this->caption,
                 'i:is_avatar' => $this->is_avatar,
-                'i:author' => $this->author
+                'i:author' => $this->author,
+                's:path_deleted' => $this->path_deleted
             ]);
 
             /**
@@ -334,4 +326,58 @@ class File extends AbstractFile
         return sprintf('<img src="%s" title="%s" alt="%s" width="%s" height="%s">', $this->getFilePath(true, true), $this->title, $this->alttext, $height, $width);
     }
 
+    /**
+     * @param string $filepathRelativeToStorage
+     *
+     * @return bool|int
+     * @todo: comment
+     */
+    public function deleteFile (string $filepathRelativeToStorage = '_trash_'): bool|int
+    {
+        $trashedPath = $this->moveTo($filepathRelativeToStorage);
+        if ($trashedPath !== false) {
+            $this->path_deleted = self::convertToRelativePath($trashedPath);
+        }
+        $this->save();
+        $this->delete();
+
+        return true;
+    }
+
+    /**
+     * @param string $absolutePath
+     *
+     * @return string
+     * @todo: comment
+     */
+    private static function convertToRelativePath (string $absolutePath): string {
+        /**
+         * StoragePath aus dem AbstractFile holen. Dieser Pfas ist absolut zum Server Root.
+         */
+        $storagePath = AbstractFile::getStoragePath();
+        /**
+         * Jetzt wandeln wir den absoluten $filepath der gespeicherten Datei in einen relativen Pfad um, indem wir den
+         * $storagePath einfach entfernen. Was übrig bleibt, ist der Teil, der über den $storagePath hinausgeht - ein
+         * relativer Pfad.
+         */
+        $relativePath = str_replace($storagePath, '', $absolutePath);
+        /**
+         * Wir entfernen alle / auf der linken Seite des Pfades.
+         */
+        $relativePath = ltrim($relativePath, '/');
+        /**
+         * Die dirname()-Funktion gibt aus einem Pfad alles zurück, was nicht der Dateiname ist.
+         *
+         * Bsp.: dirname('/some/path/foobar.txt') --> '/some/path/'
+         */
+        $dirname = dirname($relativePath);
+
+        /**
+         * @todo: comment
+         */
+        if ($dirname === '.') {
+            return $relativePath;
+        }
+        return $dirname;
+    }
 }

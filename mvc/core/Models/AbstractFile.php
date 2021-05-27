@@ -51,15 +51,44 @@ abstract class AbstractFile extends AbstractModel
     /**
      * Hier definieren wir, dass eine Klasse, die AbstractModel erweitert, eine fill() Methode haben MUSS.
      *
-     * @param array $data
+     * @param array    $data
+     * @param int|null $key
      */
-    public function fillUploadedData (array $data)
+    public function fillUploadedData (array $data, int $key = null)
     {
-        $this->name = $data['name'];
-        $this->type = $data['type'];
-        $this->tmp_name = $data['tmp_name'];
-        $this->error = $data['error'];
-        $this->size = $data['size'];
+        if ($key !== null) {
+            $this->name = $data['name'][$key];
+            $this->type = $data['type'][$key];
+            $this->tmp_name = $data['tmp_name'][$key];
+            $this->error = $data['error'][$key];
+            $this->size = $data['size'][$key];
+        } else {
+            $this->name = $data['name'];
+            $this->type = $data['type'];
+            $this->tmp_name = $data['tmp_name'];
+            $this->error = $data['error'];
+            $this->size = $data['size'];
+        }
+    }
+
+    /**
+     * @param string $keyInFilesSuperglobal
+     *
+     * @return array
+     * @todo: comment
+     */
+    public static function createFromUpload (string $keyInFilesSuperglobal): array
+    {
+        $files = $_FILES[$keyInFilesSuperglobal];
+        $filesObjects = [];
+
+        foreach ($files['name'] as $key => $name) {
+            $file = new File();
+            $file->fillUploadedData($files, $key);
+            $filesObjects[] = $file;
+        }
+
+        return $filesObjects;
     }
 
     /**
@@ -247,6 +276,58 @@ abstract class AbstractFile extends AbstractModel
          * wie möglich.
          */
         return $this->putTo($relativeStoragePath, $filename);
+    }
+
+    /**
+     * @param string $filepathRelativeToStorage
+     *
+     * @return bool|int
+     * @todo: comment
+     */
+    public function deleteFile (string $filepathRelativeToStorage): bool|int
+    {
+        if (file_exists($filepathRelativeToStorage)) {
+            return unlink($filepathRelativeToStorage);
+        }
+        return -1;
+    }
+
+    /**
+     * @param string      $relativeStoragePath
+     * @param string|null $newFilename
+     *
+     * @return bool|int
+     * @todo: comment (unsaubere Trennung zwischen File und AbstractFile!!)
+     */
+    public function moveTo (string $relativeStoragePath, string $newFilename = null): bool|int|string
+    {
+        $destinationFilename = $newFilename;
+        if ($newFilename === null) {
+            $destinationFilename = $this->name;
+        }
+
+        /**
+         * Wir berechnen uns den Storage Pfad absolut zum Server Wurzelverzeichnis (Root).
+         */
+        $absoluteStoragePath = self::getStoragePath();
+
+        /**
+         * Nun berechnen wir uns den Zielpfad der Datei aus dem absoluten Storage Pfad und dem Pfad, der relativ zum
+         * Storage angeben wurde.
+         */
+        $destinationPath = $absoluteStoragePath . '/' . $relativeStoragePath;
+
+        if (!file_exists($destinationPath) && !mkdir($destinationPath, recursive: true)) {
+            return -1;
+        }
+
+        $oldPath = $absoluteStoragePath . '/' . $this->path . '/' . $this->name;
+        $destinationPathAndFilename = $destinationPath . '/' . $destinationFilename;
+
+        if (rename($oldPath, $destinationPathAndFilename)) {
+            return $destinationPath;
+        }
+        return false;
     }
 
     /**

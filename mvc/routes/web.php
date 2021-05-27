@@ -103,4 +103,8 @@ return [
     '/admin/media' => [MediaController::class, 'index'], // Alle Bilder listen
     '/admin/media/{id}/edit' => [MediaController::class, 'edit'], // Bearbeitungsformular anzeigen
     '/admin/media/{id}/update' => [MediaController::class, 'update'], // Bearbeitetes Bild speichern
+    '/admin/media/delete-multiple' => [MediaController::class, 'deleteMultipleConfirm'], // Löschen bestätigen
+    '/admin/media/{ids}/delete-multiple/confirm' => [MediaController::class, 'deleteMultiple'], // Bilder löschen
+    '/admin/media/new' => [MediaController::class, 'new'], // Formular für neues Objekt anzeigen
+    '/admin/media/create' => [MediaController::class, 'create'], // Neues Objekt in DB speichern
 ];

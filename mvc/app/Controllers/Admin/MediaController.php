@@ -123,6 +123,90 @@ class MediaController
     }
 
     /**
+     * @todo: comment
+     */
+    public function new ()
+    {
+        /**
+         * View laden.
+         */
+        View::render('admin/media/new', layout: 'sidebar');
+    }
+
+    /**
+     * @todo: comment
+     */
+    public function create ()
+    {
+        $uploadedFiles = File::createFromUpload('files');
+
+        $errors = [];
+
+        foreach ($uploadedFiles as $file) {
+            if ($file->hasUploadError() || !$file->validateImage()) {
+                $errors[] = "Der Dateiupload für die Datei $file->name ist fehlgeschlagen :(";
+
+                /**
+                 * Wir holen die Validierungsfehler aus dem File Objekt und fügen sie in unseren $errors Array ein.
+                 */
+                $errors = array_merge($errors, $file->getErrors());
+            } else {
+                $file->put();
+            }
+        }
+
+        if (!empty($errors)) {
+            Session::set('errors', $errors);
+            Redirector::redirect(BASE_URL . '/admin/media/new');
+        }
+
+        Session::set('success', ['Die Dateien wurden erfolgreich hochgeladen.']);
+        Redirector::redirect(BASE_URL . '/admin/media');
+    }
+
+    /**
+     * @todo: comment
+     */
+    public function deleteMultipleConfirm ()
+    {
+        $titles = [];
+        $ids = [];
+        foreach ($_POST['delete-file'] as $id => $on) {
+            $file = File::findOrFail($id);
+            $titles[] = $file->name;
+            $ids[] = $file->id;
+        }
+
+        $title = implode(', ', $titles);
+        $id = implode(',', $ids);
+
+        View::render('admin/confirm', [
+            'type' => 'Medien',
+            'title' => $title,
+            'confirmUrl' => BASE_URL . "/admin/media/$id/delete-multiple/confirm",
+            'abortUrl' => BASE_URL . "/admin/media"
+        ], 'sidebar');
+    }
+
+    /**
+     * @todo: comment
+     */
+    public function deleteMultiple (string $ids)
+    {
+        $ids = explode(',', $ids);
+        $ids = array_map(function ($id) {
+            return (int)$id;
+        }, $ids);
+
+        foreach ($ids as $id) {
+            $file = File::findOrFail($id);
+            $file->deleteFile();
+        }
+
+        Redirector::redirect(BASE_URL . '/admin/media');
+    }
+
+    /**
      * Validierungen kapseln, damit wir sie überall dort, wo wir derartige Objekte validieren müssen, verwenden können.
      *
      * @return array
