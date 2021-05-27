@@ -3,6 +3,7 @@
 namespace App\Controllers\Admin;
 
 use App\Models\Category;
+use App\Models\File;
 use App\Models\Post;
 use App\Models\User;
 use Core\Helpers\Redirector;
@@ -67,6 +68,10 @@ class PostController
          * Alle Categories laden, damit wir die Category-Checkboxes generieren können.
          */
         $categories = Category::all();
+        /**
+         * Alle Bilder laden, damit wir das Dropdown befüllen können.
+         */
+        $files = File::all();
 
         /**
          * View laden und Daten übergeben.
@@ -74,7 +79,8 @@ class PostController
         View::render('admin/posts/edit', [
             'post' => $post,
             'admins' => $admins,
-            'categories' => $categories
+            'categories' => $categories,
+            'files' => $files
         ], 'sidebar');
     }
 
@@ -138,6 +144,17 @@ class PostController
                 $post->setCategories($idsOfSelectedCategories);
             } else {
                 $post->setCategories([]);
+            }
+
+            /**
+             * File Selections speichern.
+             * @todo: es wird immer nur eine File Verknüpfung gespeichert - wieso?
+             */
+            if (isset($_POST['files'])) {
+                $idsOfSelectedFiles = array_keys($_POST['files']);
+                $post->setFiles($idsOfSelectedFiles);
+            } else {
+                $post->setFiles([]);
             }
 
             /**
@@ -341,6 +358,15 @@ class PostController
         $validator->slug($_POST['slug'], 'Slug', true, 1, 255);
         $validator->textnum($_POST['content'], 'Content');
         $validator->int((int)$_POST['author'], 'Autor', true);
+
+        /**
+         * @todo: comment
+         */
+        if (isset($_POST['files'])) {
+            foreach ($_POST['files'] as $id) {
+                $validator->int((int)$id, "File $id");
+            }
+        }
 
         /**
          * Categories validieren.

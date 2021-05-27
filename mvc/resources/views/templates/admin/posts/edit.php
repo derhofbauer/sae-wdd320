@@ -49,6 +49,24 @@
                    </div>
                <?php endforeach; ?>
            </div>
+
+           <div class="form-group">
+               <label for="files">Bilder auswählen</label>
+               <select name="files[]" id="files" class="form-control" multiple>
+                   <option value="_default" hidden>Bitte auswählen ...</option>
+                   <?php
+                   /**
+                    * Damit wir ein Dropdown dynamisch generieren können, müssen wir mit einer Schleife arbeiten.
+                    *
+                    * Hier ist der Ternäre Operator zu beachten, den wir verwenden um anzugeben, ob eine <option>
+                    * vorausgewählt sein soll oder nicht.
+                    * @todo: verknüpfte Bilder müssen vorausgewählt sein!
+                    */
+                   foreach ($files as $file): ?>
+                       <option value="<?php echo $file->id; ?>"><?php echo "{$file->title} [{$file->name}]"; ?></option>
+                   <?php endforeach; ?>
+               </select>
+           </div>
        </div>
    </div>
 

@@ -380,4 +380,54 @@ class File extends AbstractFile
         }
         return $dirname;
     }
+
+    /**
+     * Alle Categories zu einem bestimmten Post abfragen.
+     *
+     * Das ist sehr ähnlich wie die AbstractModel::all() Methode, nur ist der Query ein bisschen anders.
+     *
+     * @param int $postId
+     *
+     * @return array
+     * @todo: comment
+     */
+    public static function findByPost (int $postId): array
+    {
+        /**
+         * Datenbankverbindung herstellen.
+         */
+        $database = new Database();
+
+        /**
+         * Tabellennamen berechnen.
+         */
+        $tablename = self::getTablenameFromClassname();
+
+        /**
+         * Query ausführen.
+         *
+         * Hier führen wir einen JOIN Query aus, weil wir Daten aus zwei Tabellen zusammenführen möchten.
+         */
+        $results = $database->query("
+            SELECT {$tablename}.* FROM {$tablename}
+                JOIN `posts_files_mm`
+                    ON `posts_files_mm`.`file_id` = {$tablename}.`id`
+            WHERE `posts_files_mm`.`post_id` = ?
+                AND `files`.`deleted_at` IS NULL
+        ", [
+            'i:post_id' => $postId
+        ]);
+
+        /**
+         * Im AbstractModel haben wir diese Funktionalität aus der all()-Methode herausgezogen und in eine eigene
+         * Methode verpackt, damit wir in allen anderen Methoden, die zukünftig irgendwelche Daten aus der Datenbank
+         * abfragen, den selben Code verwenden können und nicht Code duplizieren müssen.
+         */
+        $result = self::handleResult($results);
+
+        /**
+         * Ergebnis zurückgeben.
+         */
+        return $result;
+    }
 }

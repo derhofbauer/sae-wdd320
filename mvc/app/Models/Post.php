@@ -19,6 +19,7 @@ class Post extends AbstractModel
      * legen wir eine Klassenkonstante an.
      */
     const TABLENAME_CATEGORIES_MM = 'posts_categories_mm';
+    const TABLENAME_FILES_MM = 'posts_files_mm';
 
     /**
      * Wir innerhalb einer Klasse das use-Keyword verwendet, so wird damit ein Trait importiert. Das kann man sich
@@ -203,6 +204,20 @@ class Post extends AbstractModel
     }
 
     /**
+     * Relation zu Files
+     *
+     * @return array
+     */
+    public function files (): array
+    {
+        /**
+         * Über das File Model alle zugehörigen Files abrufen.
+         * @todo: müssen wir noch bauen!
+         */
+        return File::findByPost($this->id);
+    }
+
+    /**
      * Neue Liste an verknüpften Kategorien zuweisen.
      *
      * @param array<int> $categoryIds
@@ -324,6 +339,140 @@ class Post extends AbstractModel
         $results = $database->query("INSERT INTO {$tablename} SET post_id = ?, category_id = ?", [
             'i:post_id' => $this->id,
             'i:category_id' => $categoryId
+        ]);
+
+
+        /**
+         * Datenbankergebnis verarbeiten und zurückgeben.
+         */
+        return $results;
+    }
+
+    /**
+     * Neue Liste an verknüpften Files zuweisen.
+     *
+     * @param array<int> $fileIds
+     *
+     * @return array
+     * @todo: comment
+     */
+    public function setFiles (array $fileIds): array
+    {
+        /**
+         * Zunächst holen wir uns die aktuell zugewiesenen Kategorien aus der Datenbank.
+         */
+        $oldFiles = $this->files();
+
+        /**
+         * Dann bereiten wir uns zwei Arrays vor, damit wir die zu löschenden Zuweisungen und jene, die unverändert
+         * bleiben sollen, speichern können. Daraus ergibt sich, dass alle weiteren, die in $categoryIds vorhanden sind,
+         * neu angelegt werden müssen.
+         */
+        $filesToDelete = [];
+        $filesNotToBeTouched = [];
+
+        /**
+         * Nun gehen wir alle alten Zuweisungen durch ...
+         */
+        foreach ($oldFiles as $oldFile) {
+            /**
+             * ... und prüfen, ob sie auch in den neuen Kategorien vorkommen sollen.
+             */
+            if (!in_array($oldFile->id, $fileIds)) {
+                /**
+                 * Wenn nein, soll die Zuweisung gelöscht werden.
+                 */
+                $filesToDelete[] = $oldFile->id;
+            } else {
+                /**
+                 * Wenn ja, soll sie weiterhin bestehen bleiben.
+                 */
+                $filesNotToBeTouched[] = $oldFile->id;
+            }
+        }
+
+        /**
+         * Nun berechnen wir uns die Differenz der drei Arrays, wobei alle Werte aus dem ersten Array das Ergebnis
+         * bilden, die in keinem der weiteren Arrays vorhanden sind. Diese Kategorien müssen neu zugewiesen werden.
+         */
+        $filesToAdd = array_diff($fileIds, $filesToDelete, $filesNotToBeTouched);
+
+        /**
+         * Nun gehen wir alle zu löschenden und neu anzulegenden Kategorieverbindungen durch und führen die Aktion aus.
+         */
+        foreach ($filesToDelete as $fileToDelete) {
+            $this->detachFile($fileToDelete);
+        }
+        foreach ($filesToAdd as $fileToAdd) {
+            $this->attachFile($fileToAdd);
+        }
+
+        /**
+         * Neue Liste aller Kategorien für den Post zurückgeben.
+         */
+        return $this->files();
+    }
+
+    /**
+     * Verknüpfung zu einer Kategorie aufheben.
+     *
+     * @param int $fileId
+     *
+     * @return bool
+     * @todo: comment
+     */
+    public function detachFile (int $fileId): bool
+    {
+        /**
+         * Datenbankverbindung herstellen.
+         */
+        $database = new Database();
+
+        /**
+         * Tabellennamen berechnen.
+         */
+        $tablename = self::TABLENAME_FILES_MM;
+
+        /**
+         * Query ausführen.
+         */
+        $results = $database->query("DELETE FROM {$tablename} WHERE post_id = ? AND file_id = ?", [
+            'i:post_id' => $this->id,
+            'i:file_id' => $fileId
+        ]);
+
+        /**
+         * Datenbankergebnis verarbeiten und zurückgeben.
+         */
+        return $results;
+    }
+
+    /**
+     * Verknüpfung zu einer Kategorie herstellen.
+     *
+     * @param int $fileId
+     *
+     * @return bool
+     * @todo: comment
+     */
+    public function attachFile (int $fileId): bool
+    {
+        /**
+         * Datenbankverbindung herstellen.
+         */
+        $database = new Database();
+
+        /**
+         * Tabellennamen berechnen.
+         */
+        $tablename = self::TABLENAME_FILES_MM;
+
+        /**
+         * Query ausführen.
+         */
+        $results = $database->query("INSERT INTO {$tablename} SET post_id = ?, file_id = ?", [
+            'i:post_id' => $this->id,
+            'i:file_id' => $fileId
         ]);
 
 
