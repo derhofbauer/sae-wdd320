@@ -72,22 +72,36 @@ abstract class AbstractFile extends AbstractModel
     }
 
     /**
-     * @param string $keyInFilesSuperglobal
+     * File Objekte aus den Daten aus der $_FILES Superglobal erstellen.
+     *
+     * @param string $keyInFilesSuperglobal Name des Upload Feldes im Formular
+     * @param string $fileClass             Klasse, auf Basis derer Objekte erstellt werden sollen.
      *
      * @return array
-     * @todo: comment
      */
-    public static function createFromUpload (string $keyInFilesSuperglobal): array
+    public static function createFromUpload (string $keyInFilesSuperglobal, string $fileClass = File::class): array
     {
+        /**
+         * Daten zu einem bestimmten Upload Feld aus $_FILES holen.
+         */
         $files = $_FILES[$keyInFilesSuperglobal];
+        /**
+         * Liste vorbereiten.
+         */
         $filesObjects = [];
 
+        /**
+         * Alle Dateinamen durchgehen und über den zugehörigen $key alle Daten in ein File füllen.
+         */
         foreach ($files['name'] as $key => $name) {
-            $file = new File();
+            $file = new $fileClass();
             $file->fillUploadedData($files, $key);
             $filesObjects[] = $file;
         }
 
+        /**
+         * Liste der generierten File Objekte zurückgeben.
+         */
         return $filesObjects;
     }
 
@@ -279,31 +293,54 @@ abstract class AbstractFile extends AbstractModel
     }
 
     /**
+     * Datei physisch löschen.
+     *
      * @param string $filepathRelativeToStorage
      *
      * @return bool|int
-     * @todo: comment
      */
     public function deleteFile (string $filepathRelativeToStorage): bool|int
     {
+        /**
+         * Existiert eine Datei an dem Pfad, der übergeben wurde ...
+         */
         if (file_exists($filepathRelativeToStorage)) {
+            /**
+             * ... so löschen wir die Datei.
+             */
             return unlink($filepathRelativeToStorage);
         }
+        /**
+         * Andernfalls geben wir -1 zurück. Dadurch können wir zwischen Erfolg (true) und Fehler (false) der unlink()-
+         * Methode unterscheiden und dem Status, dass die Datei nicht existiert.
+         */
         return -1;
     }
 
     /**
+     * Datei verschieben.
+     *
+     * In dieser Funktion ist die App, die auf dem MVC Framework aufbaut, und das Framework selbst ein wenig verwoben,
+     * weil $this->name nicht im Core existiert, sondern nur in der App. Das ist ein wenig unsauber, muss ich zugeben.
+     *
      * @param string      $relativeStoragePath
      * @param string|null $newFilename
      *
-     * @return bool|int
-     * @todo: comment (unsaubere Trennung zwischen File und AbstractFile!!)
+     * @return bool|int|string
      */
     public function moveTo (string $relativeStoragePath, string $newFilename = null): bool|int|string
     {
+        /**
+         * $destinationFilename aus generieren aus dem übergeben $newFilename oder dem Namen der Datei oder dem Wert
+         * aus der Datenbank.
+         */
         $destinationFilename = $newFilename;
         if ($newFilename === null) {
-            $destinationFilename = $this->name;
+            if (property_exists($this, 'name')) {
+                $destinationFilename = $this->name;
+            } else {
+                $destinationFilename = basename($relativeStoragePath);
+            }
         }
 
         /**
@@ -317,16 +354,34 @@ abstract class AbstractFile extends AbstractModel
          */
         $destinationPath = $absoluteStoragePath . '/' . $relativeStoragePath;
 
+        /**
+         * Existiert der $destinationPath nicht und kann nicht angelegt werden, geben wir -1 zurück.
+         */
         if (!file_exists($destinationPath) && !mkdir($destinationPath, recursive: true)) {
             return -1;
         }
 
+        /**
+         * Alten Dateipfad berechnen.
+         *
+         * Hier liegt wieder eine Verwebung von Framework Core und App vor. Das ist unsauber und wir sollten eine
+         * hübschere Lösung finden.
+         */
         $oldPath = $absoluteStoragePath . '/' . $this->path . '/' . $this->name;
+        /**
+         * Fertigen Zielpfad generieren.
+         */
         $destinationPathAndFilename = $destinationPath . '/' . $destinationFilename;
 
+        /**
+         * Kann die Datei erfolgreich verschoben werden, geben wir den neuen Pfad zurück.
+         */
         if (rename($oldPath, $destinationPathAndFilename)) {
             return $destinationPath;
         }
+        /**
+         * Andernfalls geben wir false zurück.
+         */
         return false;
     }
 

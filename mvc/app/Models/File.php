@@ -161,7 +161,7 @@ class File extends AbstractFile
     private function handlePut (string $filepath): File
     {
         /**
-         * @todo: comment
+         * Wir wandeln zu allererst den $filepath in einen Pfad um, der relativ zu unserem Storage Path ist.
          */
         $this->path = self::convertToRelativePath($filepath);
 
@@ -327,30 +327,51 @@ class File extends AbstractFile
     }
 
     /**
+     * Datei und zugehörigen Datensatz softdeleten.
+     *
      * @param string $filepathRelativeToStorage
      *
      * @return bool|int
-     * @todo: comment
      */
     public function deleteFile (string $filepathRelativeToStorage = '_trash_'): bool|int
     {
+        /**
+         * Datei in den Papierkorb schieben.
+         */
         $trashedPath = $this->moveTo($filepathRelativeToStorage);
+
+        /**
+         * Wurde nicht false zurückgegeben und hat der Move somit funktioniert, dann speichern wir diesen Pfad in die
+         * Datenbank zum zugehörigen Eintrag.
+         */
         if ($trashedPath !== false) {
             $this->path_deleted = self::convertToRelativePath($trashedPath);
         }
+        /**
+         * File in der Datenbank aktualisieren.
+         */
         $this->save();
+        /**
+         * File in der Datenbank löschen. Hier wird durch den SoftDelete-Trait, den wir oben eingebunden haben, ein
+         * ein Softdelete durchgeführt.
+         */
         $this->delete();
 
+        /**
+         * Nun geben wir true zurück, weil wir nichts besseres haben, was wir zurückgeben könnten.
+         */
         return true;
     }
 
     /**
+     * Pfad in einen Pfad umwandeln, der relativ zu unserem Storage Path ist.
+     *
      * @param string $absolutePath
      *
      * @return string
-     * @todo: comment
      */
-    private static function convertToRelativePath (string $absolutePath): string {
+    private static function convertToRelativePath (string $absolutePath): string
+    {
         /**
          * StoragePath aus dem AbstractFile holen. Dieser Pfas ist absolut zum Server Root.
          */
@@ -373,7 +394,9 @@ class File extends AbstractFile
         $dirname = dirname($relativePath);
 
         /**
-         * @todo: comment
+         * Ist der $dirname nur '.' (Punkt), dann war $absolutePath ein Ordner und keine Datei. In diesem Fall brauchen
+         * wir den dirname nicht generieren und geben direkt den $relativPath zurück. Andernfalls, wenn der Pfad zu
+         * einer Datei übergeben wurde, geben wir den dirname der Datei zurück.
          */
         if ($dirname === '.') {
             return $relativePath;
@@ -382,14 +405,13 @@ class File extends AbstractFile
     }
 
     /**
-     * Alle Categories zu einem bestimmten Post abfragen.
+     * Alle Files zu einem bestimmten Post abfragen.
      *
      * Das ist sehr ähnlich wie die AbstractModel::all() Methode, nur ist der Query ein bisschen anders.
      *
      * @param int $postId
      *
      * @return array
-     * @todo: comment
      */
     public static function findByPost (int $postId): array
     {

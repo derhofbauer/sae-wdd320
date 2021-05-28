@@ -212,7 +212,6 @@ class Post extends AbstractModel
     {
         /**
          * Über das File Model alle zugehörigen Files abrufen.
-         * @todo: müssen wir noch bauen!
          */
         return File::findByPost($this->id);
     }
@@ -354,7 +353,6 @@ class Post extends AbstractModel
      * @param array<int> $fileIds
      *
      * @return array
-     * @todo: comment
      */
     public function setFiles (array $fileIds): array
     {
@@ -376,7 +374,7 @@ class Post extends AbstractModel
          */
         foreach ($oldFiles as $oldFile) {
             /**
-             * ... und prüfen, ob sie auch in den neuen Kategorien vorkommen sollen.
+             * ... und prüfen, ob sie auch in den neuen Files vorkommen sollen.
              */
             if (!in_array($oldFile->id, $fileIds)) {
                 /**
@@ -393,12 +391,12 @@ class Post extends AbstractModel
 
         /**
          * Nun berechnen wir uns die Differenz der drei Arrays, wobei alle Werte aus dem ersten Array das Ergebnis
-         * bilden, die in keinem der weiteren Arrays vorhanden sind. Diese Kategorien müssen neu zugewiesen werden.
+         * bilden, die in keinem der weiteren Arrays vorhanden sind. Diese Files müssen neu zugewiesen werden.
          */
         $filesToAdd = array_diff($fileIds, $filesToDelete, $filesNotToBeTouched);
 
         /**
-         * Nun gehen wir alle zu löschenden und neu anzulegenden Kategorieverbindungen durch und führen die Aktion aus.
+         * Nun gehen wir alle zu löschenden und neu anzulegenden Fileverbindung durch und führen die Aktion aus.
          */
         foreach ($filesToDelete as $fileToDelete) {
             $this->detachFile($fileToDelete);
@@ -408,18 +406,17 @@ class Post extends AbstractModel
         }
 
         /**
-         * Neue Liste aller Kategorien für den Post zurückgeben.
+         * Neue Liste aller Files für den Post zurückgeben.
          */
         return $this->files();
     }
 
     /**
-     * Verknüpfung zu einer Kategorie aufheben.
+     * Verknüpfung zu einem File aufheben.
      *
      * @param int $fileId
      *
      * @return bool
-     * @todo: comment
      */
     public function detachFile (int $fileId): bool
     {
@@ -448,12 +445,11 @@ class Post extends AbstractModel
     }
 
     /**
-     * Verknüpfung zu einer Kategorie herstellen.
+     * Verknüpfung zu einem File herstellen.
      *
      * @param int $fileId
      *
      * @return bool
-     * @todo: comment
      */
     public function attachFile (int $fileId): bool
     {

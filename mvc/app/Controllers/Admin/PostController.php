@@ -148,11 +148,9 @@ class PostController
 
             /**
              * File Selections speichern.
-             * @todo: es wird immer nur eine File Verknüpfung gespeichert - wieso?
              */
             if (isset($_POST['files'])) {
-                $idsOfSelectedFiles = array_keys($_POST['files']);
-                $post->setFiles($idsOfSelectedFiles);
+               $post->setFiles($_POST['files']);
             } else {
                 $post->setFiles([]);
             }
@@ -360,7 +358,7 @@ class PostController
         $validator->int((int)$_POST['author'], 'Autor', true);
 
         /**
-         * @todo: comment
+         * Wurden Dateien ausgewählt, so möchten wir diese Werte hier validieren.
          */
         if (isset($_POST['files'])) {
             foreach ($_POST['files'] as $id) {

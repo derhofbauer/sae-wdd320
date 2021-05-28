@@ -23,6 +23,6 @@ RewriteRule ^(.*)$ index.php?path=$1 [L,QSA]
 #   und somit nicht direkt über die Url angesteuert werden können. Sie können weiterhin von PHP eingebunden werden.
 RewriteRule ^(app|config|core|resources|routes|storage) - [F]
 
-# @todo: comment
+# Hier setzen wir Konfigurations-Werte für PHP. In diesem Fall setzen wir das Upload Limit von den Standard 2MB auf 10MB.
 php_value upload_max_filesize 10M
 php_value post_max_size 10M

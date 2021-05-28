@@ -123,7 +123,7 @@ class MediaController
     }
 
     /**
-     * @todo: comment
+     * Formular zum Upload von Dateien anzeigen.
      */
     public function new ()
     {
@@ -134,52 +134,103 @@ class MediaController
     }
 
     /**
-     * @todo: comment
+     * Daten aus dem Formular für neue Dateien verarbeiten.
      */
     public function create ()
     {
+        /**
+         * Datei Objekte aus der $_FILES Superglobal generieren, damit wir einfach damit arbeiten können.
+         */
         $uploadedFiles = File::createFromUpload('files');
 
+        /**
+         * Fehler Array vorbereiten.
+         */
         $errors = [];
 
+        /**
+         * Alle hochgeladenen Dateien einzelne verarbeiten.
+         */
         foreach ($uploadedFiles as $file) {
+            /**
+             * Ist ein Fehler aufgetreten UND/ODER die Validierung auf ein Bild fehlgeschlagen ...
+             */
             if ($file->hasUploadError() || !$file->validateImage()) {
+                /**
+                 * ... so schreiben wir eine Fehlermeldung.
+                 */
                 $errors[] = "Der Dateiupload für die Datei $file->name ist fehlgeschlagen :(";
 
                 /**
-                 * Wir holen die Validierungsfehler aus dem File Objekt und fügen sie in unseren $errors Array ein.
+                 * Wir holen außerdem die Validierungsfehler aus dem File Objekt und fügen sie in unseren $errors Array
+                 * ein.
                  */
                 $errors = array_merge($errors, $file->getErrors());
             } else {
+                /**
+                 * Sind keine Fehler aufgetreten, so speichern wir die Datei in den Standard Upload Ordner, der in der
+                 * config/app.php definiert ist.
+                 */
                 $file->put();
             }
         }
 
+        /**
+         * Sind irgendwo Fehler aufgetreten ...
+         */
         if (!empty($errors)) {
+            /**
+             * ... speichern wir sie in die Session und leiten zurück zum Formular.
+             */
             Session::set('errors', $errors);
             Redirector::redirect(BASE_URL . '/admin/media/new');
         }
 
+        /**
+         * Im Erfolgsfall schreiben wir eine Erfolgsmeldung in die Session und leiten zur Übersicht der Medien.
+         */
         Session::set('success', ['Die Dateien wurden erfolgreich hochgeladen.']);
         Redirector::redirect(BASE_URL . '/admin/media');
     }
 
     /**
-     * @todo: comment
+     * Confirm-Seite für mehrere ausgewählte Bilder generieren.
      */
     public function deleteMultipleConfirm ()
     {
+        /**
+         * Variablen, die wir brauchen werden, vorbereiten.
+         */
         $titles = [];
         $ids = [];
+
+        /**
+         * Alle Dateien, die gelöscht werden sollen (s. Checkboxen in der Medienübersicht), durchgehen ...
+         */
         foreach ($_POST['delete-file'] as $id => $on) {
+            /**
+             * ... zugehörige Daten aus der Datenbank holen und $name und $id für später speichern.
+             */
             $file = File::findOrFail($id);
             $titles[] = $file->name;
             $ids[] = $file->id;
         }
 
+        /**
+         * Alle $titles zusammenfügen, damit wir sie im Text der Confirmation Page ausgeben können.
+         */
         $title = implode(', ', $titles);
+        /**
+         * Alle $ids zusammenfügen, damit wir sie als Route-Parameter für den Löschen Button übergeben können. Hier ist
+         * zu beachten, dass wir alle zu löschenden IDs als ein einziger kommaseparierter String übergeben, weil wir
+         * in Routen keine dynamische Anzahl von Parametern haben können und aber eine dynamische Anzahl an zu löschenden
+         * Dateien behandeln müssen.
+         */
         $id = implode(',', $ids);
 
+        /**
+         * Confirmation View laden und Daten übergeben.
+         */
         View::render('admin/confirm', [
             'type' => 'Medien',
             'title' => $title,
@@ -189,20 +240,36 @@ class MediaController
     }
 
     /**
-     * @todo: comment
+     * Dateien löschen.
      */
     public function deleteMultiple (string $ids)
     {
+        /**
+         * Wir holen uns zunächst die kommaseparierten IDs aus dem Route Parameter und generieren ein Array daraus.
+         */
         $ids = explode(',', $ids);
+        /**
+         * Dann konvertieren wir alle Elemente aus dem Array, die aktuell numerische Strings sind, in Integers um.
+         */
         $ids = array_map(function ($id) {
             return (int)$id;
         }, $ids);
 
+        /**
+         * Nun gehen wir alle $ids durch, suchen die Daten in der Datenbank und softdeleten sie.
+         */
         foreach ($ids as $id) {
             $file = File::findOrFail($id);
+            /**
+             * Die File::deleteFile()-Methode führt einen Softdelete auf die Daten in der Datenbank durch und verschiebt
+             * die Datei physisch in einen _trash_ Ordner.
+             */
             $file->deleteFile();
         }
 
+        /**
+         * Nun leiten wir zurück zur Medien Übersicht.
+         */
         Redirector::redirect(BASE_URL . '/admin/media');
     }
 
