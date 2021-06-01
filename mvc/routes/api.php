@@ -1,5 +1,7 @@
 <?php
 
+use App\Controllers\Api\FavouritesController;
+
 /**
  * Die Dateien im /routes Ordner beinhalten ein Mapping von einer URL auf eine eindeutige Controller & Action
  * kombination. Als Konvention definieren wir, dass URL-Parameter mit {xyz} definiert werden müssen, damit das Routing
@@ -9,4 +11,11 @@
  * keine Views laden, sondern lediglich Daten zurückgeben oder empfangen. Routen würden im selben Format definiert
  * werden wie im web.php Routes File, ohne das /api/ Präfix, weil das automatisch dazu gehängt wird in \Core\Router.
  */
-return [];
+
+return [
+    /**
+     * Favorites Routes
+     */
+    '/favourites/add/{id}' => [FavouritesController::class, 'add'], // Add post to favourites
+    '/favourites/remove/{id}' => [FavouritesController::class, 'remove'], // Add post to favourites
+];

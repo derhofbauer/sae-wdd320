@@ -197,7 +197,7 @@ abstract class AbstractModel
     /**
      * Objekt löschen.
      *
-     * @return array
+     * @return array|bool
      */
     public function delete (): array|bool
     {
@@ -221,7 +221,7 @@ abstract class AbstractModel
         /**
          * Datenbankergebnis verarbeiten und zurückgeben.
          */
-        return $this->handleResult($results);
+        return $results;
     }
 
     /**

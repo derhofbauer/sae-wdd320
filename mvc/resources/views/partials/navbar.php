@@ -16,6 +16,14 @@
             <li class="nav-item">
                 <a class="nav-link" href="<?php echo BASE_URL; ?>/categories">Categories</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="<?php echo BASE_URL; ?>/favourites">
+                    Favourites
+                    <?php if (\App\Models\User::isLoggedIn()): ?>
+                        (<span class="favourites-counter"><?php echo count(\App\Models\User::getLoggedIn()->favourites()); ?></span>)
+                    <?php endif; ?>
+                </a>
+            </li>
         </ul>
         <ul class="navbar-nav navbar-right">
             <?php if (\App\Models\User::isLoggedIn()): ?>

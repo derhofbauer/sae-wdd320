@@ -14,6 +14,4 @@
     <?php require_once $renderTemplate; ?>
 </div>
 
-</body>
-
-</html>
+<?php require_once __DIR__ . '/../partials/html/footer.php'; ?>

@@ -151,4 +151,46 @@ class User extends AbstractUser
          */
         return null;
     }
+
+    /**
+     * @return array
+     * @todo: comment
+     */
+    public function favourites ()
+    {
+        return Favourite::findWhere('user_id', $this->id);
+    }
+
+    /**
+     * @param int $post_id
+     *
+     * @return bool
+     * @todo: comment
+     */
+    public function hasFavourite (int $post_id): bool
+    {
+        foreach ($this->favourites() as $favourite) {
+            if ($favourite->post_id === $post_id) {
+                return true;
+                break;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @param int $post_id
+     *
+     * @return Favourite|null
+     * @todo: comment
+     */
+    public function favourite (int $post_id): ?Favourite
+    {
+        foreach ($this->favourites() as $favourite) {
+            if ($favourite->post_id === $post_id) {
+                return $favourite;
+            }
+        }
+        return null;
+    }
 }

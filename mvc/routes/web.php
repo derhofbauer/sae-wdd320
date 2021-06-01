@@ -4,6 +4,7 @@ use App\Controllers\Admin\AdminController;
 use App\Controllers\BlogController;
 use App\Controllers\CategoryController;
 use App\Controllers\AuthController;
+use App\Controllers\FavouritesController;
 use App\Controllers\ProfileController;
 use App\Controllers\Admin\MediaController;
 
@@ -107,4 +108,9 @@ return [
     '/admin/media/{ids}/delete-multiple/confirm' => [MediaController::class, 'deleteMultiple'], // Bilder löschen
     '/admin/media/new' => [MediaController::class, 'new'], // Formular für neues Objekt anzeigen
     '/admin/media/create' => [MediaController::class, 'create'], // Neues Objekt in DB speichern
+
+    /**
+     * Favourites Routes
+     */
+    '/favourites' => [FavouritesController::class, 'index'], // Favourites listen
 ];

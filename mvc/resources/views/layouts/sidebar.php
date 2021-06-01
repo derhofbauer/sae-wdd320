@@ -19,6 +19,5 @@
     </div>
 </div>
 
-</body>
+<?php require_once __DIR__ . '/../partials/html/footer.php'; ?>
 
-</html>

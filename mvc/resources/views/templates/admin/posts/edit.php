@@ -60,11 +60,20 @@
                     *
                     * Hier ist der Ternäre Operator zu beachten, den wir verwenden um anzugeben, ob eine <option>
                     * vorausgewählt sein soll oder nicht.
-                    * @todo: verknüpfte Bilder müssen vorausgewählt sein!
                     */
-                   foreach ($files as $file): ?>
-                       <option value="<?php echo $file->id; ?>"><?php echo "{$file->title} [{$file->name}]"; ?></option>
-                   <?php endforeach; ?>
+                   $postFiles = $post->files();
+
+                   /**
+                    * @todo: comment
+                    */
+                   foreach ($files as $file) {
+                       $selectedParticle = '';
+                       if (in_array($file, $postFiles)) {
+                           $selectedParticle = ' selected';
+                       }
+                   ?>
+                       <option value="<?php echo $file->id; ?>"<?php echo $selectedParticle; ?>><?php echo "{$file->title} [{$file->name}]"; ?></option>
+                   <?php } ?>
                </select>
            </div>
        </div>
