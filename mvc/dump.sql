@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: db
--- Erstellungszeit: 27. Mai 2021 um 15:36
+-- Erstellungszeit: 01. Jun 2021 um 15:30
 -- Server-Version: 10.5.9-MariaDB-1:10.5.9+maria~focal
 -- PHP-Version: 7.2.22
 
@@ -63,6 +63,25 @@ CREATE TABLE `comments` (
   `tstamp` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `deleted_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `favourites`
+--
+
+CREATE TABLE `favourites` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `post_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Daten für Tabelle `favourites`
+--
+
+INSERT INTO `favourites` (`id`, `user_id`, `post_id`) VALUES
+(10, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -158,6 +177,14 @@ CREATE TABLE `posts_files_mm` (
   `sort` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Daten für Tabelle `posts_files_mm`
+--
+
+INSERT INTO `posts_files_mm` (`id`, `post_id`, `file_id`, `sort`) VALUES
+(1, 1, 2, NULL),
+(2, 1, 4, NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -203,6 +230,14 @@ ALTER TABLE `comments`
   ADD KEY `post_id` (`post_id`),
   ADD KEY `parent` (`parent`),
   ADD KEY `comments_ibfk_3` (`author`);
+
+--
+-- Indizes für die Tabelle `favourites`
+--
+ALTER TABLE `favourites`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `favourites_ibfk_1` (`post_id`),
+  ADD KEY `favourites_ibfk_2` (`user_id`);
 
 --
 -- Indizes für die Tabelle `files`
@@ -261,6 +296,12 @@ ALTER TABLE `comments`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT für Tabelle `favourites`
+--
+ALTER TABLE `favourites`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
 -- AUTO_INCREMENT für Tabelle `files`
 --
 ALTER TABLE `files`
@@ -282,7 +323,7 @@ ALTER TABLE `posts_categories_mm`
 -- AUTO_INCREMENT für Tabelle `posts_files_mm`
 --
 ALTER TABLE `posts_files_mm`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT für Tabelle `users`
@@ -301,6 +342,13 @@ ALTER TABLE `comments`
   ADD CONSTRAINT `comments_ibfk_1` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `comments_ibfk_2` FOREIGN KEY (`parent`) REFERENCES `comments` (`id`),
   ADD CONSTRAINT `comments_ibfk_3` FOREIGN KEY (`author`) REFERENCES `users` (`id`);
+
+--
+-- Constraints der Tabelle `favourites`
+--
+ALTER TABLE `favourites`
+  ADD CONSTRAINT `favourites_ibfk_1` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `favourites_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints der Tabelle `files`
