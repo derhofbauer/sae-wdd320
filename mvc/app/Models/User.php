@@ -162,6 +162,15 @@ class User extends AbstractUser
     }
 
     /**
+     * @return array
+     * @todo: comment
+     */
+    public function shares ()
+    {
+        return Share::findWhere('user_id', $this->id);
+    }
+
+    /**
      * @param int $post_id
      *
      * @return bool

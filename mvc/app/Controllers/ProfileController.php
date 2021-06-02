@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Controllers\Admin\UserController;
+use App\Models\Share;
 use App\Models\User;
 use Core\Helpers\Redirector;
 use Core\Session;
@@ -101,5 +102,18 @@ class ProfileController
          * ... und leiten in jedem Fall zurück zum Bearbeitungsformular - entweder mit Fehlern oder mit Erfolgsmeldung.
          */
         Redirector::redirect(BASE_URL . "/profile");
+    }
+
+    /**
+     * @todo: comment
+     */
+    public function shares ()
+    {
+        $user = User::getLoggedIn();
+        $shares = $user->shares();
+
+        View::render('profile/shares', [
+            'shares' => $shares
+        ]);
     }
 }

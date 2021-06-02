@@ -4,6 +4,7 @@ use App\Controllers\Admin\AdminController;
 use App\Controllers\BlogController;
 use App\Controllers\CategoryController;
 use App\Controllers\AuthController;
+use App\Controllers\CheckoutController;
 use App\Controllers\FavouritesController;
 use App\Controllers\ProfileController;
 use App\Controllers\Admin\MediaController;
@@ -38,6 +39,7 @@ return [
      */
     '/profile' => [ProfileController::class, 'edit'], // Formular anzeigen
     '/profile/update' => [ProfileController::class, 'update'], // Formulardaten verarbeiten
+    '/profile/shares' => [ProfileController::class, 'shares'], // Shares einer Person
 
     /**
      * Blog Routes
@@ -113,4 +115,14 @@ return [
      * Favourites Routes
      */
     '/favourites' => [FavouritesController::class, 'index'], // Favourites listen
+
+    /**
+     * Checkout Routes
+     */
+    '/checkout' => [CheckoutController::class, 'checkout'], // Checkout Step 1: Recipient
+    '/checkout/recipient' => [CheckoutController::class, 'recipient'], // Recipient validieren und nächster Schritt
+    '/checkout/2/{id}' => [CheckoutController::class, 'checkout2'], // Checkout Step 2: Message
+    '/checkout/message/{id}' => [CheckoutController::class, 'message'], // Grußbotschaft speichern
+    '/checkout/summary/{id}' => [CheckoutController::class, 'summary'], // Finale Übersicht anzeigen
+    '/checkout/final/{id}' => [CheckoutController::class, 'finish'], // Checkout abschließen
 ];

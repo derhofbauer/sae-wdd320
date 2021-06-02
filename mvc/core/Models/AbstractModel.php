@@ -225,6 +225,38 @@ abstract class AbstractModel
     }
 
     /**
+     * @param string $field
+     * @param mixed  $value
+     *
+     * @return mixed
+     * @todo: comment
+     */
+    public static function deleteWhereForeignKey (string $field, int $value): mixed
+    {
+        /**
+         * Datenbankverbindung herstellen.
+         */
+        $database = new Database();
+
+        /**
+         * Tabellennamen berechnen.
+         */
+        $tablename = self::getTablenameFromClassname();
+
+        /**
+         * Query ausführen.
+         */
+        $results = $database->query("DELETE FROM {$tablename} WHERE {$field} = ?", [
+            'i:field' => $value
+        ]);
+
+        /**
+         * Datenbankergebnis verarbeiten und zurückgeben.
+         */
+        return $results;
+    }
+
+    /**
      * Wert zurückgeben oder Fehler 404 werfen, wenn der Wert leer ist.
      *
      * Das macht dann Sinn, wenn in einer Action innerhalb eines Controllers die Funktionalität auf der Existenz eines

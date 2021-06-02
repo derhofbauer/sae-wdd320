@@ -22,3 +22,5 @@
     </tbody>
 
 </table>
+
+<a href="<?php echo BASE_URL; ?>/checkout" class="btn btn-primary">Checkout</a>
