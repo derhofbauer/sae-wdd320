@@ -10,11 +10,13 @@ use Core\View;
  * Class FavouritesController
  *
  * @package App\Controllers
- * @todo    : comment
  */
 class FavouritesController
 {
 
+    /**
+     * Favoriten können nur dann angelegt werden, wenn ein*e User*in eingeloggt ist.
+     */
     public function __construct ()
     {
         if (!User::isLoggedIn()) {
@@ -22,11 +24,20 @@ class FavouritesController
         }
     }
 
+    /**
+     * Übersicht der Favoriten anzeigen.
+     */
     public function index ()
     {
+        /**
+         * User*in und zugehörige Favoriten aus der Datenbank holen.
+         */
         $user = User::getLoggedIn();
         $favourites = $user->favourites();
 
+        /**
+         * View laden und Daten übergeben.
+         */
         View::render('favourites/index', [
             'favourites' => $favourites
         ]);

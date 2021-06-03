@@ -105,13 +105,19 @@ class ProfileController
     }
 
     /**
-     * @todo: comment
+     * Übersucht aller Shares des/der User*n anzeigen.
      */
     public function shares ()
     {
+        /**
+         * User und Shares aus der Datenbank laden.
+         */
         $user = User::getLoggedIn();
         $shares = $user->shares();
 
+        /**
+         * View laden und Daten übergeben.
+         */
         View::render('profile/shares', [
             'shares' => $shares
         ]);

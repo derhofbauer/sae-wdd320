@@ -6,6 +6,8 @@
     "sass:npx": "npx sass resources/scss/styles.scss public/css/styles.css",
     "sass:npx:watch": "npx sass --watch resources/scss/styles.scss public/css/styles.css",
     "sass": "sass resources/scss/styles.scss public/css/styles.css",
-    "sass:watch": "sass --watch resources/scss/styles.scss public/css/styles.css"
+    "sass:watch": "sass --watch resources/scss/styles.scss public/css/styles.css",
+    "js": "cp resources/js/*.js public/js",
+    "build":  "npm run sass:npx && npm run js"
   }
 }

@@ -2,6 +2,14 @@
 
 CMS mit User Login, Image Upload, Kategorien, Kommentare, Sterne-Ratings, Blog Posts, Medien Bibliothek, ...
 
+## Build Pipeline
+
+Im Wurzelverzeichnis des MVC befindet sich ein `package.json` File. Dieses File beinhaltet NPM Scripts, mit denen sowohl
+SASS Files transpiliert werden können, als auch JavaScript Files aus dem Resources Ordner in den Public Ordner
+kopiert werden.
+Um alle benötigten Abhängigkeiten (SASS) zu installieren, muss `npm install` ausgeführt werden. Für einen vollständigen
+Build kann `npm run build` verwendet werden.
+
 ## Ordner
 
 Die Ordnerstruktur ist zwar nicht Teil des MVC, wird aber vom MVC vorgegeben.

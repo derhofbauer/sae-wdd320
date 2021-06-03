@@ -153,8 +153,9 @@ class User extends AbstractUser
     }
 
     /**
+     * Relation zu Favourites.
+     *
      * @return array
-     * @todo: comment
      */
     public function favourites ()
     {
@@ -162,8 +163,9 @@ class User extends AbstractUser
     }
 
     /**
+     * Relation zu Shares.
+     *
      * @return array
-     * @todo: comment
      */
     public function shares ()
     {
@@ -171,35 +173,56 @@ class User extends AbstractUser
     }
 
     /**
+     * Prüfen ob ein Post für den/die aktuelle User*in als Favorit verknüpft ist oder nicht.
+     *
      * @param int $post_id
      *
      * @return bool
-     * @todo: comment
      */
     public function hasFavourite (int $post_id): bool
     {
+        /**
+         * Wir holen alle Favoriten und gehen sie durch.
+         */
         foreach ($this->favourites() as $favourite) {
+            /**
+             * Ist die Post ID in einem Favoriten gleich wie die übergeben Post ID, geben wir true zurück und brechen
+             * den Schleifendurchlauf damit ab.
+             */
             if ($favourite->post_id === $post_id) {
                 return true;
-                break;
             }
         }
+        /**
+         * Andernfalls geben wir false zurück.
+         */
         return false;
     }
 
     /**
+     * Einen Favoriten anhand einer Post ID für den/die aktuelle User*in finden.
+     *
      * @param int $post_id
      *
      * @return Favourite|null
-     * @todo: comment
      */
     public function favourite (int $post_id): ?Favourite
     {
+        /**
+         * Alle Favoriten durchgehen.
+         */
         foreach ($this->favourites() as $favourite) {
+            /**
+             * Ist die Post ID in einem Favoriten gleich wie die übergeben Post ID, geben wir den Favoriten zurück und
+             * brechen den Schleifendurchlauf damit ab.
+             */
             if ($favourite->post_id === $post_id) {
                 return $favourite;
             }
         }
+        /**
+         * Andernfalls geben wir null zurück.
+         */
         return null;
     }
 }

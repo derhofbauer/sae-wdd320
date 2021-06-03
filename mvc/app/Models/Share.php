@@ -9,19 +9,33 @@ use Core\Models\AbstractModel;
  * Class Share
  *
  * @package App\Models
- * @todo    : comment
  */
 class Share extends AbstractModel
 {
+    /**
+     * Wir definieren alle Spalten aus der Tabelle mit den richtigen Datentypen.
+     */
     public int $id;
     public int $user_id;
     public ?string $recipient = null;
     public ?string $posts = null;
     public ?string $message = null;
     public string $status = 'open';
+    /**
+     * @var string Nachdem wir hier den ISO-8601 Zeit verwenden in der Datenbank, handelt es sich um einen String.
+     */
     public string $crdate;
+    /**
+     * @var string Nachdem wir hier den ISO-8601 Zeit verwenden in der Datenbank, handelt es sich um einen String.
+     */
     public string $tstamp;
 
+    /**
+     * Diese Methode ermöglicht es uns, die Daten aus einem Datenbankergebnis in nur einer Zeile direkt in ein Objekt
+     * zu füllen. Bei der Instanziierung kann über den Konstruktor auch diese Methode verwendet werden.
+     *
+     * @param array $data
+     */
     public function fill (array $data)
     {
         $this->id = $data['id'];
@@ -34,6 +48,15 @@ class Share extends AbstractModel
         $this->tstamp = $data['tstamp'];
     }
 
+    /**
+     * Objekt speichern.
+     *
+     * Wenn das Objekt bereits existiert hat, so wird es aktualisiert, andernfalls neu angelegt. Dadurch können wir eine
+     * einzige Funktion verwenden und müssen uns nicht darum kümmern ob das Objekt angelegt oder aktualisiert werden
+     * muss.
+     *
+     * @return bool
+     */
     public function save (): bool
     {
         /**

@@ -9,16 +9,27 @@ use Core\Database;
  * Class Favourite
  *
  * @package App\Models
- * @todo: comment
  */
 class Favourite extends AbstractModel
 {
+    /**
+     * Wir definieren alle Spalten aus der Tabelle mit den richtigen Datentypen.
+     */
     public int $id;
     public int $user_id;
     public int $post_id;
+    /**
+     * @var object Das ist eine Art Cache. Wenn wir den Post zum ersten mal über die post()-Methode der Favourite-Klasse
+     *                   abfragen, speichern wir das Ergebnis hier in $post und greifen zukünftig nur noch darauf zu.
+     */
     private object $post;
 
-
+    /**
+     * Diese Methode ermöglicht es uns, die Daten aus einem Datenbankergebnis in nur einer Zeile direkt in ein Objekt
+     * zu füllen. Bei der Instanziierung kann über den Konstruktor auch diese Methode verwendet werden.
+     *
+     * @param array $data
+     */
     public function fill (array $data)
     {
         $this->id = $data['id'];
@@ -26,6 +37,15 @@ class Favourite extends AbstractModel
         $this->post_id = $data['post_id'];
     }
 
+    /**
+     * Objekt speichern.
+     *
+     * Wenn das Objekt bereits existiert hat, so wird es aktualisiert, andernfalls neu angelegt. Dadurch können wir eine
+     * einzige Funktion verwenden und müssen uns nicht darum kümmern ob das Objekt angelegt oder aktualisiert werden
+     * muss.
+     *
+     * @return bool
+     */
     public function save (): bool
     {
         /**
@@ -75,11 +95,24 @@ class Favourite extends AbstractModel
         }
     }
 
+    /**
+     * Relation zu Posts.
+     *
+     * @return mixed|object
+     */
     public function post ()
     {
+        /**
+         * Ist $this->post leer, so holen wir den zugehörigen Post aus der Datenbank und speichern ihn in $this->>post.
+         * Wurde der Post bereits einmal aus der Datenbank geladen, ist $this->post nicht mehr leer und entsprechend
+         * würde einfach $this->post zurückgegeben werden, ohne einen neuen Datenbank Query abzuschicken.
+         */
         if (empty($this->post)) {
             $this->post = Post::find($this->post_id);
         }
+        /**
+         * Post zurückgeben.
+         */
         return $this->post;
     }
 }

@@ -225,11 +225,12 @@ abstract class AbstractModel
     }
 
     /**
+     * Datenbankeinträge löschen, wo ein Fremdschlüssel einen gewissen Wert hat.
+     *
      * @param string $field
      * @param mixed  $value
      *
      * @return mixed
-     * @todo: comment
      */
     public static function deleteWhereForeignKey (string $field, int $value): mixed
     {

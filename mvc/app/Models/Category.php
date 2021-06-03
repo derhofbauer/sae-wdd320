@@ -113,7 +113,7 @@ class Category extends AbstractModel
     }
 
     /**
-     * Relation zu Posts
+     * Relation zu Posts.
      *
      * @return array
      */
