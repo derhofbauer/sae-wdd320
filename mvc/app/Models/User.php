@@ -225,4 +225,13 @@ class User extends AbstractUser
          */
         return null;
     }
+
+    /**
+     * @return string
+     * @todo: comment
+     */
+    public function __toString (): string
+    {
+        return "$this->username &lt;{$this->email}&gt;";
+    }
 }

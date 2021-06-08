@@ -81,7 +81,7 @@
 
     <div class="form-group">
         <label for="content">Content</label>
-        <textarea name="content" id="content" rows="10" class="form-control"><?php echo $post->content; ?></textarea>
+        <textarea name="content" id="content" rows="10" class="form-control editor"><?php echo $post->content; ?></textarea>
     </div>
 
     <button type="submit" class="btn btn-primary">Save</button>

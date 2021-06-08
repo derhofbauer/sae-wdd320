@@ -354,7 +354,10 @@ class PostController
         $validator = new Validator();
         $validator->textnum($_POST['title'], 'Title', true, max: 255);
         $validator->slug($_POST['slug'], 'Slug', true, 1, 255);
-        $validator->textnum($_POST['content'], 'Content');
+        /**
+         * @todo: comment
+         */
+//        $validator->html($_POST['content'], 'Content');
         $validator->int((int)$_POST['author'], 'Autor', true);
 
         /**

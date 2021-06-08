@@ -13,5 +13,17 @@
         require __DIR__ . '/../../partials/post/teaser.php';
     }
     ?>
-
 </div>
+
+<?php
+/**
+ * @todo: comment
+ */
+?>
+<ul class="pagination">
+    <?php for ($i = 1; $i <= $numberOfPages; $i++): ?>
+    <li class="page-item">
+        <a href="<?php echo BASE_URL; ?>/blog/<?php echo $i; ?>" class="page-link"><?php echo $i; ?></a>
+    </li>
+    <?php endfor; ?>
+</ul>

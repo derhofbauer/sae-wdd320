@@ -17,3 +17,8 @@
     margin-top: $grid-step;
   }
 }
+
+.images img {
+  max-width: 250px;
+  height: auto;
+}

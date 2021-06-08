@@ -31,6 +31,16 @@ class Share extends AbstractModel
     public string $tstamp;
 
     /**
+     * @todo: comment
+     */
+    const STATI = [
+        'open' => 'Open',
+        'progress' => 'In Progress',
+        'storno' => 'Storno',
+        'delivered' => 'Delivered! :D'
+    ];
+
+    /**
      * Diese Methode ermöglicht es uns, die Daten aus einem Datenbankergebnis in nur einer Zeile direkt in ein Objekt
      * zu füllen. Bei der Instanziierung kann über den Konstruktor auch diese Methode verwendet werden.
      *
@@ -110,5 +120,69 @@ class Share extends AbstractModel
              */
             return $result;
         }
+    }
+
+    /**
+     * Alle Datensätze aus der Datenbank abfragen.
+     *
+     * Die ersten beiden Funktionsparameter bieten die Möglichkeit eine ganz einfache WHERE-Abfrage zu machen.
+     *
+     * Die beiden letzten Funktionsparameter bieten die Möglichkeit die Daten, die abgerufen werden, nach einer
+     * einzelnen Spalte aufsteigend oder absteigend direkt über MySQL zu sortieren. Sortierungen sollten, sofern
+     * möglich, über die Datenbank durchgeführt werden, weil das wesentlich performanter ist als über PHP.
+     *
+     * @param string $orderBy
+     * @param string $direction
+     *
+     * @return array
+     * @todo: comment
+     */
+    public static function allOpen (string $orderBy = '', string $direction = 'ASC'): array
+    {
+        /**
+         * Datenbankverbindung herstellen.
+         */
+        $database = new Database();
+
+        /**
+         * Tabellennamen berechnen.
+         */
+        $tablename = self::getTablenameFromClassname();
+
+        /**
+         * Query ausführen.
+         *
+         * Hier ist es wichtig zu bedenken, dass der $field-Parameter niemals die Benutzer*inneneingabe beinhalten darf,
+         * weil sonst der Query für MySQL Injection anfällig ist.
+         *
+         * Wurde in den Funktionsparametern eine Sortierung definiert, so wenden wir sie hier an, andernfalls rufen wir
+         * alles ohne sortierung ab.
+         */
+        if (empty($orderBy)) {
+            $results = $database->query("SELECT * FROM {$tablename} WHERE status = 'open' OR status = 'progress'");
+        } else {
+            $results = $database->query("SELECT * FROM {$tablename} WHERE status = 'open' OR status = 'progress' ORDER BY $orderBy $direction");
+        }
+
+        /**
+         * Datenbankergebnis verarbeiten und zurückgeben.
+         */
+        return self::handleResult($results);
+    }
+
+    /**
+     * @todo: comment
+     */
+    public function user ()
+    {
+        return User::find($this->user_id);
+    }
+
+    /**
+     * @todo: comment
+     */
+    public function posts ()
+    {
+        return json_decode($this->posts);
     }
 }

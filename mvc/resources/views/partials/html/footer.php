@@ -1,4 +1,4 @@
-<script src="<?php echo BASE_URL; ?>/js/app.js"></script>
+<script src="<?php echo BASE_URL; ?>/js/app.min.js"></script>
 </body>
 
 </html>

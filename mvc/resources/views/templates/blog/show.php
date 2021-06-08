@@ -9,5 +9,16 @@
         <?php require __DIR__ . '/../../partials/post/meta.php'; ?>
 
         <div class="content"><?php echo $post->content; ?></div>
+
+        <div class="images slider">
+            <?php foreach ($post->files() as $file): ?>
+                <figure>
+                    <?php echo $file->getImgTag(); ?>
+                    <figcaption>
+                        <?php echo $file->caption; ?>
+                    </figcaption>
+                </figure>
+            <?php endforeach; ?>
+        </div>
     </article>
 </div>

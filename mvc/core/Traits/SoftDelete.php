@@ -2,6 +2,7 @@
 
 namespace Core\Traits;
 
+use Core\Config;
 use Core\Database;
 
 /**
@@ -83,6 +84,84 @@ trait SoftDelete
             $results = $database->query("SELECT * FROM {$tablename} WHERE deleted_at IS NULL");
         } else {
             $results = $database->query("SELECT * FROM {$tablename} WHERE deleted_at IS NULL ORDER BY $orderBy $direction");
+        }
+
+        /**
+         * Datenbankergebnis verarbeiten und zurückgeben.
+         */
+        return self::handleResult($results);
+    }
+
+    /**
+     * @return array
+     * @todo: comment
+     */
+    public static function count (): int
+    {
+        /**
+         * Datenbankverbindung herstellen.
+         */
+        $database = new Database();
+
+        /**
+         * Tabellennamen berechnen.
+         */
+        $tablename = self::getTablenameFromClassname();
+
+        /**
+         * Query ausführen.
+         *
+         * Wurde in den Funktionsparametern eine Sortierung definiert, so wenden wir sie hier an, andernfalls rufen wir
+         * alles ohne sortierung ab.
+         */
+        $results = $database->query("SELECT COUNT(*) as 'count' FROM {$tablename} WHERE deleted_at IS NULL");
+
+
+        /**
+         * Datenbankergebnis verarbeiten und zurückgeben.
+         */
+        return (int)$results[0]['count'];
+    }
+
+    /**
+     * @param int    $page
+     * @param string $orderBy
+     * @param string $direction
+     *
+     * @return array|bool
+     * @todo: comment
+     */
+    public static function allPaginated (int $page = 1, string $orderBy = '', string $direction = 'ASC'): array
+    {
+        /**
+         * Datenbankverbindung herstellen.
+         */
+        $database = new Database();
+
+        /**
+         * Tabellennamen berechnen.
+         */
+        $tablename = self::getTablenameFromClassname();
+
+        $limit = Config::get('app.items-per-page');
+        $offset = ($page - 1) * $limit;
+
+        /**
+         * Query ausführen.
+         *
+         * Wurde in den Funktionsparametern eine Sortierung definiert, so wenden wir sie hier an, andernfalls rufen wir
+         * alles ohne sortierung ab.
+         */
+        if (empty($orderBy)) {
+            $results = $database->query("SELECT * FROM {$tablename} WHERE deleted_at IS NULL LIMIT ?,?", [
+                'i:offset' => $offset,
+                'i:limit' => $limit
+            ]);
+        } else {
+            $results = $database->query("SELECT * FROM {$tablename} WHERE deleted_at IS NULL LIMIT ?,? ORDER BY $orderBy $direction", [
+                'i:offset' => $offset,
+                'i:limit' => $limit
+            ]);
         }
 
         /**

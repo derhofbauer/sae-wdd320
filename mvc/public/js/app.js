@@ -1,4 +1,4 @@
-console.log('Works! :D')
+console.log('WORKS! :D')
 
 document.querySelectorAll('.favourite-add').forEach(($item) => {
   $item.addEventListener('click', (event) => {
@@ -11,7 +11,7 @@ document.querySelectorAll('.favourite-add').forEach(($item) => {
     })
       .then((response) => response.json())
       .then((json) => {
-        const favouriteCount = json.length;
+        const favouriteCount = json.length
 
         document.querySelectorAll('.favourites-counter').forEach(($counter) => {
           $counter.textContent = favouriteCount
@@ -23,7 +23,7 @@ document.querySelectorAll('.favourite-add').forEach(($item) => {
 
 document.querySelectorAll('.favourite-remove').forEach(($item) => {
   $item.addEventListener('click', (event) => {
-    event.preventDefault();
+    event.preventDefault()
 
     const url = $item.dataset.href
 
@@ -32,18 +32,18 @@ document.querySelectorAll('.favourite-remove').forEach(($item) => {
     })
       .then((response) => response.json())
       .then((json) => {
-        const favouriteCount = json.length;
+        const favouriteCount = json.length
 
         document.querySelectorAll('.favourites-counter').forEach(($counter) => {
           $counter.textContent = favouriteCount
         })
 
         document.querySelectorAll('.favourite').forEach(($favourite) => {
-          let _delete = true;
+          let _delete = true
           json.forEach(($jsonItem) => {
             const classname = 'favourite-' + $jsonItem.id
             if ($favourite.classList.contains(classname)) {
-              _delete = false;
+              _delete = false
             }
           })
 
@@ -54,4 +54,12 @@ document.querySelectorAll('.favourite-remove').forEach(($item) => {
       })
 
   })
+})
+
+document.querySelectorAll('.editor').forEach($item => {
+  ClassicEditor
+    .create($item)
+    .catch(error => {
+      console.error(error)
+    })
 })

@@ -288,7 +288,10 @@ class CategoryController
         $validator = new Validator();
         $validator->textnum($_POST['title'], 'Title', true, max: 255);
         $validator->slug($_POST['slug'], 'Slug', true, 1, 255);
-        $validator->textnum($_POST['description'], 'Beschreibung');
+        /**
+         * @todo: comment
+         */
+//        $validator->textnum($_POST['description'], 'Beschreibung');
 
         /**
          * Fehler aus dem Validator holen und direkt zurückgeben.

@@ -20,7 +20,7 @@
 
     <div class="form-group">
         <label for="description">Description</label>
-        <textarea name="description" id="description" rows="10" class="form-control"><?php echo $category->description; ?></textarea>
+        <textarea name="description" id="description" rows="10" class="form-control editor"><?php echo $category->description; ?></textarea>
     </div>
 
     <button type="submit" class="btn btn-primary">Save</button>

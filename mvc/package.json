@@ -1,13 +1,17 @@
 {
   "dependencies": {
-    "sass": "^1.32.11"
+    "@ckeditor/ckeditor5-build-classic": "^28.0.0",
+    "sass": "^1.32.11",
+    "uglify-js": "^3.13.9"
   },
   "scripts": {
     "sass:npx": "npx sass resources/scss/styles.scss public/css/styles.css",
     "sass:npx:watch": "npx sass --watch resources/scss/styles.scss public/css/styles.css",
     "sass": "sass resources/scss/styles.scss public/css/styles.css",
     "sass:watch": "sass --watch resources/scss/styles.scss public/css/styles.css",
-    "js": "cp resources/js/*.js public/js",
-    "build":  "npm run sass:npx && npm run js"
+    "js:minify": "npx uglifyjs node_modules/@ckeditor/ckeditor5-build-classic/build/ckeditor.js public/js/*.js --compress --mangle > public/js/app.min.js",
+    "js:copy": "cp resources/js/*.js public/js",
+    "js": "npm run js:copy && npm run js:minify",
+    "build": "npm run sass:npx && npm run js"
   }
 }

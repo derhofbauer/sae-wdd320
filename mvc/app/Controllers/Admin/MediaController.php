@@ -289,7 +289,10 @@ class MediaController
         $validator = new Validator();
         $validator->textnum($_POST['title'], 'Title', max: 255);
         $validator->textnum($_POST['alttext'], 'Alternative Text');
-        $validator->textnum($_POST['caption'], 'Caption');
+        /**
+         * @todo: comment
+         */
+//        $validator->textnum($_POST['caption'], 'Caption');
 
         /**
          * Fehler aus dem Validator holen und direkt zurückgeben.

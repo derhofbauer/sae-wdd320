@@ -48,4 +48,9 @@ return [
      * Wo sollen hochgeladene Dateien hingespeichert werden?
      */
     'uploads-folder' => '/storage/uploads',
+
+    /**
+     * @todo: comment
+     */
+    'items-per-page' => 3,
 ];

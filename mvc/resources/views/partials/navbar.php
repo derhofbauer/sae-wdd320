@@ -11,7 +11,7 @@
     <div class="collapse navbar-collapse navbar-flex" id="navbarNav">
         <ul class="navbar-nav">
             <li class="nav-item active">
-                <a class="nav-link" href="<?php echo BASE_URL; ?>">Blog</a>
+                <a class="nav-link" href="<?php echo BASE_URL; ?>/blog/1">Blog</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="<?php echo BASE_URL; ?>/categories">Categories</a>

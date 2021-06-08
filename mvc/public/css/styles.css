@@ -25,6 +25,11 @@
   margin-top: 0.3125rem;
 }
 
+.images img {
+  max-width: 250px;
+  height: auto;
+}
+
 .category {
   margin-bottom: 1.875rem;
   background-color: lightgray;

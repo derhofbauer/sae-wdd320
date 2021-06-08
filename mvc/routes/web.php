@@ -8,6 +8,7 @@ use App\Controllers\CheckoutController;
 use App\Controllers\FavouritesController;
 use App\Controllers\ProfileController;
 use App\Controllers\Admin\MediaController;
+use App\Controllers\Admin\ShareController;
 
 /**
  * Werden mit dem use-Keyword mehrere Klassen mit dem selben Namen importiert, so können diese weiter unten nicht mehr
@@ -44,7 +45,7 @@ return [
     /**
      * Blog Routes
      */
-    '/blog' => [BlogController::class, 'index'], // Posts auflisten
+    '/blog/{page}' => [BlogController::class, 'index'], // Posts auflisten
     '/blog/{slug}' => [BlogController::class, 'show'], // einzelnen Post anzeigen
 
     /**
@@ -110,6 +111,13 @@ return [
     '/admin/media/{ids}/delete-multiple/confirm' => [MediaController::class, 'deleteMultiple'], // Bilder löschen
     '/admin/media/new' => [MediaController::class, 'new'], // Formular für neues Objekt anzeigen
     '/admin/media/create' => [MediaController::class, 'create'], // Neues Objekt in DB speichern
+
+    /**
+     * Admin Share Routes
+     */
+    '/admin/shares' => [ShareController::class, 'index'], // offene Shares listen
+    '/admin/shares/{id}/edit' => [ShareController::class, 'edit'], // Bearbeitungsformular anzeigen
+    '/admin/shares/{id}/update' => [ShareController::class, 'update'], // Bearbeiteten Share speichern
 
     /**
      * Favourites Routes
