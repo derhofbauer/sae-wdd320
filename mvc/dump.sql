@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: db
--- Erstellungszeit: 01. Jun 2021 um 15:30
+-- Erstellungszeit: 08. Jun 2021 um 15:41
 -- Server-Version: 10.5.9-MariaDB-1:10.5.9+maria~focal
 -- PHP-Version: 7.2.22
 
@@ -76,13 +76,6 @@ CREATE TABLE `favourites` (
   `post_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Daten für Tabelle `favourites`
---
-
-INSERT INTO `favourites` (`id`, `user_id`, `post_id`) VALUES
-(10, 1, 1);
-
 -- --------------------------------------------------------
 
 --
@@ -137,7 +130,7 @@ CREATE TABLE `posts` (
 --
 
 INSERT INTO `posts` (`id`, `title`, `slug`, `content`, `author`, `crdate`, `tstamp`, `deleted_at`) VALUES
-(1, 'Blog Post #1', 'blog-post-1', 'Some funky post!', 1, '2021-04-22 13:28:09', '2021-05-12 14:10:15', NULL),
+(1, 'Blog Post #1', 'blog-post-1', '<p><strong>Some funky post!</strong></p>', 1, '2021-04-22 13:28:09', '2021-06-08 15:12:55', NULL),
 (2, 'Blog Post #2', 'blog-post-2', 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc,', 1, '2021-04-22 13:28:09', '2021-04-27 13:47:45', NULL),
 (3, 'Blog Post #3', 'blog-post-3', 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc,', 1, '2021-04-22 13:28:09', '2021-04-27 13:47:45', NULL),
 (4, 'Blog Post #4', 'blog-post-4', 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc,', 1, '2021-04-22 13:28:09', '2021-04-27 14:41:11', NULL);
@@ -184,6 +177,29 @@ CREATE TABLE `posts_files_mm` (
 INSERT INTO `posts_files_mm` (`id`, `post_id`, `file_id`, `sort`) VALUES
 (1, 1, 2, NULL),
 (2, 1, 4, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `shares`
+--
+
+CREATE TABLE `shares` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `recipient` text DEFAULT NULL COMMENT 'Format: Arhut Dent <arthur.dent@galaxy.com>',
+  `posts` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT 'Snapshot der Posts zum Zeitpunkt der Erstellung des Shares'
+) ;
+
+--
+-- Daten für Tabelle `shares`
+--
+
+INSERT INTO `shares` (`id`, `user_id`, `recipient`, `posts`, `message`, `status`, `crdate`, `tstamp`) VALUES
+(1, 1, NULL, NULL, NULL, 'storno', '2021-06-02 14:10:22', '2021-06-08 14:02:14'),
+(2, 1, 'Alexander Hofbauer <hofbauer.alexander@gmail.com>', '[{\"id\":1,\"title\":\"Blog Post #1\",\"slug\":\"blog-post-1\",\"content\":\"Some funky post!\",\"author\":1,\"crdate\":\"2021-04-22 13:28:09\",\"tstamp\":\"2021-05-12 14:10:15\",\"deleted_at\":null}]', NULL, 'progress', '2021-06-02 14:13:50', '2021-06-08 14:21:08'),
+(3, 1, 'Alexander Hofbauer <hofbauer.alexander@gmail.com>', '[{\"id\":1,\"title\":\"Blog Post #1\",\"slug\":\"blog-post-1\",\"content\":\"Some funky post!\",\"author\":1,\"crdate\":\"2021-04-22 13:28:09\",\"tstamp\":\"2021-05-12 14:10:15\",\"deleted_at\":null}]', '42', 'open', '2021-06-02 14:25:40', '2021-06-08 14:55:39'),
+(4, 1, 'Alexander Hofbauer <a@b.com>', '[{\"id\":1,\"title\":\"Blog Post #1\",\"slug\":\"blog-post-1\",\"content\":\"Some funky post!\",\"author\":1,\"crdate\":\"2021-04-22 13:28:09\",\"tstamp\":\"2021-05-12 14:10:15\",\"deleted_at\":null}]', '42', 'open', '2021-06-02 15:18:04', '2021-06-02 15:18:09');
 
 -- --------------------------------------------------------
 
@@ -299,7 +315,7 @@ ALTER TABLE `comments`
 -- AUTO_INCREMENT für Tabelle `favourites`
 --
 ALTER TABLE `favourites`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT für Tabelle `files`
@@ -324,6 +340,12 @@ ALTER TABLE `posts_categories_mm`
 --
 ALTER TABLE `posts_files_mm`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT für Tabelle `shares`
+--
+ALTER TABLE `shares`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT für Tabelle `users`
