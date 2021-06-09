@@ -17,7 +17,9 @@
 
 <?php
 /**
- * @todo: comment
+ * Pagination generieren.
+ *
+ * Wir wissen, wie viele Seiten es geben muss, und können daher gut mit einer for-Schleife arbeiten.
  */
 ?>
 <ul class="pagination">

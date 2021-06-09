@@ -93,8 +93,9 @@ trait SoftDelete
     }
 
     /**
-     * @return array
-     * @todo: comment
+     * Anzahl der Einträge eines Models in der Datenbank zurückgeben.
+     *
+     * @return int
      */
     public static function count (): int
     {
@@ -116,7 +117,6 @@ trait SoftDelete
          */
         $results = $database->query("SELECT COUNT(*) as 'count' FROM {$tablename} WHERE deleted_at IS NULL");
 
-
         /**
          * Datenbankergebnis verarbeiten und zurückgeben.
          */
@@ -124,12 +124,13 @@ trait SoftDelete
     }
 
     /**
+     * Alle Datensätze aus der Datenbank abfragen und paginiert zurückgeben.
+     *
      * @param int    $page
      * @param string $orderBy
      * @param string $direction
      *
-     * @return array|bool
-     * @todo: comment
+     * @return array
      */
     public static function allPaginated (int $page = 1, string $orderBy = '', string $direction = 'ASC'): array
     {
@@ -143,7 +144,14 @@ trait SoftDelete
          */
         $tablename = self::getTablenameFromClassname();
 
+        /**
+         * Pagination Konfiguration holen.
+         */
         $limit = Config::get('app.items-per-page');
+
+        /**
+         * Berechnen, wie viele Elemente übersprungen werden sollen.
+         */
         $offset = ($page - 1) * $limit;
 
         /**
@@ -151,6 +159,8 @@ trait SoftDelete
          *
          * Wurde in den Funktionsparametern eine Sortierung definiert, so wenden wir sie hier an, andernfalls rufen wir
          * alles ohne sortierung ab.
+         *
+         * Zusätzlich arbeiten wir hier mit dem LIMIT Keyword und übergeben die beiden Parameter dynamisch.
          */
         if (empty($orderBy)) {
             $results = $database->query("SELECT * FROM {$tablename} WHERE deleted_at IS NULL LIMIT ?,?", [

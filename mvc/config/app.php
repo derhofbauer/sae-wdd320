@@ -50,7 +50,7 @@ return [
     'uploads-folder' => '/storage/uploads',
 
     /**
-     * @todo: comment
+     * Wie viele Einträge sollen im Rahmen der Pagination pro Seite angezeigt werden?
      */
     'items-per-page' => 3,
 ];

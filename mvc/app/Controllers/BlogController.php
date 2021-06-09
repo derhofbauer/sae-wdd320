@@ -12,26 +12,37 @@ class BlogController
 
     /**
      * Alle Posts listen.
-     * @todo: comment
+     *
+     * @param int $page Pagination-Seite, die angezeigt werden soll.
      */
     public function index (int $page = 1)
     {
         /**
          * Alle Posts über das Post-Model aus der Datenbank laden.
+         *
+         * Hier laden wir aber eine bestimmte Seite. Wenn wir also bspw. 5 Elemente pro Seite anzeigen möchten, laden
+         * wir hier nur 5 Elemente und überspringen davor ($page - 1) * 5 Elemente.
          */
         $posts = Post::allPaginated($page);
+
+        /**
+         * Damit wir die Links für die Paginierung generieren können, müssen wir wissen, wie viele Elemente es gesamt
+         * gibt und wie viele pro Seite angezeigt werden soll. Die Anzahl der Seiten ergibt sich durch Division. Nachdem
+         * es keine halben Seiten geben kann, werden wir mit der ceil()-Funktion auf die nächste ganze Zahl aufrunden.
+         */
         $count = Post::count();
         $itemsPerPage = Config::get('app.items-per-page');
+        $numerOfPages = ceil($count / $itemsPerPage);
 
         /**
          * Um nicht in jeder Action den Header und den Footer und dann den View laden zu müssen, haben wir uns eine View
-         * Klasse gebaut. Als ersten Parameter übergeben wir den Namen des Tempalte Files inkl. Pfad und als zweiten
+         * Klasse gebaut. Als ersten Parameter übergeben wir den Namen des Template Files inkl. Pfad und als zweiten
          * Parameter alle Werte aus dem Controller, die im Template als eigene Variablen verfügbar sein sollen.
          */
         View::render('blog/index', [
             'posts' => $posts,
             'page' => $page,
-            'numberOfPages' => ceil($count / $itemsPerPage)
+            'numberOfPages' => $numerOfPages
         ]);
     }
 

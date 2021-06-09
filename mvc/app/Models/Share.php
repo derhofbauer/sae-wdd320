@@ -31,7 +31,9 @@ class Share extends AbstractModel
     public string $tstamp;
 
     /**
-     * @todo: comment
+     * Damit wir die möglichen Stati eines Shares an einem zentralen Ort definiert haben, gibt es für die Share Klasse
+     * eine Klassenkonstante, die sowohl für die Generierung des Dropdowns in den Views als auch bei der Validierung in
+     * den Controllern verwendet werden kann.
      */
     const STATI = [
         'open' => 'Open',
@@ -123,19 +125,16 @@ class Share extends AbstractModel
     }
 
     /**
-     * Alle Datensätze aus der Datenbank abfragen.
+     * Alle Datensätze aus der Datenbank abfragen, die nicht abgeschlossen oder storniert sind.
      *
-     * Die ersten beiden Funktionsparameter bieten die Möglichkeit eine ganz einfache WHERE-Abfrage zu machen.
-     *
-     * Die beiden letzten Funktionsparameter bieten die Möglichkeit die Daten, die abgerufen werden, nach einer
-     * einzelnen Spalte aufsteigend oder absteigend direkt über MySQL zu sortieren. Sortierungen sollten, sofern
-     * möglich, über die Datenbank durchgeführt werden, weil das wesentlich performanter ist als über PHP.
+     * Die beiden Funktionsparameter bieten die Möglichkeit die Daten, die abgerufen werden, nach einer einzelnen
+     * Spalte aufsteigend oder absteigend direkt über MySQL zu sortieren. Sortierungen sollten, sofern möglich, über die
+     * Datenbank durchgeführt werden, weil das wesentlich performanter ist als über PHP.
      *
      * @param string $orderBy
      * @param string $direction
      *
      * @return array
-     * @todo: comment
      */
     public static function allOpen (string $orderBy = '', string $direction = 'ASC'): array
     {
@@ -151,9 +150,6 @@ class Share extends AbstractModel
 
         /**
          * Query ausführen.
-         *
-         * Hier ist es wichtig zu bedenken, dass der $field-Parameter niemals die Benutzer*inneneingabe beinhalten darf,
-         * weil sonst der Query für MySQL Injection anfällig ist.
          *
          * Wurde in den Funktionsparametern eine Sortierung definiert, so wenden wir sie hier an, andernfalls rufen wir
          * alles ohne sortierung ab.
@@ -171,7 +167,7 @@ class Share extends AbstractModel
     }
 
     /**
-     * @todo: comment
+     * Relation zur User-Klasse herstellen.
      */
     public function user ()
     {
@@ -179,7 +175,10 @@ class Share extends AbstractModel
     }
 
     /**
-     * @todo: comment
+     * Posts, die im Share als JSON gespeichert sind, als Array an Objekten zurückgeben.
+     *
+     * Anders als bspw. die self::user()-Methode und andere Relation-Methoden, bezieht sich diese Methode nicht auf
+     * andere Post Objekte, sondern auf die Daten, die in $this->posts als JSON gespeichert sind.
      */
     public function posts ()
     {

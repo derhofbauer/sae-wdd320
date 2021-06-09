@@ -21,7 +21,7 @@
                 <select name="status" id="status" class="form-control">
                     <?php
                     /**
-                     * @todo: comment
+                     * Hier holen wir alle möglichen Stati aus dem Share Model, damit wir ein Dropdown daraus generieren können.
                      */
                     $stati = \App\Models\Share::STATI;
 

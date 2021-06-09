@@ -227,8 +227,10 @@ class User extends AbstractUser
     }
 
     /**
+     * Diese magische Methode wird aufgerufen, wenn ein Objekt in eine String konvertiert werden soll. Das passiert
+     * beispielsweise dann, wenn man ein echo von einem Objekt macht: echo $object.
+     *
      * @return string
-     * @todo: comment
      */
     public function __toString (): string
     {

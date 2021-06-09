@@ -290,7 +290,10 @@ class MediaController
         $validator->textnum($_POST['title'], 'Title', max: 255);
         $validator->textnum($_POST['alttext'], 'Alternative Text');
         /**
-         * @todo: comment
+         * Hier müssten wir eigentlich die textarea validieren, wir haben aber den CKEditor eingebaut, damit wir einen
+         * Rich Text Editor statt einer normalen Textarea verwenden können und dadurch müssten wir eine Validierung auf
+         * valides HTML durchführen, was tricky ist. Daher verzichten wir hier mal auf die Validierung - mit dem Hinweis,
+         * dass das nicht schön ist und eigentlich gelöst werden müsste.
          */
 //        $validator->textnum($_POST['caption'], 'Caption');
 

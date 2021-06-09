@@ -355,7 +355,10 @@ class PostController
         $validator->textnum($_POST['title'], 'Title', true, max: 255);
         $validator->slug($_POST['slug'], 'Slug', true, 1, 255);
         /**
-         * @todo: comment
+         * Hier müssten wir eigentlich die textarea validieren, wir haben aber den CKEditor eingebaut, damit wir einen
+         * Rich Text Editor statt einer normalen Textarea verwenden können und dadurch müssten wir eine Validierung auf
+         * valides HTML durchführen, was tricky ist. Daher verzichten wir hier mal auf die Validierung - mit dem Hinweis,
+         * dass das nicht schön ist und eigentlich gelöst werden müsste.
          */
 //        $validator->html($_POST['content'], 'Content');
         $validator->int((int)$_POST['author'], 'Autor', true);
