@@ -47,12 +47,18 @@ class AuthMiddleware
     }
 
     /**
-     * @todo: comment
+     * Prüfen, ob ein*e User*in eingeloggt ist und andernfalls Fehler 403 Forbidden zurückgeben.
      */
     public static function isLoggedInOrFail ()
     {
+        /**
+         * Ist jemand eingeloggt?
+         */
         $isLoggedIn = User::isLoggedIn();
 
+        /**
+         * Wenn nein, geben wir einen Fehler 403 Forbidden zurück und brechen somit die weitere Ausführung ab.
+         */
         if ($isLoggedIn !== true) {
             View::error403();
         }

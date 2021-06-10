@@ -217,11 +217,16 @@ class Post extends AbstractModel
     }
 
     /**
+     * Relation zu Comments.
+     *
      * @return array
-     * @todo: comment
      */
     public function comments (): array
     {
+        /**
+         * Hier laden wir nur alle Toplevel Kommentare, die Antworten auf diese Kommentare laden wir später über die
+         * jeweiligen Toplevel Kommentare selbst.
+         */
         return Comment::findByPostTopLevel($this->id, 'crdate', 'DESC');
     }
 

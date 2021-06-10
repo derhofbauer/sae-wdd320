@@ -50,7 +50,6 @@ return [
     '/blog/{slug}' => [BlogController::class, 'show'], // einzelnen Post anzeigen
     /*
      * Comments Routes
-     * @todo: comment
      */
     '/blog/{id}/comment' => [CommentController::class, 'create'], // Kommentar speichern
 

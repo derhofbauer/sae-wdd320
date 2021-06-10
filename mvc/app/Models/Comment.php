@@ -11,7 +11,6 @@ use Core\Traits\SoftDelete;
  * Class Post
  *
  * @package App\Models
- * @todo: comment
  */
 class Comment extends AbstractModel
 {
@@ -27,6 +26,11 @@ class Comment extends AbstractModel
     public int $author;
     public string $content;
     public int $post_id;
+    /**
+     * Nachdem wir Ratings noch nicht implementiert haben und nicht jeder Kommentar einen Eltern-Kommentar hat,
+     * definieren wir hier Default-Werte für beide Eigenschaften. ?int gibt dabei an, dass die Eigenschaft ein Integer
+     * sein muss, aber auch null sein darf.
+     */
     public ?int $rating = null;
     public ?int $parent = null;
     /**
@@ -75,8 +79,9 @@ class Comment extends AbstractModel
     }
 
     /**
+     * Relation zum User.
+     *
      * @return User
-     * @todo: comment
      */
     public function author (): User
     {
@@ -84,8 +89,9 @@ class Comment extends AbstractModel
     }
 
     /**
+     * Relation zu den Kind-Kommentaren/Replies.
+     *
      * @return array
-     * @todo: comment
      */
     public function replies (): array
     {
@@ -93,14 +99,25 @@ class Comment extends AbstractModel
     }
 
     /**
+     * crdate formatiert zurückgeben.
+     *
+     * Diese Hilfsfunktion dient uns dazu, $this->crdate hübsch zu formatieren und als String zurückzugeben. Das könnten
+     * wir in den Views auch machen, aber hier haben wir es an einer zentralen Stelle.
+     *
      * @return string
      * @throws \Exception
-     * @todo: comment
      */
     public function getCrdate (): string
     {
+        /**
+         * Die DateTime-Klasse wir von PHP mitgeliefert und bietet eine einfache Möglichkeit, wie diverse Datumsformate
+         * einheitlich verarbeitet werden können.
+         */
         $timestamp = new \DateTime($this->crdate);
 
+        /**
+         * DateTime-Objekt formatieren.
+         */
         return $timestamp->format('d. M Y, H:i');
     }
 
@@ -169,11 +186,17 @@ class Comment extends AbstractModel
     }
 
     /**
-     * @param int $post_id
+     * Toplevel Kommentare für einen bestimmten Post finden.
      *
-     * @todo: comment
+     * Toplevel Kommentare sind solche, die keine Antwort sind, also keinen Eltern-Kommentar haben.
+     *
+     * @param int    $post_id
+     * @param string $orderBy
+     * @param string $direction
+     *
+     * @return array|bool
      */
-    public static function findByPostTopLevel (int $post_id, string $orderBy = '', string $direction = 'ASC')
+    public static function findByPostTopLevel (int $post_id, string $orderBy = '', string $direction = 'ASC'): bool|array
     {
         /**
          * Datenbankverbindung herstellen.
