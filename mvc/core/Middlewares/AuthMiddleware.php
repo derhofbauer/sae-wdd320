@@ -46,4 +46,16 @@ class AuthMiddleware
         }
     }
 
+    /**
+     * @todo: comment
+     */
+    public static function isLoggedInOrFail ()
+    {
+        $isLoggedIn = User::isLoggedIn();
+
+        if ($isLoggedIn !== true) {
+            View::error403();
+        }
+    }
+
 }

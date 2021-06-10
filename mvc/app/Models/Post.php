@@ -217,6 +217,15 @@ class Post extends AbstractModel
     }
 
     /**
+     * @return array
+     * @todo: comment
+     */
+    public function comments (): array
+    {
+        return Comment::findByPostTopLevel($this->id, 'crdate', 'DESC');
+    }
+
+    /**
      * Neue Liste an verknüpften Kategorien zuweisen.
      *
      * @param array<int> $categoryIds

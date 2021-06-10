@@ -5,6 +5,7 @@ use App\Controllers\BlogController;
 use App\Controllers\CategoryController;
 use App\Controllers\AuthController;
 use App\Controllers\CheckoutController;
+use App\Controllers\CommentController;
 use App\Controllers\FavouritesController;
 use App\Controllers\ProfileController;
 use App\Controllers\Admin\MediaController;
@@ -45,8 +46,13 @@ return [
     /**
      * Blog Routes
      */
-    '/blog/{page}' => [BlogController::class, 'index'], // Posts auflisten
+    '/blog/page/{page}' => [BlogController::class, 'index'], // Posts auflisten
     '/blog/{slug}' => [BlogController::class, 'show'], // einzelnen Post anzeigen
+    /*
+     * Comments Routes
+     * @todo: comment
+     */
+    '/blog/{id}/comment' => [CommentController::class, 'create'], // Kommentar speichern
 
     /**
      * Category Routes

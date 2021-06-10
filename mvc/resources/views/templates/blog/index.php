@@ -25,7 +25,7 @@
 <ul class="pagination">
     <?php for ($i = 1; $i <= $numberOfPages; $i++): ?>
     <li class="page-item">
-        <a href="<?php echo BASE_URL; ?>/blog/<?php echo $i; ?>" class="page-link"><?php echo $i; ?></a>
+        <a href="<?php echo BASE_URL; ?>/blog/page/<?php echo $i; ?>" class="page-link"><?php echo $i; ?></a>
     </li>
     <?php endfor; ?>
 </ul>

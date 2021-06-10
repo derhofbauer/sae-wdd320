@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: db
--- Erstellungszeit: 08. Jun 2021 um 15:41
+-- Erstellungszeit: 10. Jun 2021 um 15:32
 -- Server-Version: 10.5.9-MariaDB-1:10.5.9+maria~focal
 -- PHP-Version: 7.2.22
 
@@ -58,11 +58,22 @@ CREATE TABLE `comments` (
   `content` text DEFAULT NULL,
   `post_id` int(11) NOT NULL,
   `rating` int(5) UNSIGNED DEFAULT NULL,
-  `parent` int(11) NOT NULL,
+  `parent` int(11) DEFAULT NULL,
   `crdate` timestamp NOT NULL DEFAULT current_timestamp(),
   `tstamp` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `deleted_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Daten für Tabelle `comments`
+--
+
+INSERT INTO `comments` (`id`, `author`, `content`, `post_id`, `rating`, `parent`, `crdate`, `tstamp`, `deleted_at`) VALUES
+(1, 1, '<p>42</p>', 1, NULL, NULL, '2021-06-10 14:29:04', '2021-06-10 14:29:04', NULL),
+(2, 1, '<p><strong>Hello World!</strong></p>', 1, NULL, NULL, '2021-06-10 14:33:44', '2021-06-10 14:33:44', NULL),
+(3, 1, '<p>Works?!</p>', 1, NULL, NULL, '2021-06-10 14:43:39', '2021-06-10 14:43:39', NULL),
+(4, 1, '<p>Antwort auf 42</p>', 1, NULL, 1, '2021-06-10 15:14:00', '2021-06-10 15:14:00', NULL),
+(5, 1, '<p>43</p>', 1, NULL, 1, '2021-06-10 15:24:12', '2021-06-10 15:24:12', NULL);
 
 -- --------------------------------------------------------
 
@@ -309,13 +320,13 @@ ALTER TABLE `categories`
 -- AUTO_INCREMENT für Tabelle `comments`
 --
 ALTER TABLE `comments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT für Tabelle `favourites`
 --
 ALTER TABLE `favourites`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT für Tabelle `files`
