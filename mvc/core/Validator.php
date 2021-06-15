@@ -97,17 +97,24 @@ class Validator
          * Validierungen ausführen. Diese Methoden schreiben ihre Fehler in $this->errors.
          */
         $this->validateRequired($required, $value, $label);
-        $this->validateMin($type, $min, $value, $label);
-        $this->validateMax($type, $max, $value, $label);
 
         /**
-         * Wenn es sich um einen numerischen Typ handelt, so prüfen wir nicht mit einer Regular Expression.
+         * @todo: comment
          */
-        if ($this->isNumericType($type)) {
-            $this->validateNumeric($type, $value, $label);
-        } else {
-            $this->validateRegex($type, $value, $label);
+        if ((bool)$required === true || !empty($value)) {
+            $this->validateMin($type, $min, $value, $label);
+            $this->validateMax($type, $max, $value, $label);
+
+            /**
+             * Wenn es sich um einen numerischen Typ handelt, so prüfen wir nicht mit einer Regular Expression.
+             */
+            if ($this->isNumericType($type)) {
+                $this->validateNumeric($type, $value, $label);
+            } else {
+                $this->validateRegex($type, $value, $label);
+            }
         }
+
     }
 
     /**

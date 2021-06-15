@@ -20,6 +20,8 @@ class Post extends AbstractModel
      */
     const TABLENAME_CATEGORIES_MM = 'posts_categories_mm';
     const TABLENAME_FILES_MM = 'posts_files_mm';
+    const TITLE_PROPERTY = 'title';
+    const SLUG_PROPERTY = 'slug';
 
     /**
      * Wir innerhalb einer Klasse das use-Keyword verwendet, so wird damit ein Trait importiert. Das kann man sich

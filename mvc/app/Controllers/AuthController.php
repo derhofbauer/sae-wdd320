@@ -247,4 +247,35 @@ class AuthController
         }
     }
 
+    /**
+     * @todo: comment
+     */
+    public function resetPasswordForm ()
+    {
+        View::render('reset-password');
+    }
+
+    /**
+     * @todo: comment
+     */
+    public function sendResetMail ()
+    {
+        var_dump($_POST);
+        /**
+         * [ ] Gibts den User?
+         * [ ] Wenn nein: neutrale Meldung, wenn ja: weiter
+         * [ ] Reset-Token generieren und in die DB speichern
+         * [ ] Email generieren mit Reset-Token in einem Link
+         * [ ] Email verschicken
+         * [ ] neutrale Meldung
+         *
+         * ----
+         * Klick auf Link in Email:
+         * [ ] Token aus GET Paramatern auslesen
+         * [ ] Gibts den Token in der DB?
+         * [ ] Wenn nein: Fehler, wenn ja: weiter
+         * [ ] Formular für neues passwort anzeigen
+         */
+    }
+
 }

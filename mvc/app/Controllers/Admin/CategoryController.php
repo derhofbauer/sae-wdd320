@@ -110,7 +110,14 @@ class CategoryController
              * Sind keine Fehler aufgetreten aktualisieren wir die Werte des vorher geladenen Objekts ...
              */
             $category->title = trim($_POST['title']);
-            $category->slug = trim($_POST['slug']);
+            /**
+             * @todo: comment
+             */
+            if (isset($_POST['slug']) && !empty($_POST['slug'])) {
+                $category->slug = trim($_POST['slug']);
+            } else {
+                $category->createSlug();
+            }
             $category->description = trim($_POST['description']);
 
             /**
@@ -249,8 +256,15 @@ class CategoryController
              * Sind keine Fehler aufgetreten legen wir ein neues Objekt an ...
              */
             $category = new Category();
+            /**
+             * @todo: comment
+             */
             $category->title = trim($_POST['title']);
-            $category->slug = trim($_POST['slug']);
+            if (isset($_POST['slug']) && !empty($_POST['slug'])) {
+                $category->slug = trim($_POST['slug']);
+            } else {
+                $category->createSlug();
+            }
             $category->description = trim($_POST['description']);
 
             /**
@@ -287,7 +301,7 @@ class CategoryController
          */
         $validator = new Validator();
         $validator->textnum($_POST['title'], 'Title', true, max: 255);
-        $validator->slug($_POST['slug'], 'Slug', true, 1, 255);
+        $validator->slug($_POST['slug'], 'Slug', false, max: 255);
         /**
          * Hier müssten wir eigentlich die textarea validieren, wir haben aber den CKEditor eingebaut, damit wir einen
          * Rich Text Editor statt einer normalen Textarea verwenden können und dadurch müssten wir eine Validierung auf

@@ -66,7 +66,9 @@ return [
     '/login/do' => [AuthController::class, 'login'], // Login durchführen
     '/logout/do' => [AuthController::class, 'logout'], // Logout durchführen
     '/sign-up' => [AuthController::class, 'signupForm'], // Sign-up Formular anzeigen
-    '/sign-up/do' => [AuthController::class, 'signup'], // Sign-up Formular anzeigen
+    '/sign-up/do' => [AuthController::class, 'signup'], // Sign-up Formular verarveiten
+    '/reset-password' => [AuthController::class, 'resetPasswordForm'], // Reset Password Formular anzeigen
+    '/reset-password/do' => [AuthController::class, 'sendResetMail'], // Reset Password Formular verarbeiten
 
     /**
      * Admin Routes

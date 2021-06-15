@@ -21,6 +21,8 @@
                     Favourites
                     <?php if (\App\Models\User::isLoggedIn()): ?>
                         (<span class="favourites-counter"><?php echo count(\App\Models\User::getLoggedIn()->favourites()); ?></span>)
+                    <?php else: ?>
+                        (<span class="favourites-counter"><?php echo count(\App\Models\Favourite::getFromSession()); ?></span>)
                     <?php endif; ?>
                 </a>
             </li>

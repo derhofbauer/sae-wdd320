@@ -19,5 +19,6 @@
 
         <button type="submit" class="btn btn-primary">Login!</button>
 
+        <a href="<?php echo BASE_URL; ?>/reset-password">Forgot your password?</a>
     </form>
 </div>

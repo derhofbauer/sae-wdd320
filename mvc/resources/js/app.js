@@ -26,6 +26,7 @@ document.querySelectorAll('.favourite-remove').forEach(($item) => {
     event.preventDefault()
 
     const url = $item.dataset.href
+    const $target = event.target
 
     fetch(url, {
       method: 'POST',
@@ -37,22 +38,10 @@ document.querySelectorAll('.favourite-remove').forEach(($item) => {
         document.querySelectorAll('.favourites-counter').forEach(($counter) => {
           $counter.textContent = favouriteCount
         })
-
-        document.querySelectorAll('.favourite').forEach(($favourite) => {
-          let _delete = true
-          json.forEach(($jsonItem) => {
-            const classname = 'favourite-' + $jsonItem.id
-            if ($favourite.classList.contains(classname)) {
-              _delete = false
-            }
-          })
-
-          if (_delete === true) {
-            $favourite.remove()
-          }
-        })
       })
 
+    const $tr = $target.closest('tr')
+    $tr.remove()
   })
 })
 

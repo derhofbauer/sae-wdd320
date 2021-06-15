@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Core\Models\AbstractModel;
 use Core\Database;
+use Core\Session;
 
 /**
  * Class Favourite
@@ -13,9 +14,14 @@ use Core\Database;
 class Favourite extends AbstractModel
 {
     /**
+     * @todo: comment
+     */
+    const SESSION_KEY = 'favourites';
+
+    /**
      * Wir definieren alle Spalten aus der Tabelle mit den richtigen Datentypen.
      */
-    public int $id;
+    public int $id = 0;
     public int $user_id;
     public int $post_id;
     /**
@@ -114,5 +120,21 @@ class Favourite extends AbstractModel
          * Post zurückgeben.
          */
         return $this->post;
+    }
+
+    /**
+     * @todo: comment
+     */
+    public static function getFromSession ()
+    {
+        $favourites = Session::get(self::SESSION_KEY, []);
+        $_favourites = [];
+        foreach ($favourites as $postId) {
+            $favourite = new Favourite();
+            $favourite->post_id = $postId;
+            $_favourites[] = $favourite;
+        }
+
+        return $_favourites;
     }
 }

@@ -58,4 +58,40 @@ trait HasSlug
         return $result;
     }
 
+    /**
+     * @param string|null $title
+     *
+     * @return string
+     * @todo: comment
+     *
+     *      1) Funktionsparameter
+     *      2) Klassenkonstante
+     *      3) $title property
+     */
+    public function createSlug (string $title = null): string
+    {
+        if (!empty($title)) {
+            $titleValue = $title;
+        } elseif (defined(self::class . "::TITLE_PROPERTY")) {
+            $titlePropertyName = self::TITLE_PROPERTY;
+            $titleValue = $this->$titlePropertyName;
+        } elseif (property_exists($this, 'title')) {
+            $titleValue = $this->title;
+        } else {
+            throw new \Exception('Property for slug not found.');
+        }
+
+        $titleValue = strtolower($titleValue);
+        $titleValue = preg_replace('/[^a-z0-9-]/', '-', $titleValue );
+        $titleValue = preg_replace('/-{2,}/', '-', $titleValue);
+        $slug = trim($titleValue);
+
+        if (defined(self::class . "::SLUG_PROPERTY")) {
+            $slugPropertyName = self::SLUG_PROPERTY;
+            $this->$slugPropertyName = $slug;
+        }
+
+        return $slug;
+    }
+
 }

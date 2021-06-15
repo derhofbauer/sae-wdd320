@@ -20,6 +20,11 @@ class Category extends AbstractModel
      * in der genannten Funktion abfragen um die Berechnung zu überschreiben.
      */
     const TABLENAME = 'categories';
+    /**
+     * @todo: comment
+     */
+    const TITLE_PROPERTY = 'title';
+    const SLUG_PROPERTY = 'slug';
 
     /**
      * s. Post.php

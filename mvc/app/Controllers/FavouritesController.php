@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Models\Favourite;
 use App\Models\User;
 use Core\Helpers\Redirector;
 use Core\View;
@@ -19,15 +20,28 @@ class FavouritesController
      */
     public function __construct ()
     {
-        if (!User::isLoggedIn()) {
-            Redirector::redirect(BASE_URL);
+        // @todo: comment
+//        if (!User::isLoggedIn()) {
+//            Redirector::redirect(BASE_URL);
+//        }
+    }
+
+    /**
+     * @todo: comment
+     */
+    public function index ()
+    {
+        if (User::isLoggedIn()) {
+            $this->indexLoggedIn();
+        } else {
+            $this->indexGuest();
         }
     }
 
     /**
      * Übersicht der Favoriten anzeigen.
      */
-    public function index ()
+    public function indexLoggedIn ()
     {
         /**
          * User*in und zugehörige Favoriten aus der Datenbank holen.
@@ -41,6 +55,23 @@ class FavouritesController
         View::render('favourites/index', [
             'favourites' => $favourites
         ]);
+    }
 
+    /**
+     * @todo: comment
+     */
+    public function indexGuest ()
+    {
+        /**
+         * User*in und zugehörige Favoriten aus der Datenbank holen.
+         */
+        $favourites = Favourite::getFromSession();
+
+        /**
+         * View laden und Daten übergeben.
+         */
+        View::render('favourites/index', [
+            'favourites' => $favourites
+        ]);
     }
 }
