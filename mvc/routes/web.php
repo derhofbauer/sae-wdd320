@@ -10,6 +10,7 @@ use App\Controllers\FavouritesController;
 use App\Controllers\ProfileController;
 use App\Controllers\Admin\MediaController;
 use App\Controllers\Admin\ShareController;
+use App\Controllers\MailtestController;
 
 /**
  * Werden mit dem use-Keyword mehrere Klassen mit dem selben Namen importiert, so können diese weiter unten nicht mehr
@@ -142,4 +143,9 @@ return [
     '/checkout/message/{id}' => [CheckoutController::class, 'message'], // Grußbotschaft speichern
     '/checkout/summary/{id}' => [CheckoutController::class, 'summary'], // Finale Übersicht anzeigen
     '/checkout/final/{id}' => [CheckoutController::class, 'finish'], // Checkout abschließen
+
+    /**
+     * @todo: comment
+     */
+//    '/mailtest/{email}' => [MailtestController::class, 'test'], // Test mailing
 ];

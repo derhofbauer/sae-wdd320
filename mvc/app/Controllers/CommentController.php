@@ -8,6 +8,7 @@ use App\Models\User;
 use Core\Helpers\Redirector;
 use Core\Middlewares\AuthMiddleware;
 use Core\Session;
+use Core\Validator;
 
 /**
  * Class CommentController
@@ -30,9 +31,15 @@ class CommentController
         AuthMiddleware::isLoggedInOrFail();
 
         /**
+         * @todo: comment
+         */
+        $validator = new Validator();
+        $validator->int((int)$_POST['rating'], 'Rating', false, 1, 5);
+
+        /**
          * Fehler Array vorbereiten.
          */
-        $errors = [];
+        $errors = $validator->getErrors();
 
         /**
          * Wenn kein oder ein leerer Kommentar-Text übergeben wurden, schrieben wir einen Fehler.
@@ -70,6 +77,7 @@ class CommentController
         $comment->author = User::getLoggedIn()->id;
         $comment->post_id = $post->id;
         $comment->content = $_POST['comment'];
+        $comment->rating = $_POST['rating'];
 
         /**
          * Um nur eine einzelne Action für die Erstellung von Top Level Kommentaren und Antworten auf Kommentare zu

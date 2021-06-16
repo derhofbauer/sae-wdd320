@@ -7,6 +7,7 @@
                     Favorit (DE!!)
                 </button>
             </small>
+            <small><?php echo $post->getAverageAndNumberRatings()['average']; ?>/5 Sternen (<?php echo $post->getAverageAndNumberRatings()['numberOfRatings']; ?> Ratings)</small>
         </h2>
         <?php require __DIR__ . '/../../partials/post/meta.php'; ?>
 
@@ -23,8 +24,23 @@
             <?php endforeach; ?>
         </div>
 
-        <?php /* @todo: comment */ if (\App\Models\User::isLoggedIn()): ?>
+        <h3>Comments</h3>
+
+        <?php /* @todo: comment */
+        if (\App\Models\User::isLoggedIn()): ?>
             <form action="<?php echo BASE_URL; ?>/blog/<?php echo $post->id; ?>/comment" method="post">
+                <?php if (!$post->hasBeenRatedByUser(\App\Models\User::getLoggedIn()->id)): ?>
+                    <div class="form-group">
+                        <label for="rating">Rating</label>
+                        <select name="rating" id="rating" class="form-control">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+                <?php endif; ?>
                 <div class="form-group">
                     <label for="comment">Comment</label>
                     <textarea name="comment" id="comment" class="form-control editor" placeholder="e.g. The answer to life, the universe and everything ..."></textarea>
@@ -39,6 +55,9 @@
                     <div class="meta">
                         <span class="meta-item"><?php echo $comment->author()->email; ?></span> |
                         <span class="meta-item"><?php echo $comment->getCrdate(); ?></span>
+                        <?php if (!empty($comment->rating)): ?>
+                            | <span class="meta-item">Rating: <?php echo $comment->rating; ?></span>
+                        <?php endif; ?>
                     </div>
                     <div class="content"><?php echo $comment->content; ?></div>
 

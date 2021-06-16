@@ -55,6 +55,12 @@ class Post extends AbstractModel
     public mixed $deleted_at;
 
     /**
+     * @var array
+     * @todo: comment
+     */
+    private array $_buffer;
+
+    /**
      * Diese Methode ermöglicht es uns, die Daten aus einem Datenbankergebnis in nur einer Zeile direkt in ein Objekt
      * zu füllen. Bei der Instanziierung kann über den Konstruktor auch diese Methode verwendet werden.
      *
@@ -568,5 +574,58 @@ class Post extends AbstractModel
              */
             return $result;
         }
+    }
+
+    /**
+     * @param int $user_id
+     *
+     * @todo: comment
+     */
+    public function hasBeenRatedByUser (int $user_id): bool
+    {
+        /**
+         * Datenbankverbindung herstellen.
+         */
+        $database = new Database();
+
+        $result = $database->query("SELECT COUNT(*) as count FROM comments WHERE author = ? AND post_id = ? AND rating IS NOT NULL", [
+            'i:author' => $user_id,
+            'i:post_id' => $this->id
+        ]);
+
+        $numerOfRatings = $result[0]['count'];
+        $hasBeenRated = $numerOfRatings > 0;
+
+        return $hasBeenRated;
+    }
+
+    /**
+     * @return array
+     * @todo: comment
+     */
+    public function getAverageAndNumberRatings (): array
+    {
+        if (empty($this->_buffer)) {
+
+            /**
+             * Datenbankverbindung herstellen.
+             */
+            $database = new Database();
+
+            $result = $database->query("SELECT AVG(rating) as average, COUNT(*) as count FROM comments WHERE post_id = ? AND rating IS NOT NULL", [
+                'i:post_id' => $this->id
+            ]);
+
+            $numberOfRatings = (int)$result[0]['count'];
+            $average = (float)$result[0]['average'];
+
+            $this->_buffer = [
+                'average' => $average,
+                'numberOfRatings' => $numberOfRatings
+            ];
+
+        }
+
+        return $this->_buffer;
     }
 }
