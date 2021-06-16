@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: db
--- Erstellungszeit: 10. Jun 2021 um 15:32
+-- Erstellungszeit: 16. Jun 2021 um 15:27
 -- Server-Version: 10.5.9-MariaDB-1:10.5.9+maria~focal
 -- PHP-Version: 7.2.22
 
@@ -43,7 +43,7 @@ CREATE TABLE `categories` (
 --
 
 INSERT INTO `categories` (`id`, `title`, `slug`, `description`, `crdate`, `tstamp`, `deleted_at`) VALUES
-(1, 'Category #1', 'category-1', 'Category #1 Description', '2021-04-27 15:18:53', '2021-05-12 14:13:02', NULL),
+(1, 'Category #1', 'category-1', '<p>Category #1 Description</p>', '2021-04-27 15:18:53', '2021-06-15 13:59:31', NULL),
 (2, 'Category #2', 'category-2', 'Category #2 Description', '2021-04-27 15:18:53', '2021-04-29 14:05:51', NULL);
 
 -- --------------------------------------------------------
@@ -69,11 +69,12 @@ CREATE TABLE `comments` (
 --
 
 INSERT INTO `comments` (`id`, `author`, `content`, `post_id`, `rating`, `parent`, `crdate`, `tstamp`, `deleted_at`) VALUES
-(1, 1, '<p>42</p>', 1, NULL, NULL, '2021-06-10 14:29:04', '2021-06-10 14:29:04', NULL),
-(2, 1, '<p><strong>Hello World!</strong></p>', 1, NULL, NULL, '2021-06-10 14:33:44', '2021-06-10 14:33:44', NULL),
-(3, 1, '<p>Works?!</p>', 1, NULL, NULL, '2021-06-10 14:43:39', '2021-06-10 14:43:39', NULL),
+(1, 1, '<p>42</p>', 3, 4, NULL, '2021-06-10 14:29:04', '2021-06-16 14:54:45', NULL),
+(2, 1, '<p><strong>Hello World!</strong></p>', 2, 4, NULL, '2021-06-10 14:33:44', '2021-06-16 14:54:45', NULL),
+(3, 1, '<p>Works?!</p>', 1, 1, NULL, '2021-06-10 14:43:39', '2021-06-16 14:42:48', NULL),
 (4, 1, '<p>Antwort auf 42</p>', 1, NULL, 1, '2021-06-10 15:14:00', '2021-06-10 15:14:00', NULL),
-(5, 1, '<p>43</p>', 1, NULL, 1, '2021-06-10 15:24:12', '2021-06-10 15:24:12', NULL);
+(5, 1, '<p>43</p>', 1, NULL, 1, '2021-06-10 15:24:12', '2021-06-10 15:24:12', NULL),
+(6, 1, '<p>Wahnsinns Post!</p>', 1, 5, NULL, '2021-06-16 14:16:30', '2021-06-16 14:16:30', NULL);
 
 -- --------------------------------------------------------
 
@@ -86,6 +87,13 @@ CREATE TABLE `favourites` (
   `user_id` int(11) NOT NULL,
   `post_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Daten für Tabelle `favourites`
+--
+
+INSERT INTO `favourites` (`id`, `user_id`, `post_id`) VALUES
+(12, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -122,6 +130,30 @@ INSERT INTO `files` (`id`, `path`, `name`, `title`, `alttext`, `caption`, `is_av
 -- --------------------------------------------------------
 
 --
+-- Tabellenstruktur für Tabelle `password-resets`
+--
+
+CREATE TABLE `password-resets` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `token` varchar(64) NOT NULL,
+  `crdate` timestamp NOT NULL DEFAULT current_timestamp(),
+  `tstamp` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `deleted_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Daten für Tabelle `password-resets`
+--
+
+INSERT INTO `password-resets` (`id`, `user_id`, `token`, `crdate`, `tstamp`, `deleted_at`) VALUES
+(1, 1, 'asdlkhsad', '2021-06-16 13:36:51', '2021-06-16 13:36:51', NULL),
+(2, 1, 'e81e30d049f8b0eaef56f544ea06c285228cdb7550cf99b12dd1e1383a395f4f', '2021-06-16 13:37:10', '2021-06-16 13:37:10', NULL),
+(3, 1, 'aeca2cb9f42c06ba724c68f64f5c58aba2cd0be8d623ed06d0bb4898bd734d8f', '2021-06-16 13:37:40', '2021-06-16 13:52:10', '2021-06-16 13:52:10');
+
+-- --------------------------------------------------------
+
+--
 -- Tabellenstruktur für Tabelle `posts`
 --
 
@@ -141,7 +173,7 @@ CREATE TABLE `posts` (
 --
 
 INSERT INTO `posts` (`id`, `title`, `slug`, `content`, `author`, `crdate`, `tstamp`, `deleted_at`) VALUES
-(1, 'Blog Post #1', 'blog-post-1', '<p><strong>Some funky post!</strong></p>', 1, '2021-04-22 13:28:09', '2021-06-08 15:12:55', NULL),
+(1, 'Blog Post #1', 'blog-post-1', '<p><strong>Some funky post!</strong></p>', 1, '2021-04-22 13:28:09', '2021-06-15 14:02:57', NULL),
 (2, 'Blog Post #2', 'blog-post-2', 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc,', 1, '2021-04-22 13:28:09', '2021-04-27 13:47:45', NULL),
 (3, 'Blog Post #3', 'blog-post-3', 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc,', 1, '2021-04-22 13:28:09', '2021-04-27 13:47:45', NULL),
 (4, 'Blog Post #4', 'blog-post-4', 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc,', 1, '2021-04-22 13:28:09', '2021-04-27 14:41:11', NULL);
@@ -235,7 +267,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `email`, `username`, `password`, `avatar`, `is_admin`, `crdate`, `tstamp`, `deleted_at`) VALUES
-(1, 'arthur.dent@galaxy.com', 'adent', '$2y$12$CIC/1HJPFDgW0LrlYc0OLeChDLAUNRHa1XEKNOCknzs8oCbCrl4fW', 1, 1, '2021-04-22 13:27:28', '2021-05-25 15:52:48', NULL),
+(1, 'arthur.dent@galaxy.com', 'adent', '$2y$12$TMLZZda8/PjXraWJWpobsu3.tYiO0IqagsdpwV2ZAsBxvemcrk3vi', 1, 1, '2021-04-22 13:27:28', '2021-06-16 13:53:21', NULL),
 (2, 'ford.prefect@galaxy.com', 'fprefect', '$2y$10$iCQYwYKrwBbidBWTHEDZ0eo9ti7Aw.43Wxqg6nfgwb7XcKVZ64q/i', NULL, 0, '2021-05-11 13:36:58', '2021-05-11 13:39:54', NULL);
 
 --
@@ -272,6 +304,14 @@ ALTER TABLE `favourites`
 ALTER TABLE `files`
   ADD PRIMARY KEY (`id`),
   ADD KEY `author` (`author`);
+
+--
+-- Indizes für die Tabelle `password-resets`
+--
+ALTER TABLE `password-resets`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `token` (`token`),
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- Indizes für die Tabelle `posts`
@@ -320,19 +360,25 @@ ALTER TABLE `categories`
 -- AUTO_INCREMENT für Tabelle `comments`
 --
 ALTER TABLE `comments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT für Tabelle `favourites`
 --
 ALTER TABLE `favourites`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT für Tabelle `files`
 --
 ALTER TABLE `files`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT für Tabelle `password-resets`
+--
+ALTER TABLE `password-resets`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT für Tabelle `posts`
@@ -388,6 +434,12 @@ ALTER TABLE `favourites`
 --
 ALTER TABLE `files`
   ADD CONSTRAINT `files_ibfk_1` FOREIGN KEY (`author`) REFERENCES `users` (`id`);
+
+--
+-- Constraints der Tabelle `password-resets`
+--
+ALTER TABLE `password-resets`
+  ADD CONSTRAINT `password-resets_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
 --
 -- Constraints der Tabelle `posts`
