@@ -173,6 +173,16 @@ class User extends AbstractUser
     }
 
     /**
+     * Relation zu Password Resets.
+     *
+     * @return array
+     */
+    public function tokens ()
+    {
+        return PasswordReset::findWhere('user_id', $this->id);
+    }
+
+    /**
      * Prüfen ob ein Post für den/die aktuelle User*in als Favorit verknüpft ist oder nicht.
      *
      * @param int $post_id

@@ -2,7 +2,9 @@
 
 namespace App\Controllers;
 
+use App\Models\PasswordReset;
 use app\Models\User;
+use Core\Config;
 use Core\Helpers\Redirector;
 use Core\Session;
 use Core\Validator;
@@ -123,7 +125,7 @@ class AuthController
      */
     public function logout ()
     {
-        User::logout(BASE_URL . '/home');
+        User::logout(BASE_URL);
     }
 
     /**
@@ -260,7 +262,27 @@ class AuthController
      */
     public function sendResetMail ()
     {
-        var_dump($_POST);
+        $users = User::findWhere('email', $_POST['email']);
+
+        foreach ($users as $user) {
+            $token = PasswordReset::make($user->id);
+            $token->save();
+
+            $link = BASE_URL . "/reset-password/new/{$token->token}";
+
+            mail(
+                $user->email,
+                'Password Reset Token',
+                "Click the link to reset your password: {$link}",
+                [
+                    'From' => 'noreply@' . Config::get('app.app-slug')
+                ]
+            );
+        }
+
+        Session::set('success', ['Wenn die E-Mail Adresse bei uns befunden wurde, erhalten Sie in Kürze ein Mail.']);
+        Redirector::redirect(BASE_URL . '/reset-password');
+
         /**
          * [ ] Gibts den User?
          * [ ] Wenn nein: neutrale Meldung, wenn ja: weiter
@@ -268,14 +290,98 @@ class AuthController
          * [ ] Email generieren mit Reset-Token in einem Link
          * [ ] Email verschicken
          * [ ] neutrale Meldung
-         *
-         * ----
+         */
+    }
+
+    /**
+     * @param string $hash
+     *
+     * @todo: comment
+     */
+    public function resetPasswordNewForm (string $hash)
+    {
+        $token = PasswordReset::findWhere('token', $hash);
+
+        if (empty($token)) {
+            Session::set('errors', ['Dieser Token existiert nicht.']);
+            Redirector::redirect(BASE_URL . '/reset-password');
+        }
+
+        View::render('reset-password-new', [
+            'token' => $token[0]
+        ]);
+        /**
          * Klick auf Link in Email:
-         * [ ] Token aus GET Paramatern auslesen
+         * [x] Token aus GET Paramatern auslesen
          * [ ] Gibts den Token in der DB?
          * [ ] Wenn nein: Fehler, wenn ja: weiter
          * [ ] Formular für neues passwort anzeigen
          */
     }
+
+    /**
+     * @todo comment
+     * @param string $hash
+     */
+    public function resetPassword (string $hash)
+    {
+        /**
+         * Formulardaten validieren.
+         */
+        $validator = new Validator();
+        $validator->password($_POST['password'], 'Password', true, 8, 255);
+        /**
+         * Das Feld 'password_repeat' braucht nicht validiert werden, weil wenn 'password' ein valides Passwort ist und
+         * alle Kriterien erfüllt, und wir hier nun prüfen, ob 'password' und 'password_repeat' ident sind, dann ergibt
+         * sich daraus, dass auch 'password_repeat' ein valides Passwort ist.
+         */
+        $validator->compare([
+            $_POST['password'],
+            'Password'
+        ], [
+            $_POST['password_repeat'],
+            'Password wiederholen'
+        ]);
+
+        /**
+         * @todo: comment
+         */
+        $token = PasswordReset::findWhere('token', $hash);
+        if (empty($token)) {
+            $errors[] = 'Dieser Token existiert nicht.';
+        }
+
+        /**
+         * Fehler aus dem Validator auslesen. Validator::getErrors() gibt uns dabei in jedem Fall ein Array zurück,
+         * wenn keine Fehler aufgetreten sind, ist dieses Array allerdings leer.
+         */
+        $errors = $validator->getErrors();
+
+        /**
+         * Wenn der Fehler-Array nicht leer ist und es somit Fehler gibt ...
+         */
+        if (!empty($errors)) {
+            /**
+             * ... dann speichern wir sie in die Session, damit sie im View ausgegeben werden können und leiten dann
+             * zurück zum Formular.
+             */
+            Session::set('errors', $errors);
+            Redirector::redirect(BASE_URL . '/reset-password');
+        }
+
+        /**
+         * @todo: comment
+         */
+        $token = $token[0];
+        $user = $token->user();
+        $user->setPassword($_POST['password']);
+        $user->save();
+
+        $token->delete();
+
+        Session::set('success', ['Das Passwort wurde erfolgreich aktualisiert.']);
+        Redirector::redirect(BASE_URL . '/login');
+    }
+
 
 }

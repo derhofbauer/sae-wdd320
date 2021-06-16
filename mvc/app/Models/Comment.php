@@ -218,11 +218,11 @@ class Comment extends AbstractModel
          * alles ohne sortierung ab.
          */
         if (empty($orderBy)) {
-            $results = $database->query("SELECT * FROM {$tablename} WHERE deleted_at IS NULL AND parent IS NULL AND post_id = ?", [
+            $results = $database->query("SELECT * FROM `{$tablename}` WHERE deleted_at IS NULL AND parent IS NULL AND post_id = ?", [
                 's:post_id' => $post_id
             ]);
         } else {
-            $results = $database->query("SELECT * FROM {$tablename} WHERE deleted_at IS NULL AND parent IS NULL AND post_id = ? ORDER BY $orderBy $direction", [
+            $results = $database->query("SELECT * FROM `{$tablename}` WHERE deleted_at IS NULL AND parent IS NULL AND post_id = ? ORDER BY $orderBy $direction", [
                 's:post_id' => $post_id
             ]);
         }

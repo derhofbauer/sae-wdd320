@@ -40,7 +40,7 @@ trait HasSlug
         /**
          * Query ausführen.
          */
-        $results = $database->query("SELECT * FROM {$tablename} WHERE `slug` = ?", [
+        $results = $database->query("SELECT * FROM `{$tablename}` WHERE `slug` = ?", [
             's:slug' => $slug
         ]);
 

@@ -169,9 +169,9 @@ class Post extends AbstractModel
          * Hier führen wir einen JOIN Query aus, weil wir Daten aus zwei Tabellen zusammenführen möchten.
          */
         $results = $database->query("
-            SELECT {$tablename}.* FROM {$tablename}
+            SELECT `{$tablename}`.* FROM `{$tablename}`
                 JOIN `posts_categories_mm`
-                    ON `posts_categories_mm`.`post_id` = {$tablename}.`id`
+                    ON `posts_categories_mm`.`post_id` = `{$tablename}`.`id`
             WHERE `posts_categories_mm`.`category_id` = ?
                 AND `posts`.`deleted_at` IS NULL
             ORDER BY crdate;
@@ -318,7 +318,7 @@ class Post extends AbstractModel
         /**
          * Query ausführen.
          */
-        $results = $database->query("DELETE FROM {$tablename} WHERE post_id = ? AND category_id = ?", [
+        $results = $database->query("DELETE FROM `{$tablename}` WHERE post_id = ? AND category_id = ?", [
             'i:post_id' => $this->id,
             'i:category_id' => $categoryId
         ]);
@@ -351,7 +351,7 @@ class Post extends AbstractModel
         /**
          * Query ausführen.
          */
-        $results = $database->query("INSERT INTO {$tablename} SET post_id = ?, category_id = ?", [
+        $results = $database->query("INSERT INTO `{$tablename}` SET post_id = ?, category_id = ?", [
             'i:post_id' => $this->id,
             'i:category_id' => $categoryId
         ]);
@@ -449,7 +449,7 @@ class Post extends AbstractModel
         /**
          * Query ausführen.
          */
-        $results = $database->query("DELETE FROM {$tablename} WHERE post_id = ? AND file_id = ?", [
+        $results = $database->query("DELETE FROM `{$tablename}` WHERE post_id = ? AND file_id = ?", [
             'i:post_id' => $this->id,
             'i:file_id' => $fileId
         ]);
@@ -482,7 +482,7 @@ class Post extends AbstractModel
         /**
          * Query ausführen.
          */
-        $results = $database->query("INSERT INTO {$tablename} SET post_id = ?, file_id = ?", [
+        $results = $database->query("INSERT INTO `{$tablename}` SET post_id = ?, file_id = ?", [
             'i:post_id' => $this->id,
             'i:file_id' => $fileId
         ]);

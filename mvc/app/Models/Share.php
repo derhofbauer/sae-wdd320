@@ -155,9 +155,9 @@ class Share extends AbstractModel
          * alles ohne sortierung ab.
          */
         if (empty($orderBy)) {
-            $results = $database->query("SELECT * FROM {$tablename} WHERE status = 'open' OR status = 'progress'");
+            $results = $database->query("SELECT * FROM `{$tablename}` WHERE status = 'open' OR status = 'progress'");
         } else {
-            $results = $database->query("SELECT * FROM {$tablename} WHERE status = 'open' OR status = 'progress' ORDER BY $orderBy $direction");
+            $results = $database->query("SELECT * FROM `{$tablename}` WHERE status = 'open' OR status = 'progress' ORDER BY $orderBy $direction");
         }
 
         /**

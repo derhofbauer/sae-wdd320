@@ -431,9 +431,9 @@ class File extends AbstractFile
          * Hier führen wir einen JOIN Query aus, weil wir Daten aus zwei Tabellen zusammenführen möchten.
          */
         $results = $database->query("
-            SELECT {$tablename}.* FROM {$tablename}
+            SELECT `{$tablename}`.* FROM `{$tablename}`
                 JOIN `posts_files_mm`
-                    ON `posts_files_mm`.`file_id` = {$tablename}.`id`
+                    ON `posts_files_mm`.`file_id` = `{$tablename}`.`id`
             WHERE `posts_files_mm`.`post_id` = ?
                 AND `files`.`deleted_at` IS NULL
         ", [

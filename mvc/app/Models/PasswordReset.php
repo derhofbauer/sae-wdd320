@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Core\Database;
 use Core\Models\AbstractModel;
-use Core\Traits\HasSlug;
 use Core\Traits\SoftDelete;
 
 /**
@@ -12,32 +11,21 @@ use Core\Traits\SoftDelete;
  *
  * @package App\Models
  */
-class Category extends AbstractModel
+class PasswordReset extends AbstractModel
 {
-    /**
-     * Nachdem aus "Category" über unsere normale getTablenameFromClassname() Methode "categorys" würde und nicht
-     * "categories", wie die Tabelle wirklich heißt, können wir hier die TABLENAME Klassenkonstante nutzen, die wir in
-     * in der genannten Funktion abfragen um die Berechnung zu überschreiben.
-     */
-    const TABLENAME = 'categories';
-    /**
-     * @todo: comment
-     */
-    const TITLE_PROPERTY = 'title';
-    const SLUG_PROPERTY = 'slug';
+    const TABLENAME = 'password-resets';
 
     /**
      * s. Post.php
      */
-    use HasSlug, SoftDelete;
+    use SoftDelete;
 
     /**
      * Wir definieren alle Spalten aus der Tabelle mit den richtigen Datentypen.
      */
     public int $id;
-    public string $title;
-    public string $slug;
-    public string $description;
+    public int $user_id;
+    public string $token;
     /**
      * @var string Nachdem wir hier den ISO-8601 Zeit verwenden in der Datenbank, handelt es sich um einen String.
      */
@@ -60,74 +48,37 @@ class Category extends AbstractModel
     public function fill (array $data)
     {
         $this->id = $data['id'];
-        $this->title = $data['title'];
-        $this->slug = $data['slug'];
-        $this->description = (string)$data['description'];
+        $this->user_id = $data['user_id'];
+        $this->token = $data['token'];
         $this->crdate = $data['crdate'];
         $this->tstamp = $data['tstamp'];
         $this->deleted_at = $data['deleted_at'];
     }
 
     /**
-     * Alle Categories zu einem bestimmten Post abfragen.
-     *
-     * Das ist sehr ähnlich wie die AbstractModel::all() Methode, nur ist der Query ein bisschen anders.
-     *
-     * @param int $postId
-     *
-     * @return array
+     * @todo: comment
      */
-    public static function findByPost (int $postId): array
+    public static function make (int $user_id = null): self
     {
-        /**
-         * Datenbankverbindung herstellen.
-         */
-        $database = new Database();
+        $passwordReset = new self();
+        $token = random_bytes(32);
+        $passwordReset->token = bin2hex($token);
 
-        /**
-         * Tabellennamen berechnen.
-         */
-        $tablename = self::getTablenameFromClassname();
+        if (!empty($user_id)) {
+            $passwordReset->user_id = $user_id;
+        }
 
-        /**
-         * Query ausführen.
-         *
-         * Hier führen wir einen JOIN Query aus, weil wir Daten aus zwei Tabellen zusammenführen möchten.
-         */
-        $results = $database->query("
-            SELECT `{$tablename}`.* FROM `{$tablename}`
-                JOIN `posts_categories_mm`
-                    ON `posts_categories_mm`.`category_id` = `{$tablename}`.`id`
-            WHERE `posts_categories_mm`.`post_id` = ?
-                AND `categories`.`deleted_at` IS NULL
-        ", [
-            'i:post_id' => $postId
-        ]);
-
-        /**
-         * Im AbstractModel haben wir diese Funktionalität aus der all()-Methode herausgezogen und in eine eigene
-         * Methode verpackt, damit wir in allen anderen Methoden, die zukünftig irgendwelche Daten aus der Datenbank
-         * abfragen, den selben Code verwenden können und nicht Code duplizieren müssen.
-         */
-        $result = self::handleResult($results);
-
-        /**
-         * Ergebnis zurückgeben.
-         */
-        return $result;
+        return $passwordReset;
     }
 
     /**
-     * Relation zu Posts.
+     * Relation zum User.
      *
-     * @return array
+     * @return User
      */
-    public function posts (): array
+    public function user (): User
     {
-        /**
-         * Über das Post Model alle zugehörigen Posts abrufen.
-         */
-        return Post::findByCategory($this->id);
+        return User::find($this->user_id);
     }
 
     /**
@@ -160,20 +111,18 @@ class Category extends AbstractModel
              * Query ausführen und Ergebnis direkt zurückgeben. Das kann entweder true oder false sein, je nachdem ob
              * der Query funktioniert hat oder nicht.
              */
-            return $database->query("UPDATE $tablename SET title = ?, slug = ?, description = ? WHERE id = ?", [
-                's:title' => $this->title,
-                's:slug' => $this->slug,
-                's:description' => $this->description,
+            return $database->query("UPDATE `$tablename` SET user_id = ?, token = ?  WHERE id = ?", [
+                'i:user_id' => $this->user_id,
+                's:token' => $this->token,
                 'i:id' => $this->id
             ]);
         } else {
             /**
              * Hat es keine ID, so müssen wir es neu anlegen.
              */
-            $result = $database->query("INSERT INTO $tablename SET title = ?, slug = ?, description = ?", [
-                's:title' => $this->title,
-                's:slug' => $this->slug,
-                's:description' => $this->description
+            $result = $database->query("INSERT INTO `$tablename` SET user_id = ?, token = ?", [
+                'i:user_id' => $this->user_id,
+                's:token' => $this->token
             ]);
 
             /**
@@ -189,5 +138,4 @@ class Category extends AbstractModel
             return $result;
         }
     }
-
 }

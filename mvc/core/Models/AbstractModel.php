@@ -79,9 +79,9 @@ abstract class AbstractModel
          * alles ohne sortierung ab.
          */
         if (empty($orderBy)) {
-            $results = $database->query("SELECT * FROM {$tablename}");
+            $results = $database->query("SELECT * FROM `{$tablename}`");
         } else {
-            $results = $database->query("SELECT * FROM {$tablename} ORDER BY $orderBy $direction");
+            $results = $database->query("SELECT * FROM `{$tablename}` ORDER BY $orderBy $direction");
         }
 
         /**
@@ -113,7 +113,7 @@ abstract class AbstractModel
          * Wurde in den Funktionsparametern eine Sortierung definiert, so wenden wir sie hier an, andernfalls rufen wir
          * alles ohne sortierung ab.
          */
-        $results = $database->query("SELECT COUNT(*) as 'count' FROM {$tablename}");
+        $results = $database->query("SELECT COUNT(*) as 'count' FROM `{$tablename}`");
 
         /**
          * Datenbankergebnis verarbeiten und zurückgeben.
@@ -161,12 +161,12 @@ abstract class AbstractModel
          * Zusätzlich arbeiten wir hier mit dem LIMIT Keyword und übergeben die beiden Parameter dynamisch.
          */
         if (empty($orderBy)) {
-            $results = $database->query("SELECT * FROM {$tablename} LIMIT ?,?", [
+            $results = $database->query("SELECT * FROM `{$tablename}` LIMIT ?,?", [
                 'i:offset' => $offset,
                 'i:limit' => $limit
             ]);
         } else {
-            $results = $database->query("SELECT * FROM {$tablename} LIMIT ?,? ORDER BY $orderBy $direction", [
+            $results = $database->query("SELECT * FROM `{$tablename}` LIMIT ?,? ORDER BY $orderBy $direction", [
                 'i:offset' => $offset,
                 'i:limit' => $limit
             ]);
@@ -216,11 +216,11 @@ abstract class AbstractModel
          * alles ohne sortierung ab.
          */
         if (empty($orderBy)) {
-            $results = $database->query("SELECT * FROM {$tablename} WHERE {$field} = ?", [
+            $results = $database->query("SELECT * FROM `{$tablename}` WHERE {$field} = ?", [
                 's:value' => $value
             ]);
         } else {
-            $results = $database->query("SELECT * FROM {$tablename} WHERE {$field} = ? ORDER BY $orderBy $direction", [
+            $results = $database->query("SELECT * FROM `{$tablename}` WHERE {$field} = ? ORDER BY $orderBy $direction", [
                 's:value' => $value
             ]);
         }
@@ -253,7 +253,7 @@ abstract class AbstractModel
         /**
          * Query ausführen.
          */
-        $results = $database->query("SELECT * FROM {$tablename} WHERE id = ?", [
+        $results = $database->query("SELECT * FROM `{$tablename}` WHERE id = ?", [
             'i:id' => $id
         ]);
 
@@ -303,7 +303,7 @@ abstract class AbstractModel
         /**
          * Query ausführen.
          */
-        $results = $database->query("DELETE FROM {$tablename} WHERE id = ?", [
+        $results = $database->query("DELETE FROM `{$tablename}` WHERE id = ?", [
             'i:id' => $this->id
         ]);
 
@@ -336,7 +336,7 @@ abstract class AbstractModel
         /**
          * Query ausführen.
          */
-        $results = $database->query("DELETE FROM {$tablename} WHERE {$field} = ?", [
+        $results = $database->query("DELETE FROM `{$tablename}` WHERE {$field} = ?", [
             'i:field' => $value
         ]);
 

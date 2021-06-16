@@ -69,6 +69,8 @@ return [
     '/sign-up/do' => [AuthController::class, 'signup'], // Sign-up Formular verarveiten
     '/reset-password' => [AuthController::class, 'resetPasswordForm'], // Reset Password Formular anzeigen
     '/reset-password/do' => [AuthController::class, 'sendResetMail'], // Reset Password Formular verarbeiten
+    '/reset-password/new/{hash}' => [AuthController::class, 'resetPasswordNewForm'], // Reset Password Formular verarbeiten
+    '/reset-password/new/{hash}/do' => [AuthController::class, 'resetPassword'], // Reset Password Formular verarbeiten
 
     /**
      * Admin Routes

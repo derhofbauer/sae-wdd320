@@ -37,7 +37,7 @@ trait SoftDelete
          *
          * CURRENT_TIMESTAMP() ist eine Funktion von MySQL, die den aktuellen Zeitstempel zurückgibt.
          */
-        $results = $database->query("UPDATE {$tablename} SET deleted_at = CURRENT_TIMESTAMP() WHERE id = ?", [
+        $results = $database->query("UPDATE `{$tablename}` SET deleted_at = CURRENT_TIMESTAMP() WHERE id = ?", [
             'i:id' => $this->id
         ]);
 
@@ -81,9 +81,9 @@ trait SoftDelete
          * gelöscht markiert sind.
          */
         if (empty($orderBy)) {
-            $results = $database->query("SELECT * FROM {$tablename} WHERE deleted_at IS NULL");
+            $results = $database->query("SELECT * FROM `{$tablename}` WHERE deleted_at IS NULL");
         } else {
-            $results = $database->query("SELECT * FROM {$tablename} WHERE deleted_at IS NULL ORDER BY $orderBy $direction");
+            $results = $database->query("SELECT * FROM `{$tablename}` WHERE deleted_at IS NULL ORDER BY $orderBy $direction");
         }
 
         /**
@@ -115,7 +115,7 @@ trait SoftDelete
          * Wurde in den Funktionsparametern eine Sortierung definiert, so wenden wir sie hier an, andernfalls rufen wir
          * alles ohne sortierung ab.
          */
-        $results = $database->query("SELECT COUNT(*) as 'count' FROM {$tablename} WHERE deleted_at IS NULL");
+        $results = $database->query("SELECT COUNT(*) as 'count' FROM `{$tablename}` WHERE deleted_at IS NULL");
 
         /**
          * Datenbankergebnis verarbeiten und zurückgeben.
@@ -163,12 +163,12 @@ trait SoftDelete
          * Zusätzlich arbeiten wir hier mit dem LIMIT Keyword und übergeben die beiden Parameter dynamisch.
          */
         if (empty($orderBy)) {
-            $results = $database->query("SELECT * FROM {$tablename} WHERE deleted_at IS NULL LIMIT ?,?", [
+            $results = $database->query("SELECT * FROM `{$tablename}` WHERE deleted_at IS NULL LIMIT ?,?", [
                 'i:offset' => $offset,
                 'i:limit' => $limit
             ]);
         } else {
-            $results = $database->query("SELECT * FROM {$tablename} WHERE deleted_at IS NULL LIMIT ?,? ORDER BY $orderBy $direction", [
+            $results = $database->query("SELECT * FROM `{$tablename}` WHERE deleted_at IS NULL LIMIT ?,? ORDER BY $orderBy $direction", [
                 'i:offset' => $offset,
                 'i:limit' => $limit
             ]);
@@ -218,11 +218,11 @@ trait SoftDelete
          * alles ohne sortierung ab.
          */
         if (empty($orderBy)) {
-            $results = $database->query("SELECT * FROM {$tablename} WHERE deleted_at IS NULL AND {$field} = ?", [
+            $results = $database->query("SELECT * FROM `{$tablename}` WHERE deleted_at IS NULL AND {$field} = ?", [
                 's:value' => $value
             ]);
         } else {
-            $results = $database->query("SELECT * FROM {$tablename} WHERE deleted_at IS NULL AND {$field} = ? ORDER BY $orderBy $direction", [
+            $results = $database->query("SELECT * FROM `{$tablename}` WHERE deleted_at IS NULL AND {$field} = ? ORDER BY $orderBy $direction", [
                 's:value' => $value
             ]);
         }
