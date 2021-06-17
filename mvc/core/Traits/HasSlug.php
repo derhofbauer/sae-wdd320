@@ -59,38 +59,68 @@ trait HasSlug
     }
 
     /**
+     * Slug berechnen.
+     *
      * @param string|null $title
      *
      * @return string
-     * @todo: comment
-     *
-     *      1) Funktionsparameter
-     *      2) Klassenkonstante
-     *      3) $title property
+     * @throws \Exception
      */
     public function createSlug (string $title = null): string
     {
+        /**
+         * Wenn ein $title übergeben wurde, generieren wir den Slug davon.
+         */
         if (!empty($title)) {
             $titleValue = $title;
         } elseif (defined(self::class . "::TITLE_PROPERTY")) {
+            /**
+             * Wenn nicht, dann suchen wir nach der Klassenkonstante TITLE_PROPERTY und verwenden deren Wert um die
+             * Eigenschaft zu kriegen, die den Titel enthält.
+             */
             $titlePropertyName = self::TITLE_PROPERTY;
             $titleValue = $this->$titlePropertyName;
         } elseif (property_exists($this, 'title')) {
+            /**
+             * Existiert diese auch nicht, suchen wir nach der Eigenschaft $title.
+             */
             $titleValue = $this->title;
         } else {
+            /**
+             * Andernfalls können wir keinen weiteren Fallback anbieten und generieren einen Fatal Error.
+             */
             throw new \Exception('Property for slug not found.');
         }
 
+        /**
+         * Zuerst konvertieren wir den String in Kleinbuchstaben.
+         */
         $titleValue = strtolower($titleValue);
-        $titleValue = preg_replace('/[^a-z0-9-]/', '-', $titleValue );
+        /**
+         * Ersetzen dann alles, was nicht a-z0-9 ist mit einem Bindestrich ...
+         */
+        $titleValue = preg_replace('/[^a-z0-9-]/', '-', $titleValue);
+        /**
+         * ... und alle Vorkommen von mehr als einem Bindestrich hintereinander mit nur einem Bindestrich.
+         */
         $titleValue = preg_replace('/-{2,}/', '-', $titleValue);
+        /**
+         * Final trimmen wir das ganze nochmal sicherheitshalber.
+         */
         $slug = trim($titleValue);
 
+        /**
+         * Existiert die Klassenkonstante SLUG_PROPERTY, dann speichern wir den generierten Slug auf die darin
+         * definierte Eigenschaft.
+         */
         if (defined(self::class . "::SLUG_PROPERTY")) {
             $slugPropertyName = self::SLUG_PROPERTY;
             $this->$slugPropertyName = $slug;
         }
 
+        /**
+         * Generierten Slug zurückgeben.
+         */
         return $slug;
     }
 

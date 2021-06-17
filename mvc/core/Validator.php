@@ -99,7 +99,8 @@ class Validator
         $this->validateRequired($required, $value, $label);
 
         /**
-         * @todo: comment
+         * Validierungen sollten nur dann durchgeführt werden, wenn das Formularfeld required ist oder wenn Daten
+         * eingegeben wurden.
          */
         if ((bool)$required === true || !empty($value)) {
             $this->validateMin($type, $min, $value, $label);

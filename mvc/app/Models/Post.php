@@ -55,8 +55,10 @@ class Post extends AbstractModel
     public mixed $deleted_at;
 
     /**
+     * Hier definieren wir einen Zwischenspeicher, den wir als Cache verwenden können, damit komplexe Queries nicht
+     * doppelt aufgerufen werden müssen.
+     *
      * @var array
-     * @todo: comment
      */
     private array $_buffer;
 
@@ -577,9 +579,11 @@ class Post extends AbstractModel
     }
 
     /**
+     * Prüfen, ob eine bestimmte Person diesen Post schon geratet hat.
+     *
      * @param int $user_id
      *
-     * @todo: comment
+     * @return bool
      */
     public function hasBeenRatedByUser (int $user_id): bool
     {
@@ -588,23 +592,41 @@ class Post extends AbstractModel
          */
         $database = new Database();
 
+        /**
+         * Query abschicken.
+         *
+         * Hier holen wir die Anzahl der Kommentare einer bestimmten Person zu diesem Post mit Rating.
+         */
         $result = $database->query("SELECT COUNT(*) as count FROM comments WHERE author = ? AND post_id = ? AND rating IS NOT NULL", [
             'i:author' => $user_id,
             'i:post_id' => $this->id
         ]);
 
+        /**
+         * Daten aus dem Ergebnis holen.
+         */
         $numerOfRatings = $result[0]['count'];
+        /**
+         * Ist die Anzahl größer als 0, so hat die Person bereits ein Rating abgegeben.
+         */
         $hasBeenRated = $numerOfRatings > 0;
 
+        /**
+         * Ergebnis zurückgeben.
+         */
         return $hasBeenRated;
     }
 
     /**
+     * Durchschnitt aller Ratings aus der Datenbank abfragen.
      * @return array
-     * @todo: comment
      */
     public function getAverageAndNumberRatings (): array
     {
+        /**
+         * Hier verwenden wir $this->_buffer, damit der nachfolgende MySQL Query nicht jedes mal aufgerufen werden muss,
+         * sondern wir das Ergebnis zwischenspeichern.
+         */
         if (empty($this->_buffer)) {
 
             /**
@@ -612,13 +634,27 @@ class Post extends AbstractModel
              */
             $database = new Database();
 
+            /**
+             * Query abschicken.
+             *
+             * Hier verwenden wir die AVG()-Funktion von MySQL um einen Durchschnitt aller ratings zu berechnen. Diese
+             * Berechnung könnten wir in PHP auch machen, dazu müssten wir aber alle Einträge aus der Datenbank laden
+             * und manuell drüber iterieren. In MySQL brauchen wir nur einen einzigen Query und kriegen alles, was wir
+             * brauchen.
+             */
             $result = $database->query("SELECT AVG(rating) as average, COUNT(*) as count FROM comments WHERE post_id = ? AND rating IS NOT NULL", [
                 'i:post_id' => $this->id
             ]);
 
+            /**
+             * Daten aus dem Result holen und Datentypen konvertieren.
+             */
             $numberOfRatings = (int)$result[0]['count'];
             $average = (float)$result[0]['average'];
 
+            /**
+             * Cache anlegen.
+             */
             $this->_buffer = [
                 'average' => $average,
                 'numberOfRatings' => $numberOfRatings
@@ -626,6 +662,9 @@ class Post extends AbstractModel
 
         }
 
+        /**
+         * Werte zurückgeben.
+         */
         return $this->_buffer;
     }
 }

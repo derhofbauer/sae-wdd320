@@ -26,10 +26,14 @@
 
         <h3>Comments</h3>
 
-        <?php /* @todo: comment */
+        <?php
         if (\App\Models\User::isLoggedIn()): ?>
             <form action="<?php echo BASE_URL; ?>/blog/<?php echo $post->id; ?>/comment" method="post">
-                <?php if (!$post->hasBeenRatedByUser(\App\Models\User::getLoggedIn()->id)): ?>
+                <?php
+                /**
+                 * Wenn eine Person diesen Post noch nicht bewertet hat, wird ein Dropdown für die Bewertung angezeigt.
+                 */
+                if (!$post->hasBeenRatedByUser(\App\Models\User::getLoggedIn()->id)): ?>
                     <div class="form-group">
                         <label for="rating">Rating</label>
                         <select name="rating" id="rating" class="form-control">

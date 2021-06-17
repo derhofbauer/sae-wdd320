@@ -31,7 +31,7 @@ class CommentController
         AuthMiddleware::isLoggedInOrFail();
 
         /**
-         * @todo: comment
+         * Rating validieren.
          */
         $validator = new Validator();
         $validator->int((int)$_POST['rating'], 'Rating', false, 1, 5);

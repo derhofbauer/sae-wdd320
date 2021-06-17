@@ -250,7 +250,7 @@ class AuthController
     }
 
     /**
-     * @todo: comment
+     * Formular zur Rücksetzung des Passworts anzeigen (Eingabe einer E-Mail Adresse)
      */
     public function resetPasswordForm ()
     {
@@ -258,18 +258,34 @@ class AuthController
     }
 
     /**
-     * @todo: comment
+     * E-Mail Adresse aus dem Formular verarbeiten und Mail schicken.
      */
     public function sendResetMail ()
     {
+        /**
+         * User*in zur E-Mail Adresse finden.
+         */
         $users = User::findWhere('email', $_POST['email']);
 
+        /**
+         * Durch die Verwendung der findWhere()-Methode, erhalten wir immer ein Array zurück und können somit drüber
+         * iterieren, auch wenn es leer ist - dann wird die Schleife halt gar nicht aufgerufen.
+         */
         foreach ($users as $user) {
+            /**
+             * Wir generieren ein PasswordReset Objekt mit einem neuen reset token und einer Zuweisung zu dem/der gefundenen User*in und speichern das Objekt in die Datenbank.
+             */
             $token = PasswordReset::make($user->id);
             $token->save();
 
+            /**
+             * Nun bereiten wir uns den Link vor, den wir in dem Mail verschicken werden.
+             */
             $link = BASE_URL . "/reset-password/new/{$token->token}";
 
+            /**
+             * Die mail()-Funktion erlaubt uns den Versand eines E-Mails über das Programm sendmail.
+             */
             mail(
                 $user->email,
                 'Password Reset Token',
@@ -280,47 +296,46 @@ class AuthController
             );
         }
 
+        /**
+         * Abschließend speichern wir eine neutrale Fehlermeldung in die Session und leiten zurück zum Formular.
+         */
         Session::set('success', ['Wenn die E-Mail Adresse bei uns befunden wurde, erhalten Sie in Kürze ein Mail.']);
         Redirector::redirect(BASE_URL . '/reset-password');
-
-        /**
-         * [ ] Gibts den User?
-         * [ ] Wenn nein: neutrale Meldung, wenn ja: weiter
-         * [ ] Reset-Token generieren und in die DB speichern
-         * [ ] Email generieren mit Reset-Token in einem Link
-         * [ ] Email verschicken
-         * [ ] neutrale Meldung
-         */
     }
 
     /**
-     * @param string $hash
+     * Formular anzeigen, damit ein neues Passwort eingegeben werden kann.
      *
-     * @todo: comment
+     * @param string $hash
      */
     public function resetPasswordNewForm (string $hash)
     {
+        /**
+         * PasswordReset anhand des Tokens aus der Route aus der Datenbank laden, damit wir den zugehörigen User
+         * später auch noch laden können.
+         */
         $token = PasswordReset::findWhere('token', $hash);
 
+        /**
+         * Wurde kein passender Token in der Route gefunden, geben wir eine Fehlermeldung aus.
+         */
         if (empty($token)) {
             Session::set('errors', ['Dieser Token existiert nicht.']);
             Redirector::redirect(BASE_URL . '/reset-password');
         }
 
+        /**
+         * Formular laden und Token übergeben. Wir benötigen den Token im View, damit wir die Formular action mir dem
+         * Token generieren können um nach dem Absenden zu wissen, welcher Account geändert werden muss.
+         */
         View::render('reset-password-new', [
             'token' => $token[0]
         ]);
-        /**
-         * Klick auf Link in Email:
-         * [x] Token aus GET Paramatern auslesen
-         * [ ] Gibts den Token in der DB?
-         * [ ] Wenn nein: Fehler, wenn ja: weiter
-         * [ ] Formular für neues passwort anzeigen
-         */
     }
 
     /**
-     * @todo comment
+     * Formulardaten entgegennehmen und das Passwort wirklich neu setzen.
+     *
      * @param string $hash
      */
     public function resetPassword (string $hash)
@@ -344,9 +359,12 @@ class AuthController
         ]);
 
         /**
-         * @todo: comment
+         * Wir laden hier wieder das PasswordReset Objekt aus der Datenbank anhand des Tokens aus der Route.
          */
         $token = PasswordReset::findWhere('token', $hash);
+        /**
+         * Wird kein entsprechendes Objekt in der Datenbank gefunden, schreiben wir einen Fehler.
+         */
         if (empty($token)) {
             $errors[] = 'Dieser Token existiert nicht.';
         }
@@ -370,15 +388,23 @@ class AuthController
         }
 
         /**
-         * @todo: comment
+         * Andernfalls nehmen wir den ersten gefundenen Token (es kann nur einen geben, weil die Token-Spalte unique
+         * ist), laden daraus den zugehörigen User*innen Account und übergeben das eingegeben Passwort, damit ein neuer
+         * Hash draus generiert werden kann.
          */
         $token = $token[0];
         $user = $token->user();
         $user->setPassword($_POST['password']);
         $user->save();
 
+        /**
+         * Anschließend löschen wir den PasswordReset.
+         */
         $token->delete();
 
+        /**
+         * Final schreiben wir eine Erfolgsmeldung leiten zum Login.
+         */
         Session::set('success', ['Das Passwort wurde erfolgreich aktualisiert.']);
         Redirector::redirect(BASE_URL . '/login');
     }

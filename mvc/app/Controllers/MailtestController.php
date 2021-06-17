@@ -9,11 +9,15 @@ use Core\Config;
  * Class MailtestController
  *
  * @package App\Controllers
- * @todo    : comment
  */
 class MailtestController
 {
 
+    /**
+     * Testmail verschicken.
+     *
+     * @param string $email
+     */
     public function test (string $email)
     {
         $result = mail(

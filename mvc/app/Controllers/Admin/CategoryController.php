@@ -111,11 +111,17 @@ class CategoryController
              */
             $category->title = trim($_POST['title']);
             /**
-             * @todo: comment
+             * Wurde ein Slug im Formular angegeben ...
              */
             if (isset($_POST['slug']) && !empty($_POST['slug'])) {
+                /**
+                 * ... so verwenden wir diesen, ...
+                 */
                 $category->slug = trim($_POST['slug']);
             } else {
+                /**
+                 * ... andernfalls generieren wir einen neuen.
+                 */
                 $category->createSlug();
             }
             $category->description = trim($_POST['description']);
@@ -256,13 +262,19 @@ class CategoryController
              * Sind keine Fehler aufgetreten legen wir ein neues Objekt an ...
              */
             $category = new Category();
-            /**
-             * @todo: comment
-             */
             $category->title = trim($_POST['title']);
+            /**
+             * Wurde ein Slug im Formular angegeben ...
+             */
             if (isset($_POST['slug']) && !empty($_POST['slug'])) {
+                /**
+                 * ... so verwenden wir diesen, ...
+                 */
                 $category->slug = trim($_POST['slug']);
             } else {
+                /**
+                 * ... andernfalls generieren wir einen neuen.
+                 */
                 $category->createSlug();
             }
             $category->description = trim($_POST['description']);

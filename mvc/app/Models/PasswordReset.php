@@ -56,18 +56,38 @@ class PasswordReset extends AbstractModel
     }
 
     /**
-     * @todo: comment
+     * Neuen PasswordReset mit zufälligem Token generieren.
+     *
+     * @param int|null $user_id
+     *
+     * @return static
+     * @throws \Exception
      */
     public static function make (int $user_id = null): self
     {
+        /**
+         * Neues PasswordReset Objekt erstellen.
+         */
         $passwordReset = new self();
+        /**
+         * Zufälligen Byte-String erstellen.
+         */
         $token = random_bytes(32);
+        /**
+         * Binärdaten in einen Hexadezimalen String umformatieren.
+         */
         $passwordReset->token = bin2hex($token);
 
+        /**
+         * Wurde eine $user_id übergeben, so setzen wir sie zusätzlich direkt in das Objekt.
+         */
         if (!empty($user_id)) {
             $passwordReset->user_id = $user_id;
         }
 
+        /**
+         * Final geben wir das erstellte Objekt zurück.
+         */
         return $passwordReset;
     }
 

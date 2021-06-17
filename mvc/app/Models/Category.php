@@ -21,7 +21,8 @@ class Category extends AbstractModel
      */
     const TABLENAME = 'categories';
     /**
-     * @todo: comment
+     * Diese beiden Konstanten dienen dazu, dass der HasSlug Trait erkennen kann, von welcher Eigenschaft des Objekts
+     * ein Slug generiert werden soll.
      */
     const TITLE_PROPERTY = 'title';
     const SLUG_PROPERTY = 'slug';

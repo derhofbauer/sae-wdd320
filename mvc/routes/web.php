@@ -145,7 +145,8 @@ return [
     '/checkout/final/{id}' => [CheckoutController::class, 'finish'], // Checkout abschließen
 
     /**
-     * @todo: comment
+     * Das hier ist nur eine Testroute, damit der E-Mail Versand getestet werden kann. Sie ist absichtlich auskommentiert, weil E-Mails über den Route-Paramater an beliebige Adresse geschickt werden können, was für
+     * Spammer sehr interessant ist. Daher möchten wir das auf keinen Fall im Produktivbetrieb aktivieren.
      */
 //    '/mailtest/{email}' => [MailtestController::class, 'test'], // Test mailing
 ];

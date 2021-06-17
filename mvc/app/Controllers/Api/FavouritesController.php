@@ -24,10 +24,13 @@ class FavouritesController
      */
     public function __construct ()
     {
-//        /**
-//         * Ist kein*e User*in eingeloggt, so generieren wir einen Fehler.
-           * @todo: comment
-//         */
+        /**
+         * Ist kein*e User*in eingeloggt, so generieren wir einen Fehler.
+         *
+         * Nachdem mittlerweile auch nicht eingeloggt Personen Favoriten speichern können, benötigen wir den
+         * untenstehenden Code nicht mehr.
+         */
+
 //        if (!User::isLoggedIn()) {
 //            /**
 //             * StdClass ist eine Klasse, die von PHP mitgeliefert wird und die verwendet werden kann, um "on the fly"
@@ -44,11 +47,15 @@ class FavouritesController
     }
 
     /**
+     * Favorit hinzufügen.
+     *
      * @param int $id
-     * @todo: comment
      */
     public function add (int $id)
     {
+        /**
+         * Je nachdem ob eine Person eingeloggt ist oder nicht, passieren rufen wir eine andere Funktion auf.
+         */
         if (User::isLoggedIn()) {
             $this->addLoggedIn($id);
         } else {
@@ -57,10 +64,10 @@ class FavouritesController
     }
 
     /**
-     * Post als Favorit hinzufügen.
+     * Post als Favorit hinzufügen, sofern eine Person eingeloggt ist und wir die Daten in die Datenbank speichern
+     * können.
      *
      * @param int $id
-     * @todo: comment
      */
     public function addLoggedIn (int $id)
     {
@@ -92,10 +99,9 @@ class FavouritesController
     }
 
     /**
-     * Post als Favorit hinzufügen.
+     * Post als Favorit hinzufügen, wenn niemand eingeloggt ist und wir die Daten in die Session speichern müssen.
      *
      * @param int $id
-     * @todo: comment
      */
     public function addGuest (int $id)
     {
@@ -105,9 +111,14 @@ class FavouritesController
         $post = Post::findOrFail($id);
 
         /**
-         * Existiert der Favorit noch nicht für den/die User*in, so legen wir ihn an.
+         * Alle Daten der Favoriten aus der Session holen.
          */
         $favourites = Session::get(Favourite::SESSION_KEY, []);
+
+        /**
+         * Ist der Post, der gespeichert werden soll, noch nicht in den Daten aus der Session zu finden, so speichern
+         * wir ihn dazu und schreiben die Daten zurück in die Session.
+         */
         if (!in_array($post->id, $favourites)) {
             $favourites[] = $post->id;
             Session::set(Favourite::SESSION_KEY, $favourites);
@@ -125,8 +136,9 @@ class FavouritesController
     }
 
     /**
+     * Analog zur add()-Methode, spalten wir hier den Dataflow auf, je nachdem ob jemand eingeloggt ist oder nicht.
+     *
      * @param int $id
-     * @todo: comment
      */
     public function remove (int $id)
     {
@@ -169,6 +181,11 @@ class FavouritesController
         return ApiResponse::json($allFavourites);
     }
 
+    /**
+     * Post als Favorit entfernen.
+     *
+     * @param int $id
+     */
     public function removeGuest (int $id)
     {
         /**

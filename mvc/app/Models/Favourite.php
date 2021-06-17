@@ -14,7 +14,7 @@ use Core\Session;
 class Favourite extends AbstractModel
 {
     /**
-     * @todo: comment
+     * Zentrale definition des Schlüssels für die Speicherung in die Session.
      */
     const SESSION_KEY = 'favourites';
 
@@ -123,18 +123,33 @@ class Favourite extends AbstractModel
     }
 
     /**
-     * @todo: comment
+     * Favoriten aus der Session auslesen.
+     *
+     * @return array
      */
     public static function getFromSession ()
     {
+        /**
+         * Daten aus der Session holen.
+         */
         $favourites = Session::get(self::SESSION_KEY, []);
+        /**
+         * Buffer Array vorbereiten.
+         */
         $_favourites = [];
+        /**
+         * Für alle Favoriten aus der Session ein Favourite-Objekt erstellen, damit wir im weiteren Verlauf genau so
+         * damit arbeiten können, wie wenn die Daten aus der Datenbank gekommen wären.
+         */
         foreach ($favourites as $postId) {
             $favourite = new Favourite();
             $favourite->post_id = $postId;
             $_favourites[] = $favourite;
         }
 
+        /**
+         * Buffer zurückgeben.
+         */
         return $_favourites;
     }
 }

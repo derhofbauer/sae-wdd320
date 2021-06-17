@@ -4,7 +4,6 @@ namespace App\Controllers;
 
 use App\Models\Favourite;
 use App\Models\User;
-use Core\Helpers\Redirector;
 use Core\View;
 
 /**
@@ -20,17 +19,24 @@ class FavouritesController
      */
     public function __construct ()
     {
-        // @todo: comment
+        /**
+         * Nachdem mittlerweile auch nicht eingeloggt Personen Favoriten speichern können, benötigen wir den
+         * untenstehenden Code nicht mehr.
+         */
+
 //        if (!User::isLoggedIn()) {
 //            Redirector::redirect(BASE_URL);
 //        }
     }
 
     /**
-     * @todo: comment
+     * Favoriten listen.
      */
     public function index ()
     {
+        /**
+         * Je nachdem ob eine Person eingeloggt ist oder nicht, passieren rufen wir eine andere Funktion auf.
+         */
         if (User::isLoggedIn()) {
             $this->indexLoggedIn();
         } else {
@@ -58,7 +64,7 @@ class FavouritesController
     }
 
     /**
-     * @todo: comment
+     * Übersicht der Favoriten anzeigen.
      */
     public function indexGuest ()
     {

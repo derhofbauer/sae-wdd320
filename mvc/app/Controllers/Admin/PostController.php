@@ -125,11 +125,17 @@ class PostController
              */
             $post->title = trim($_POST['title']);
             /**
-             * @todo: comment
+             * Wurde ein Slug im Formular angegeben ...
              */
             if (isset($_POST['slug']) && !empty($_POST['slug'])) {
+                /**
+                 * ... so verwenden wir diesen, ...
+                 */
                 $post->slug = trim($_POST['slug']);
             } else {
+                /**
+                 * ... andernfalls generieren wir einen neuen.
+                 */
                 $post->createSlug();
             }
             $post->content = trim($_POST['content']);
@@ -311,11 +317,17 @@ class PostController
             $post = new Post();
             $post->title = trim($_POST['title']);
             /**
-             * @todo: comment
+             * Wurde ein Slug im Formular angegeben ...
              */
             if (isset($_POST['slug']) && !empty($_POST['slug'])) {
+                /**
+                 * ... so verwenden wir diesen, ...
+                 */
                 $post->slug = trim($_POST['slug']);
             } else {
+                /**
+                 * ... andernfalls generieren wir einen neuen.
+                 */
                 $post->createSlug();
             }
             $post->content = trim($_POST['content']);
